@@ -1,2 +1,5 @@
-regex="\\s*((//.*)|())"+ "|[A-Z_a-2) [A-Z_a-20-9] *|==|<=|>=|&&|\|/|\|||\p(Punct))?"
-print(regex)
+import re
+
+res=input()
+
+
