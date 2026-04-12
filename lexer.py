@@ -1,10 +1,12 @@
 import re
-from Token import Token
+from Token import Token,NumberToken,StringToken,IDToken
+from StoneException import StoneException
 class Lexer:
     def __init__(self,code_text):
-        self.tokens=self.get_tokens(code_text)
+        self.tokens=[]
+        self.get_tokens(code_text)
     def get_tokens(self,code):
-        line=0
+        line=1
         for i in code.split("\n"):
             self.get_words_from_code(i,line)
             line+=1
@@ -21,19 +23,28 @@ class Lexer:
         for m in pattern.finditer(code):
             token_type=m.lastgroup
             word=m.group(0).strip()
-            print(token_type,word)
-        return
-        token=[]
-        for i in word:
-            token.append(self.put_word_to_token(i,line))
-    def put_word_to_token(self,word,line):
-        return token
+            if token_type=="NUMBER":
+                try:
+                    value=int(word)
+                except:
+                    raise StoneException("Failed to get number token",line)
+                self.tokens.append(NumberToken(line,value))
+            elif token_type=="STRING":
+                self.tokens.append(StringToken(line,word))
+            elif token_type=="IDENTIFIER":
+                self.tokens.append(IDToken(line,word))
+            else:
+                raise StoneException("Failed to get the type from a word",line)
     def read(self):
         if len(self.tokens)==0:
             return Token.EOF
         token=self.tokens[0]
         self.tokens.pop(0)
         return token
+    def peek(self,offset):
+        if offset>len(self.tokens):
+            return Token.EOF
+        return self.tokens[offset]
 
 if __name__ == "__main__":
     lexer=Lexer()
