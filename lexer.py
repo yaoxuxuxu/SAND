@@ -35,6 +35,8 @@ class Lexer:
                 self.tokens.append(IDToken(line,word))
             else:
                 raise StoneException("Failed to get the type from a word",line)
+    def getTokens(self):
+        return self.tokens
     def read(self):
         if len(self.tokens)==0:
             return Token.EOF
@@ -47,6 +49,14 @@ class Lexer:
         return self.tokens[offset]
 
 if __name__ == "__main__":
-    lexer=Lexer()
     with open("./test.stone","r+") as fp:
         res=fp.read()
+        lexer=Lexer(res)
+    cnt=0
+    while 1:
+        token=lexer.read()
+        if token==Token.EOF:
+            break
+        if cnt>50:
+            break
+        print(token)

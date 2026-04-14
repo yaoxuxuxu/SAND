@@ -1,5 +1,3 @@
-import re
-
-res=input()
-
-
+a="ddddd"
+s="dddd"
+print(s in a)
