@@ -9,10 +9,12 @@ class Token:
         return self.linenumber
     def getValue(self):
         return self.value
+    def getType(self):
+        return self.stonetype
     def EOF():
         return "\n"
     
-class NumberToken(Token):
+"""class NumberToken(Token):
     def __init__(self, linenumber=-1,value=0):
         super().__init__(linenumber)
         self.stonetype="NUMBER"
@@ -25,5 +27,5 @@ class StringToken(Token):
 class IDToken(Token):
     def __init__(self, linenumber=-1,value=""):
         super().__init__(linenumber)
-        self.stonetype="INDENTIFIER"
-        self.value=value
+        self.stonetype="IDENTIFIER"
+        self.value=value"""

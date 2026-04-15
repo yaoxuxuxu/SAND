@@ -1,5 +1,5 @@
 import re
-from Token import Token,NumberToken,StringToken,IDToken
+from Token import Token
 from StoneException import StoneException
 class Lexer:
     def __init__(self,code_text):
@@ -15,9 +15,9 @@ class Lexer:
                 \s*(?://.* |
                 (?P<NUMBER>[0-9]+) |
                 (?P<STRING>"(?:\\"|\\\\|\\n|[^"])*") |
-                (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]* |
-                ==|<=|>=|&&|\|\| | [^\w\s]
-                ))
+                (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]*) |
+                (?P<OP>==|<=|>=|&&|\|\||[^\w\s])
+                )
                 """
         pattern=re.compile(regex,re.VERBOSE)
         for m in pattern.finditer(code):
@@ -28,13 +28,21 @@ class Lexer:
                     value=int(word)
                 except:
                     raise StoneException("Failed to get number token",line)
-                self.tokens.append(NumberToken(line,value))
+                self.createToken("NUMBER",value,line)
             elif token_type=="STRING":
-                self.tokens.append(StringToken(line,word))
+                self.createToken("STRING",word,line)
             elif token_type=="IDENTIFIER":
-                self.tokens.append(IDToken(line,word))
+                self.createToken("IDENTIFIER",word,line)
+            elif token_type=="OP":
+                self.createToken("OP",word,line)
             else:
                 raise StoneException("Failed to get the type from a word",line)
+    def createToken(self,stonetype,value,line):
+        tmp=Token(line)
+        tmp.stonetype=stonetype
+        tmp.value=value
+        self.tokens.append(tmp)
+        return
     def getTokens(self):
         return self.tokens
     def read(self):
@@ -43,7 +51,7 @@ class Lexer:
         token=self.tokens[0]
         self.tokens.pop(0)
         return token
-    def peek(self,offset):
+    def peek(self,offset=0):
         if offset>len(self.tokens):
             return Token.EOF
         return self.tokens[offset]

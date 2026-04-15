@@ -1,3 +1,2 @@
-a="ddddd"
-s="dddd"
-print(s in a)
+s="asd"
+print(str(s))

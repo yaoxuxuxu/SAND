@@ -1,5 +1,6 @@
+sum+3 - 10000
 while i<10{
-    sum = sum + i 
+    sum = sum + i
     i=i+1
 }
 "hello world"
