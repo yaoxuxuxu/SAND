@@ -1,4 +1,5 @@
 class Token:
+    EOF="\n"
     def __init__(self,linenumber=-1):
         self.stonetype="None"
         self.value=None
@@ -11,8 +12,6 @@ class Token:
         return self.value
     def getType(self):
         return self.stonetype
-    def EOF():
-        return "\n"
     
 """class NumberToken(Token):
     def __init__(self, linenumber=-1,value=0):

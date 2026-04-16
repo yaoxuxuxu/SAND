@@ -4,6 +4,7 @@ from StoneException import StoneException
 class Lexer:
     def __init__(self,code_text):
         self.tokens=[]
+        self.last_token=None
         self.get_tokens(code_text)
     def get_tokens(self,code):
         line=1
@@ -31,9 +32,9 @@ class Lexer:
                 self.createToken("NUMBER",value,line)
             elif token_type=="STRING":
                 self.createToken("STRING",word,line)
-            elif token_type=="IDENTIFIER":
+            elif token_type == "IDENTIFIER":
                 self.createToken("IDENTIFIER",word,line)
-            elif token_type=="OP":
+            elif token_type == "OP":
                 self.createToken("OP",word,line)
             else:
                 raise StoneException("Failed to get the type from a word",line)
@@ -49,11 +50,15 @@ class Lexer:
         if len(self.tokens)==0:
             return Token.EOF
         token=self.tokens[0]
-        self.tokens.pop(0)
+        self.last_token=self.tokens.pop(0)
         return token
     def peek(self,offset=0):
-        if offset>len(self.tokens):
+        if offset>len(self.tokens)-1:
             return Token.EOF
+        if offset==-1:
+            return self.last_token
+        if offset<-1:
+            raise StoneException("peek only can peek token [-1:n]")
         return self.tokens[offset]
 
 if __name__ == "__main__":
