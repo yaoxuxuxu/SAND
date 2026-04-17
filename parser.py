@@ -119,7 +119,10 @@ class Parser:
             if tmp==self.BADMATCH:
                 raise StoneException("syntax error at",token.getLineNumber())
             return self.createStem("factor",[self.token2leaf(token),self.primary()])
-        return self.primary()
+        tmp=self.primary()
+        if tmp==self.BADMATCH:
+            return self.BADMATCH
+        return self.createStem("factor",[tmp])
     def primary(self):
         if self.match("("):
             #did not put () into ASTtree

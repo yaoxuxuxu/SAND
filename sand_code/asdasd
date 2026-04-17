@@ -1,0 +1,26 @@
+e ::= e binop e
+    | id
+
+
+
+
+prog ::= 
+
+e ::= factor  (binop. factor)*
+
+
+
+
+
+binop ::= '=' | '+'
+
+
+
+even = even + i
+
+
+ 
+                      expr
+        expr        binop(=).           expr
+      id("even"}.                    expr.   binop(+).   expr
+                                id("even")              id("i")
