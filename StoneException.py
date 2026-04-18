@@ -1,4 +1,5 @@
 from Token import Token
+from asttree import ASTnode
 class StoneException(Exception):   
     def __init__(self, message, line=None):
         super().__init__(message)
@@ -8,6 +9,11 @@ class StoneException(Exception):
             return f"[line {self.line}] {self.args[0]}"
         return self.args[0]
 class ParserException(StoneException):
-    def __init__(self,token,message=""):
+    def __init__(self,message="",token=Token.EOF):
         message+="Parse Fail at '"+str(token.value)+"'"
         super().__init__(message,token.getLineNumber())
+class InterpreterException(StoneException):
+    def __init__(self,message="",token=Token.EOF):
+        message+="Eval Fail at '"+str(token.value)+"'"
+        super().__init__(message,token.getLineNumber())
+    

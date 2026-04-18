@@ -24,3 +24,24 @@ even = even + i
         expr        binop(=).           expr
       id("even"}.                    expr.   binop(+).   expr
                                 id("even")              id("i")
+
+
+
+
+struct 
+
+
+void parseBlock(ast_t node)
+{
+        parseIdent(node, "{");
+        while (true) {
+                parseStmt(node);
+        }
+        parseIdent(node, "}");
+}
+
+
+parseExpr()
+{
+        
+}

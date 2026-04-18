@@ -1,5 +1,5 @@
 class Token:
-    EOF="\n"
+    EOF=None
     def __init__(self,linenumber=-1):
         self.stonetype="None"
         self.value=None
@@ -13,6 +13,11 @@ class Token:
     def getType(self):
         return self.stonetype
     
+#set Token.EOF
+EOF=Token()
+EOF.value="\n"
+Token.EOF=EOF
+
 """class NumberToken(Token):
     def __init__(self, linenumber=-1,value=0):
         super().__init__(linenumber)
