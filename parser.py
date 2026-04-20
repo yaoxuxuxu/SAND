@@ -72,13 +72,51 @@ class Parser:
             return "last_line"
         return token.getLineNumber()
     def program(self):
-        child=[self.statement()]
-        if child[0]==self.BADMATCH:
+        pg=self.fun()
+        if pg==self.BADMATCH:
+            pg=self.statement()
+        if pg==self.BADMATCH:
             return self.BADMATCH
-        ASTtree=self.createNode("program",child)
+        ASTtree=self.createNode("program",[pg])
         if self.match(";"):
             self.consume()
         return ASTtree
+    def fun(self):
+        if self.match("def"):
+            deftoken=self.consume()
+            funname=self.getnextID()
+            param_list=self.param_list()
+            if funname==self.BADMATCH:
+                raise ParserException("failed to read a function name",self.peek())
+            if param_list==self.BADMATCH:
+                raise ParserException("expected () as a function",self.peek())
+            return self.createNode("function",[funname,param_list,self.block()],deftoken)
+        return self.BADMATCH
+    def param_list(self):
+        if self.match("("):
+            self.consume()
+            params=self.params()
+            if self.match(")"):
+                self.consume()
+            else:
+                raise ParserException("expected ')' at ",self.peek())
+            if params==self.BADMATCH:
+                return self.createNode("param_list",[])
+            return self.createNode("param_list",[params])
+        return self.BADMATCH
+    def params(self):
+        child=[self.param()]
+        if child[0]==self.BADMATCH:
+            return self.BADMATCH
+        while True:
+            if self.match(","):
+                self.consume()
+            else:
+                break
+            child.append(self.param())
+        return self.createNode("params",child)
+    def param(self):
+        return self.getnextID()
     def block(self):
         if self.match("{"):
             self.consume()
@@ -92,12 +130,14 @@ class Parser:
                 if tmp==self.BADMATCH:
                     break
                 child.append(tmp)
+                
             if self.match("}"):
                 self.consume()
             else:
                 token=self.consume()
-                print(token)
                 raise StoneException("expected } at",self.getErrorLine())
+            if child[0]==self.BADMATCH:
+                return self.createNode("block")
             return self.createNode("block",child)
     def statement(self):
         if self.match("if"):
@@ -107,16 +147,36 @@ class Parser:
                 else_token=self.consume()
                 child.append(self.block())
             return self.createNode("statement",child,iftoken)
-
         elif self.match("while"):
             whiletoken=self.consume()
             child=[self.expression(),self.block()]
             return self.createNode("statement",child,whiletoken)
         else:
-            child=[self.expression()]
+            child=[self.simple()]
             if child[0]==self.BADMATCH:
                 return self.BADMATCH
             return self.createNode("statement",child)
+    def simple(self):
+        exp=self.expression()
+        args=self.args()
+        if exp==self.BADMATCH:
+            return self.BADMATCH
+        if args==self.BADMATCH:
+            return self.createNode("simple",[exp])
+        return self.createNode("simple",[exp,args])
+    def args(self):
+        if self.check_EOL():
+            return self.BADMATCH
+        child=[self.expression()]
+        if child[0]==self.BADMATCH:
+            return self.BADMATCH
+        while True:
+            if self.match(","):
+                self.consume()
+                child.append(self.expression())
+            else:
+                break
+        return self.createNode("args",child)
     """def expression(self):
         #old expr
         child=[self.factor()]
@@ -165,13 +225,36 @@ class Parser:
                 self.consume()
             else:
                 raise ParserException("bracket is not matched",self.peek(0))
+            while True:
+                pf=self.postfix()
+                if pf==self.BADMATCH:
+                    break
+                child.append(pf)
             return self.createNode("primary",child)
         else:
             if self.match_type(["NUMBER","IDENTIFIER","STRING"]):
                 token=self.consume()
-                return self.createNode("primary",[],token)
+                child=[]
+                while True:
+                    pf=self.postfix()
+                    if pf==self.BADMATCH:
+                        break
+                    child.append(pf)
+                return self.createNode("primary",child,token)
             else:
                 return self.BADMATCH
+    def postfix(self):
+        if self.match("("):
+            self.consume()
+            args=self.args()
+            if self.match(")"):
+                self.consume()
+            else:
+                raise ParserException("expected ')' at",self.peek())
+            if args==self.BADMATCH:
+                return self.BADMATCH
+            return self.createNode("postfix",[args])
+        return self.BADMATCH
     def createNode(self,terminal="auto",child=[],token=None):
         if token:
             tmp=ASTfruit(token)
@@ -185,7 +268,12 @@ class Parser:
         if cnt+r > len(self.ASTlist):
             return 0
         return 1
-    
+    def getnextID(self):
+        token=self.peek()
+        if token.getType()=="IDENTIFIER":
+            return self.createNode("ID",[],self.consume())
+        return self.BADMATCH
+            
 if __name__ == "__main__":
     dir="./sand_code/ez_plus.sand"
     with open(dir,"r+") as fp:

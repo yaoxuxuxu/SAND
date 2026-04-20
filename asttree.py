@@ -10,6 +10,8 @@ class ASTnode:
         return self.child
     def getValue(self):
         return self.value
+    def getType(self):
+        return self.exp_type
     def __str__(self):
         linechar="-"
         line=linechar*20
@@ -19,7 +21,7 @@ class ASTnode:
         return res
     def printtree(self,nownode,depth=0):
         res=depth*" "*4
-        res+="type : "+nownode.exp_type
+        res+="type : "+nownode.getType()
         if type(nownode) == ASTfruit:
             res+=" value : "+str(nownode.getValue())   
         res+="\n"     

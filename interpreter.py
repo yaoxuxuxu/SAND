@@ -5,15 +5,19 @@ class Interpreter:
     def __init__(self):
         self.global_env=Environment()
     def eval(self,astTree):
-        if astTree.exp_type=="statement":
+        if astTree.getType()=="function":
+            return self.create_fun(astTree)
+        if astTree.getType()=="statement":
             return self.do_state(astTree)
-        if astTree.exp_type=="expression":
+        if astTree.getType()=="expression":
             return self.do_expr(astTree)
-        if astTree.exp_type=="primary":
+        if astTree.getType()=="primary":
             return self.do_pri(astTree)
         for i in astTree.child:
             last=self.eval(i)
         return last
+    def create_fun(self,astTree):
+        pass
     def do_state(self,astTree):
         if type(astTree) is ASTfruit:
             op=astTree.getValue()
