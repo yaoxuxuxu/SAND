@@ -9,6 +9,11 @@ def pow(a,n){
     }
     sum
 }
-a=4
-n=2
-pow(a+n,a-n)
+def null(){
+    1
+}
+
+pow(2,10)
+print()
+
+pow 2,10,

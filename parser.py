@@ -163,7 +163,10 @@ class Parser:
             return self.BADMATCH
         if args==self.BADMATCH:
             return self.createNode("simple",[exp])
-        return self.createNode("simple",[exp,args])
+        #make simple into primary postfix in order to make eval ez
+        postfix=self.createNode("postfix",[args])
+        exp.getChild().append(postfix)
+        return self.createNode("simple",[exp])
     def args(self):
         if self.check_EOL():
             return self.BADMATCH
@@ -187,6 +190,7 @@ class Parser:
             child.append(self.token2leaf(token,"OP"))
             child.append(self.factor())
         return self.createNode("expr",child)"""
+    #LL parser needed
     def expression(self,min_prec=0):
         #pratt_expr
         left=self.factor()
@@ -252,7 +256,7 @@ class Parser:
             else:
                 raise ParserException("expected ')' at",self.peek())
             if args==self.BADMATCH:
-                return self.BADMATCH
+                args=self.createNode("args",[])
             return self.createNode("postfix",[args])
         return self.BADMATCH
     def createNode(self,terminal="auto",child=[],token=None):

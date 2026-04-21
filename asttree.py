@@ -6,7 +6,9 @@ class ASTnode:
         self.value=None
     def getToken(self):
         return None
-    def getChild(self):
+    def getChild(self,offset=None):
+        if offset!=None:
+            return self.child[offset]
         return self.child
     def getValue(self):
         return self.value

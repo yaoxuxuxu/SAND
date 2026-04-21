@@ -1,8 +1,8 @@
 a=2
-n=31
+n=10
 
 sum=1
-while(n){
+while(n>0){
     if(n%2){
         sum=sum*a;
     }
@@ -10,3 +10,4 @@ while(n){
     n=n/2;
 }
 sum
+

@@ -1,0 +1,6 @@
+def add(a,b){
+    c=a+b
+    c=c*c
+    c
+}
+add(2,4)
