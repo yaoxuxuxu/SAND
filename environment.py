@@ -31,6 +31,10 @@ class TreeEnv(Environment):
         if env==None:
             raise StoneException("name "+str(name)+" is not defined")
         return env.var[name]
+    def setValueForce(self,name,value):
+        #When create Function env, use this to set vars in self env
+        self.var[name]=value
+        return value
     def setValue(self, name, value):
         env=self.whereis(name)
         if env==None:

@@ -6,6 +6,8 @@ class ASTnode:
         self.value=None
     def getToken(self):
         return None
+    def hasChild(self):
+        return len(self.child)>0
     def getChild(self,offset=None):
         if offset!=None:
             return self.child[offset]
@@ -23,6 +25,8 @@ class ASTnode:
         return res
     def printtree(self,nownode,depth=0):
         res=depth*" "*4
+        if isinstance(nownode,str):
+            print(nownode)
         res+="type : "+nownode.getType()
         if type(nownode) == ASTfruit:
             res+=" value : "+str(nownode.getValue())   

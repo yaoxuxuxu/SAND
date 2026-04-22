@@ -18,19 +18,17 @@ class Interpreter:
             return self.do_expr(astTree)
         if astTree.getType()=="primary":
             return self.do_pri(astTree)
+
         last=None
         for i in astTree.child:
             last=self.eval(i)
-        if last==None:
-            print(astTree)
         return last
     def create_fun(self,astTree):
         name=astTree.child[0].getValue()
         param=astTree.child[1]
         fun=astTree.child[2]
         args=self.get_args(param)
-        self.global_env.setValue(name,Function(args,fun,self.global_env))
-                
+        self.global_env.setValue(name,Function(args,fun))     
         return None
     def do_state(self,astTree):
         if type(astTree) is ASTfruit:
@@ -118,20 +116,24 @@ class Interpreter:
                 raise InterpreterException("Bad postfix")
             fun_name=self.do_fun(fun_name,self.get_args(postfix))
         return fun_name
-    def set_env(self,name,args):
+    def init_env(self,name,args):
         fun=self.global_env.getValue(name)
         funargs=fun.getArgs()
-        env=fun.getEnv()
-        self.now_env=env
         if len(funargs)!=len(args):
             raise InterpreterException("args not match"+name)
         for i in range(len(funargs)):
-            env.setValue(funargs[i],args[i])
+            #print("set",funargs[i],args[i])
+            self.now_env.setValueForce(funargs[i],args[i])
+            #print(env.var)
         return fun.getASTtree()
     def do_fun(self,name,args):
-        astTree=self.set_env(name,args)
+        oldenv=self.now_env
+        self.now_env=TreeEnv(self.global_env)
+
+        astTree=self.init_env(name,args)
         result=self.eval(astTree)
-        self.now_env=self.global_env
+
+        self.now_env=oldenv
         return result
     def isDivideZero(self,value,astTree):
         if value==0:
@@ -140,9 +142,18 @@ class Interpreter:
     def get_args(self,astTree):
         if astTree.getType()=="postfix":
             astTree=astTree.getChild(0)
+        if astTree.getType()=="param_list":
+            if not astTree.hasChild():
+                return []
+            astTree=astTree.getChild(0)
         args=[]
-        for i in astTree.getChild():
-            args.append(self.eval(i))
+        if astTree.getType()=="params":
+            for i in astTree.getChild():
+                args.append(i.getValue())
+        if astTree.getType()=="args":
+            for i in astTree.getChild():
+                args.append(self.eval(i))
+        
         return args
 if __name__ == "__main__":
     itpt=Interpreter()

@@ -177,6 +177,8 @@ class Parser:
             if self.match(","):
                 self.consume()
                 child.append(self.expression())
+                if child[-1]==self.BADMATCH:
+                    raise ParserException("Strange comma ',' existed",self.peek())
             else:
                 break
         return self.createNode("args",child)
