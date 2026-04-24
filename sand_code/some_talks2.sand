@@ -1,0 +1,41 @@
+def counter(c){
+    def awds(){
+        c=c+1
+    }
+    1
+}
+
+special object
+
+
+instance class object
+register_callback(lambda (int x) -> x + 1)
+
+func = new Closure(lambda (int x) -> x + 1)
+args = eval(new A_Lambda_0812)
+result = do_function_call(func, args)
+
+
+
+register_callback(lambda(int x) -> x + 1)
+
+class A_Lambda_0812 {
+    int the_only_method(int x) {
+        return x + 1
+    }
+}
+register_callback(new A_Lambda_0812())
+
+func = eval(register_callback)
+args = eval(new A_Lambda_0812())
+result = do_function_call(func, args)
+
+c1=counter(def asd(a){456})
+0
+while True{
+    do
+}
+c2=counter(0)
+c1()
+c1()
+c2()

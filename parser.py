@@ -237,6 +237,9 @@ class Parser:
                     break
                 child.append(pf)
             return self.createNode("primary",child)
+        elif self.match("lambda"):
+            lambda_token=self.consume()
+            return self.lambda_fun(lambda_token)
         else:
             if self.match_type(["NUMBER","IDENTIFIER","STRING"]):
                 token=self.consume()
@@ -249,6 +252,9 @@ class Parser:
                 return self.createNode("primary",child,token)
             else:
                 return self.BADMATCH
+    def lambda_fun(self,lambda_token):
+
+        return self.createNode("primary",[self.param_list(),self.block()],lambda_token)
     def postfix(self):
         if self.match("("):
             self.consume()

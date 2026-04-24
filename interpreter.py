@@ -9,6 +9,7 @@ class Interpreter:
         self.now_env=self.global_env
     def eval(self,astTree):
         #print(self.now_env.var)
+        #print(self.now_env.getFatherEnv())
         #time.sleep(0.1)
         if astTree.getType()=="function":
             return self.create_fun(astTree)
@@ -28,8 +29,10 @@ class Interpreter:
         param=astTree.child[1]
         fun=astTree.child[2]
         args=self.get_args(param)
-        self.global_env.setValue(name,Function(args,fun))     
+        self.env_add_fun(name,args,fun)
         return None
+    def env_add_fun(self,name,args,astTree):
+        return self.now_env.setValue(name,Function(name,args,astTree,self.now_env)) 
     def do_state(self,astTree):
         if type(astTree) is ASTfruit:
             op=astTree.getValue()
@@ -104,8 +107,13 @@ class Interpreter:
             return astTree.getValue()
         elif len(astTree.getChild())>0 and astTree.getChild(0).getType()=="postfix":
             return self.do_postfix(astTree)
-        
+        elif astTree.getValue()=="lambda":
+            return self.do_lambda(astTree)
         return self.eval(astTree.child[0])
+    def do_lambda(self,astTree):
+        args=self.get_args(astTree.child[0])
+        fun=astTree.child[1]
+        return self.env_add_fun("lambda",args,fun)
     def do_postfix(self,primary):
         if primary.getToken().getType()!="IDENTIFIER":
             raise InterpreterException("Bad Function",primary.getToken())
@@ -117,23 +125,25 @@ class Interpreter:
             fun_name=self.do_fun(fun_name,self.get_args(postfix))
         return fun_name
     def init_env(self,name,args):
-        fun=self.global_env.getValue(name)
+        fun=self.now_env.getValue(name)
         funargs=fun.getArgs()
+        #bug!!!
+        self.now_env=TreeEnv(fun.getEnv())
+        astTree=fun.getASTtree()
         if len(funargs)!=len(args):
             raise InterpreterException("args not match"+name)
         for i in range(len(funargs)):
             #print("set",funargs[i],args[i])
             self.now_env.setValueForce(funargs[i],args[i])
             #print(env.var)
-        return fun.getASTtree()
+        self.now_env.setValueForce(name,Function(name,funargs,astTree,self.now_env))
+        return astTree
     def do_fun(self,name,args):
-        oldenv=self.now_env
-        self.now_env=TreeEnv(self.global_env)
-
         astTree=self.init_env(name,args)
         result=self.eval(astTree)
-
-        self.now_env=oldenv
+        self.now_env=self.now_env.getFatherEnv()
+        if self.now_env==None:
+            raise InterpreterException("Environment error!Now env is None")
         return result
     def isDivideZero(self,value,astTree):
         if value==0:
