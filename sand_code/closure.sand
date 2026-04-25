@@ -1,2 +1,2 @@
-inc = fun (x) {x + 1}
+inc = lambda (x) {x + 1}
 inc (3)

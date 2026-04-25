@@ -1,0 +1,8 @@
+def make_adder(x){
+    lambda(y){
+        lambda(z){ x+y+z }
+    }
+}
+f = make_adder(1)
+g = f(2)
+g(3)

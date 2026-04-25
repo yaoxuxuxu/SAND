@@ -13,6 +13,8 @@ class Environment:
             raise StoneException("name "+str(name)+" is not defined")
     def getFatherEnv(self):
         return None
+    def __str__(self):
+        return "global_environment"
 class TreeEnv(Environment):
     def __init__(self,father):
         self.var={}
@@ -41,3 +43,12 @@ class TreeEnv(Environment):
             env=self
         env.var[name]=value
         return value
+    def __str__(self):
+        env=self
+        cnt=0
+        s=""
+        while env!=None:
+            s+=str(cnt)
+            env=env.getFatherEnv()
+            cnt+=1
+        return s 
