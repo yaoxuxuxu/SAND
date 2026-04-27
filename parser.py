@@ -72,7 +72,9 @@ class Parser:
             return "last_line"
         return token.getLineNumber()
     def program(self):
-        pg=self.fun()
+        pg=self.defclass()
+        if pg==self.BADMATCH:
+            pg=self.fun()
         if pg==self.BADMATCH:
             pg=self.statement()
         if pg==self.BADMATCH:
@@ -81,6 +83,47 @@ class Parser:
         if self.match(";"):
             self.consume()
         return ASTtree
+    def defclass(self):
+        if self.match("class"):
+            classtoken=self.consume()
+            classname=self.getnextID()
+            father=self.extents()
+            classbody=self.class_body()
+            if classbody==self.BADMATCH:
+                raise ParserException("failed to get a classbody",self.peek())
+            return self.createNode("class",[classname,father,classbody],classtoken)
+        return self.BADMATCH
+    def extents(self):
+        if self.match("extends"):
+            extoken=self.consume()
+            father=self.getnextID()
+            return self.createNode("extents",[father],extoken)
+        return self.BADMATCH
+    def class_body(self):
+        if self.match("{"):
+            self.consume()
+            members=[self.member()]
+            while True:
+                if members[-1]==self.BADMATCH:
+                    members.pop()
+                    break
+                if self.match(";"):
+                    self.consume()
+                elif not self.check_EOL():
+                    break
+                members.append(self.member())
+            if self.match("}"):
+                self.consume()
+            else:
+                raise ParserException("Expected '}' at ",self.peek())
+            return self.createNode()
+        return self.BADMATCH
+    def member(self):
+        mb=self.fun()
+        if mb==self.BADMATCH:
+            return self.simple()
+        else:
+            return mb
     def fun(self):
         if self.match("def"):
             deftoken=self.consume()
@@ -255,6 +298,7 @@ class Parser:
     def lambda_fun(self,lambda_token):
 
         return self.createNode("primary",[self.param_list(),self.block()],lambda_token)
+    # 看这里 你的class的postfix parser还没有加上去
     def postfix(self):
         if self.match("("):
             self.consume()
