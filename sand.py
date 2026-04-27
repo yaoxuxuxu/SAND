@@ -18,6 +18,7 @@ def main():
     console_parser=argparse.ArgumentParser()
     console_parser.add_argument("file")
     console_parser.add_argument("--asttree", action="store_true")
+    console_parser.add_argument("--return_all", action="store_true",help="Debug return each value of all the statement.")
     args=console_parser.parse_args()
     
 
@@ -33,7 +34,12 @@ def main():
         return
     
     itpt=Interpreter()
+    if args.return_all:
+        for i in parser.parse():
+            itpt.eval(i)
+        return
+    
     for i in parser.parse():
-        print(itpt.eval(i))
+        itpt.eval(i)
 main()
 

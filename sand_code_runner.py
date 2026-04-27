@@ -29,6 +29,6 @@ def main():
     parser=Parser(code)
     itpt=Interpreter()
     for i in parser.parse():
-        print(itpt.eval(i))
+        itpt.eval(i)
 main()
 

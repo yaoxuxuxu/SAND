@@ -1,0 +1,4 @@
+y =66
+def foo () {y=3;bar()}
+def bar () {y}
+print(foo(),"mix scope")

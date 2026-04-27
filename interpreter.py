@@ -1,12 +1,14 @@
 from asttree import ASTfruit,ASTnode
 from StoneException import InterpreterException
 from environment import Environment,TreeEnv
-from function import Function
+from function import Function,NativeFunction,NativeFunctionManager
 import time
 class Interpreter:
     def __init__(self):
         self.global_env=Environment()
+        self.set_native_function()
         self.now_env=self.global_env
+
     def debug(self):
         print(self.now_env.var)
         print(self.now_env)
@@ -26,6 +28,11 @@ class Interpreter:
         for i in astTree.child:
             last=self.eval(i)
         return last
+    def set_native_function(self):
+        self.nfm=NativeFunctionManager()
+        for i in self.nfm.fun_list:
+            self.global_env.setValue(i,NativeFunction(i,[]))
+        
     def create_fun(self,astTree):
         name=astTree.child[0].getValue()
         param=astTree.child[1]
@@ -81,7 +88,7 @@ class Interpreter:
             if op=="/":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)
-                return self.eval(left)//right
+                return self.eval(left)/right
             if op=="%":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)
@@ -125,25 +132,32 @@ class Interpreter:
                 raise InterpreterException("Bad postfix")
             fun_name=self.do_fun(fun_name,self.get_args(postfix))
         return fun_name
-    def init_env(self,name,args):
-        fun=self.now_env.getValue(name)
+    def init_env(self,fun,args):
         funargs=fun.getArgs()
         self.now_env=TreeEnv(fun.getEnv())
         fun.setEnv(self.now_env)
         astTree=fun.getASTtree()
         if len(funargs)!=len(args):
-            raise InterpreterException("args not match"+name)
+            raise InterpreterException("args not match"+fun.getName())
         for i in range(len(funargs)):
             #print("set",funargs[i],args[i])
             self.now_env.setValueForce(funargs[i],args[i])
             #print(env.var)
-        return astTree,fun
+        return astTree
     def do_fun(self,name,args):
-        astTree,fun=self.init_env(name,args)
+        fun=self.now_env.getValue(name)
+        if isinstance(fun,NativeFunction):
+            fun.setArgs(args)
+            return self.nfm.eval(fun)
+        #in
+        astTree=self.init_env(fun,args)
+        #do
         result=self.eval(astTree)
+        #out
         self.now_env=fun.getEnv()
         self.now_env=self.now_env.getFatherEnv()
         fun.setEnv(self.now_env)
+        
         if self.now_env==None:
             raise InterpreterException("Environment error!Now env is None")
         return result
