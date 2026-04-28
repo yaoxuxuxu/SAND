@@ -21,8 +21,6 @@ def main():
     console_parser.add_argument("--return_all", action="store_true",help="Debug return each value of all the statement.")
     args=console_parser.parse_args()
     
-
-
     dir=args.file
 
     code=read_file(dir)
@@ -36,7 +34,7 @@ def main():
     itpt=Interpreter()
     if args.return_all:
         for i in parser.parse():
-            itpt.eval(i)
+            print(itpt.eval(i))
         return
     
     for i in parser.parse():

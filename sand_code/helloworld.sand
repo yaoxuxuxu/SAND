@@ -1,2 +1,2 @@
 s="helloworld"
-s
+print(s)

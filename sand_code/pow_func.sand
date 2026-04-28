@@ -11,4 +11,5 @@ def pow(a,n){
 }
 a=4
 n=2
-pow(a+n,a-n)
+ans=pow(a+n,a-n)
+print(ans)

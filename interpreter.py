@@ -2,6 +2,7 @@ from asttree import ASTfruit,ASTnode
 from StoneException import InterpreterException
 from environment import Environment,TreeEnv
 from function import Function,NativeFunction,NativeFunctionManager
+from oop import Class,ClassInstance
 import time
 class Interpreter:
     def __init__(self):
@@ -12,11 +13,13 @@ class Interpreter:
     def debug(self):
         print(self.now_env.var)
         print(self.now_env)
-        time.sleep(0.1)
+        time.sleep(0.5)
     def eval(self,astTree):
         #self.debug()
         if astTree.getType()=="function":
             return self.create_fun(astTree)
+        if astTree.getType()=="class":
+            return self.create_class(astTree)
         if astTree.getType()=="statement":
             return self.do_state(astTree)
         if astTree.getType()=="expression":
@@ -32,6 +35,21 @@ class Interpreter:
         self.nfm=NativeFunctionManager()
         for i in self.nfm.fun_list:
             self.global_env.setValue(i,NativeFunction(i,[]))
+    def create_class(self,astTree):
+        child=astTree.getChild()
+        if len(child)==2:
+            classname=self.getVarNameFromAsttree(child[0])
+            astTree=child[1]
+            father=self.global_env
+        elif len(child)==3:
+            classname=self.getVarNameFromAsttree(child[0])
+            astTree=child[2]
+            father=self.getVarNameFromAsttree(child[1])
+            father=self.global_env.getValue(father)
+            father=father.getEnv()
+        else:
+            raise InterpreterException("class asttree format wrong",astTree.getToken())
+        return self.now_env.setValue(classname,Class(classname,astTree,TreeEnv(father)))
         
     def create_fun(self,astTree):
         name=astTree.child[0].getValue()
@@ -88,7 +106,7 @@ class Interpreter:
             if op=="/":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)
-                return self.eval(left)/right
+                return self.eval(left)//right
             if op=="%":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)
@@ -108,30 +126,47 @@ class Interpreter:
                 return token.getValue()
         return 0
     def do_pri(self,astTree):
-        if len(astTree.child)==0 and type(astTree)==ASTfruit:
+        num_child=astTree.getChildNum()
+        child=astTree.getChild()
+        if num_child==0 and type(astTree)==ASTfruit:
             varname=self.getVarNameFromAsttree(astTree)
             if varname:
                 return self.now_env.getValue(varname)
             return astTree.getValue()
-        elif len(astTree.getChild())>0 and astTree.getChild(0).getType()=="postfix":
-            return self.do_postfix(astTree)
         elif astTree.getValue()=="lambda":
             return self.do_lambda(astTree)
+        elif num_child>0:
+            primary=astTree.getValue()
+            for postfix in child:
+                if postfix.getType()=="postfix":
+                    primary=self.do_postfix(primary,postfix)
+                elif postfix.getType()=="dot":
+                    primary=self.do_dot(primary,postfix)
+                else:
+                    return self.eval(postfix)
+                    
+            return primary
+        
         return self.eval(astTree.child[0])
+    def do_dot(self,primary,postfix):
+        varname=postfix.getChild(0)
+        varname=self.getVarNameFromAsttree(varname)
+        obj=self.now_env.getValue(primary)
+        if varname=="new":
+            if type(obj)!=Class:
+                raise InterpreterException("Only class can create instance")
+            newenv=TreeEnv(obj.getEnv())
+            self.now_env=newenv
+            self.eval(obj.getAsttree())
+            #to be continue
+            return ClassInstance(newenv)
     def do_lambda(self,astTree):
         args=self.get_args(astTree.child[0])
         fun=astTree.child[1]
         return Function("lambda",args,fun,self.now_env)
-    def do_postfix(self,primary):
-        if primary.getToken().getType()!="IDENTIFIER":
-            raise InterpreterException("Bad Function",primary.getToken())
-        fun_name=primary.getValue()
-        child=primary.getChild()
-        for postfix in child:
-            if postfix.getType() != "postfix":
-                raise InterpreterException("Bad postfix")
-            fun_name=self.do_fun(fun_name,self.get_args(postfix))
-        return fun_name
+    def do_postfix(self,primary,postfix):
+        fun_name=primary
+        return self.do_fun(fun_name,self.get_args(postfix))
     def init_env(self,fun,args):
         funargs=fun.getArgs()
         self.now_env=TreeEnv(fun.getEnv())

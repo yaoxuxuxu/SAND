@@ -1,5 +1,4 @@
 from Token import Token
-from asttree import ASTnode
 class StoneException(Exception):   
     def __init__(self, message, line=None):
         super().__init__(message)

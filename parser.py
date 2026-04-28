@@ -91,6 +91,8 @@ class Parser:
             classbody=self.class_body()
             if classbody==self.BADMATCH:
                 raise ParserException("failed to get a classbody",self.peek())
+            if father==self.BADMATCH:
+                return self.createNode("class",[classname,classbody],classtoken)
             return self.createNode("class",[classname,father,classbody],classtoken)
         return self.BADMATCH
     def extents(self):
@@ -116,7 +118,7 @@ class Parser:
                 self.consume()
             else:
                 raise ParserException("Expected '}' at ",self.peek())
-            return self.createNode()
+            return self.createNode("class_body",members)
         return self.BADMATCH
     def member(self):
         mb=self.fun()
@@ -300,6 +302,10 @@ class Parser:
         return self.createNode("primary",[self.param_list(),self.block()],lambda_token)
     # 看这里 你的class的postfix parser还没有加上去
     def postfix(self):
+        if self.match("."):
+            dottoken=self.consume()
+            name=self.getnextID()
+            return self.createNode("dot",[name],dottoken)
         if self.match("("):
             self.consume()
             args=self.args()
@@ -311,7 +317,7 @@ class Parser:
                 args=self.createNode("args",[])
             return self.createNode("postfix",[args])
         return self.BADMATCH
-    def createNode(self,terminal="auto",child=[],token=None):
+    def createNode(self,terminal:str="auto",child:list=[],token:Token=None)->ASTnode:
         if token:
             tmp=ASTfruit(token)
         else:
@@ -324,7 +330,7 @@ class Parser:
         if cnt+r > len(self.ASTlist):
             return 0
         return 1
-    def getnextID(self):
+    def getnextID(self)->ASTnode:
         token=self.peek()
         if token.getType()=="IDENTIFIER":
             return self.createNode("ID",[],self.consume())

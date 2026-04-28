@@ -5,4 +5,4 @@ def make_adder(x){
 }
 f = make_adder(1)
 g = f(2)
-g(3)
+print(g(3))
