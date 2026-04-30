@@ -1,5 +1,5 @@
 insert {
-    用llm做 翻译
+    
     
 }
 
@@ -7,7 +7,9 @@ def calc()
 {
     IF (OP == 'ADD') (
         [insert impl add]
+        
     ) else if (OP == 'Mul') {
         [insert impl mul]
     }
+
 }

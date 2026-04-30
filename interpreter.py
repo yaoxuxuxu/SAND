@@ -44,7 +44,7 @@ class Interpreter:
         elif len(child)==3:
             classname=self.getVarNameFromAsttree(child[0])
             astTree=child[2]
-            father=self.getVarNameFromAsttree(child[1])
+            father=self.getVarNameFromAsttree(child[1].getChild(0))
             father=self.global_env.getValue(father)
             father=father.getEnv()
         else:
@@ -166,8 +166,8 @@ class Interpreter:
         else:
             if not isinstance(obj,ClassInstance):
                 raise InterpreterException("You should make a instance from class before to use")
-            self.now_env=obj.getEnv()
-            return varname
+            env=obj.getEnv()
+            return env.getValue(varname)
 
 
 
