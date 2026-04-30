@@ -17,6 +17,10 @@ class Function:
         return self.env
     def setEnv(self,env):
         self.env=env
+    def runInit(self,env):
+        pass
+    def runUnwind(self,env):
+        pass
 class NativeFunction:
     def __init__(self,funname="",args=[]):
         self.name=funname

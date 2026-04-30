@@ -180,18 +180,14 @@ class Interpreter:
             #print(env.var)
         return astTree
     def do_fun(self,name,args):
-        fun=self.now_env.getValue(name)
+        fun:Function=self.now_env.getValue(name)
         if isinstance(fun,NativeFunction):
             fun.setArgs(args)
             return self.nfm.eval(fun)
-        #in
-        astTree=self.init_env(fun,args)
-        #do
-        result=self.eval(astTree)
-        #out
-        self.now_env=fun.getEnv()
-        self.now_env=self.now_env.getFatherEnv()
-        fun.setEnv(self.now_env)
+        
+        self.now_env=fun.runInit()
+        result=self.eval(fun.getA)
+        self.now_env=fun.runUnwind()
         
         if self.now_env==None:
             raise InterpreterException("Environment error!Now env is None")
