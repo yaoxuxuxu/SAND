@@ -15,4 +15,8 @@ class InterpreterException(StoneException):
     def __init__(self,message="",token=Token.EOF):
         message+="Eval Fail at '"+str(token.value)+"'"
         super().__init__(message,token.getLineNumber())
+class FunctionException(StoneException):
+    def __init__(self,message=""):
+        message="Function Error\n"+message
+        super().__init__(message)
     

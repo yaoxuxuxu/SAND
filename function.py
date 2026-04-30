@@ -1,5 +1,5 @@
 from environment import TreeEnv
-from StoneException import StoneException
+from StoneException import FunctionException
 import time
 class Function:
     def __init__(self,funname="fun",args=[],astTree=None,env=None):
@@ -17,10 +17,16 @@ class Function:
         return self.env
     def setEnv(self,env):
         self.env=env
-    def runInit(self,env):
-        pass
-    def runUnwind(self,env):
-        pass
+    def runInit(self,args):
+        self.env=TreeEnv(self.env)
+        if len(self.args) != len(args):
+            raise FunctionException("The number of the arguments is not correct")
+        for i in range(len(args)):
+            self.env.setValueForce(self.args[i],args[i])
+        return self.env
+    def runUnwind(self):
+        self.env=self.env.getFatherEnv()
+        return self.env
 class NativeFunction:
     def __init__(self,funname="",args=[]):
         self.name=funname
@@ -43,11 +49,11 @@ class NativeFunctionManager:
                        }
     def eval(self,native_fun):
         if not isinstance(native_fun,NativeFunction):
-            raise StoneException("BUG!")
+            raise FunctionException("BUG!")
         funname=native_fun.getName()
         args=native_fun.getArgs()
         if funname not in self.fun_list:
-            raise StoneException("No such native function!"+funname)
+            raise FunctionException("No such native function!"+funname)
         return self.fun_list[funname](args)
     def eval_print(self,args):
         for i in args:
@@ -57,20 +63,20 @@ class NativeFunctionManager:
         return time.time()
     def eval_input(self,args):
         if len(args)>1:
-            raise StoneException("input function at most need 1 param")
+            raise FunctionException("input function at most need 1 param")
         elif len(args)==1:
             return input(args)
         else:
             return input()
     def eval_int(self,args):
         if len(args)!=1:
-            raise StoneException("int function only need 1 param")
+            raise FunctionException("int function only need 1 param")
         tmp=args[0]
         try:
             tmp=int(tmp)
             return tmp
         except:
-            raise StoneException("failed to turn to int")
+            raise FunctionException("failed to turn to int")
             
 #test
 if __name__ == "__main__":
