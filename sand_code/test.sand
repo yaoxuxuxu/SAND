@@ -17,3 +17,6 @@ class Pos3D extends Position{
 p=Pos3D.new
 p.move(3,4)
 print(p.x)
+p.set(5,6,7)
+print(p.z)
+print(p.x+p.y+p.z)

@@ -1,0 +1,191 @@
+class Animal{
+    name=0
+    age=0
+    def setName(n){
+        name=n
+    }
+    def getAge(){
+        age
+    }
+}
+a=Animal.new
+a.setName(42)
+a.age=5
+print(a.name,42)
+print(a.getAge(),5)
+
+class Counter{
+    count=0
+    def inc(){
+        count=count+1
+    }
+    def incBy(n){
+        count=count+n
+    }
+}
+c=Counter.new
+c.inc()
+c.inc()
+c.incBy(3)
+print(c.count,5)
+
+class Shape{
+    x=0
+    y=0
+    def move(nx,ny){
+        x=nx;y=ny
+    }
+}
+class Circle extends Shape{
+    r=0
+    def setR(nr){
+        r=nr
+    }
+}
+c=Circle.new
+c.move(1,2)
+c.setR(5)
+print(c.x+c.y+c.r,8)
+
+class Math{
+    def fact(n){
+        if n<2 {1} else {n*fact(n-1)}
+    }
+}
+m=Math.new
+print(m.fact(5),120)
+
+
+
+class Vector{
+    x=0
+    y=0
+    def set(nx,ny){
+        x=nx
+        y=ny
+    }
+    def add(vx,vy){
+        x=x+vx
+        y=y+vy
+    }
+    def scale(s){
+        x=x*s
+        y=y*s
+    }
+    def dot(vx,vy){
+        x*vx+y*vy
+    }
+}
+
+class Matrix{
+    a=0
+    b=0
+    c=0
+    d=0
+    def set(na,nb,nc,nd){
+        a=na
+        b=nb
+        c=nc
+        d=nd
+    }
+    def mulVecX(vx,vy){
+        a*vx+b*vy
+    }
+    def mulVecY(vx,vy){
+        c*vx+d*vy
+    }
+}
+
+class Stack{
+    s0=0
+    s1=0
+    s2=0
+    s3=0
+    s4=0
+    top=0
+    def push(val){
+        if top==0 {s0=val}
+        if top==1 {s1=val}
+        if top==2 {s2=val}
+        if top==3 {s3=val}
+        if top==4 {s4=val}
+        top=top+1
+    }
+    def pop(){
+        top=top-1
+        if top==0 {s0}
+        if top==1 {s1}
+        if top==2 {s2}
+        if top==3 {s3}
+        if top==4 {s4}
+    }
+    def peek(){
+        if top==1 {s0}
+        if top==2 {s1}
+        if top==3 {s2}
+        if top==4 {s3}
+        if top==5 {s4}
+    }
+}
+
+class Animal{
+    name=0
+    age=0
+    def setName(n){
+        name=n
+    }
+    def setAge(a){
+        age=a
+    }
+    def getInfo(){
+        age
+    }
+}
+
+class Dog extends Animal{
+    breed=0
+    def setBreed(b){
+        breed=b
+    }
+    def getBreed(){
+        breed
+    }
+}
+
+v=Vector.new
+v.set(3,4)
+print(v.x,3)
+print(v.y,4)
+v.add(1,2)
+print(v.x,4)
+print(v.y,6)
+v.scale(2)
+print(v.x,8)
+print(v.y,12)
+print(v.dot(1,0),8)
+
+m=Matrix.new
+m.set(1,2,3,4)
+print(m.mulVecX(1,0),1)
+print(m.mulVecY(1,0),3)
+print(m.mulVecX(0,1),2)
+print(m.mulVecY(0,1),4)
+
+s=Stack.new
+s.push(10)
+s.push(20)
+s.push(30)
+print(s.peek(),30)
+print(s.pop(),30)
+print(s.peek(),20)
+print(s.top,2)
+
+d=Dog.new
+d.setName(99)
+d.setAge(3)
+d.setBreed(42)
+print(d.getInfo(),3)
+print(d.getBreed(),42)
+print(d.name,99)
+print(d.age,3)
+print(d.breed,42)

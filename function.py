@@ -9,6 +9,8 @@ class Function:
         self.env=env
     def getName(self):
         return self.funname
+    def copy(self):
+        return Function(self.funname,self.args,self.astTree,self.env)
     def getArgs(self):
         return self.args
     def getASTtree(self):

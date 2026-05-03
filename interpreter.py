@@ -46,11 +46,31 @@ class Interpreter:
             astTree=child[2]
             father=self.getVarNameFromAsttree(child[1].getChild(0))
             father=self.global_env.getValue(father)
-            father=father.getEnv()
         else:
             raise InterpreterException("class asttree format wrong",astTree.getToken())
-        return self.now_env.setValue(classname,Class(classname,astTree,father))
-        
+        init_asttree=[]
+        functions=[]
+        #seperate functions and non functions
+        for sentence in astTree.getChild():
+            if sentence.getType()=="function":
+                functions.append(sentence)
+            else:
+                init_asttree.append(sentence)
+        classObject=self.now_env.setValue(classname,Class(classname,init_asttree,father))
+        #set functions
+        self.eval_with_env(functions,classObject.getEnv())
+        return classObject
+    def eval_with_env(self,astTree,env):
+        nowenv=self.now_env
+        self.now_env=env
+        result=None
+        if isinstance(astTree,list):
+            for sentence in astTree:
+                result=self.eval(sentence)
+        else:
+            result=self.eval(astTree)
+        self.now_env=nowenv
+        return result
     def create_fun(self,astTree):
         name=astTree.child[0].getValue()
         param=astTree.child[1]
@@ -156,7 +176,6 @@ class Interpreter:
                     env,primary=self.do_dot(primary,postfix,env)
                     if isLeft and cnt==len(child)-1:
                         return env,self.getVarNameFromAsttree(postfix.getChild(0))
-                    
                 else:
                     return self.eval(postfix)
                 cnt+=1
@@ -164,9 +183,7 @@ class Interpreter:
         return self.eval(astTree.child[0])
     def init_env_classinstance(self,obj):
         instance=ClassInstance(obj.getEnv())
-        self.now_env=instance.getEnv()
-        self.eval(obj.getAsttree())
-        self.now_env=instance.getFatherEnv()
+        self.eval_with_env(obj.getAsttree(),instance.getEnv())
         return instance
     def do_dot(self,primary,postfix,env):
         varname=postfix.getChild(0)
@@ -183,7 +200,11 @@ class Interpreter:
             if not isinstance(obj,ClassInstance):
                 raise InterpreterException("You should make a instance from class before to use")
             env=obj.getEnv()
-            return env,env.getValue(varname)
+            primary=env.getValue(varname)
+            if isinstance(primary,Function):
+                primary=primary.copy()
+                primary.setEnv(env)
+            return env,primary
 
 
 
@@ -198,7 +219,7 @@ class Interpreter:
 
         result=self.do_fun(fun_name,self.get_args(postfix))
 
-        self.now_env=self.now_env
+        self.now_env=nowenv
         return result
     def do_fun(self,fun,args):
         if isinstance(fun,str):
@@ -207,7 +228,6 @@ class Interpreter:
         if isinstance(fun,NativeFunction):
             fun.setArgs(args)
             return self.nfm.eval(fun)
-        
         self.now_env=fun.runInit(args)
         result=self.eval(fun.getASTtree())
         self.now_env=fun.runUnwind()
