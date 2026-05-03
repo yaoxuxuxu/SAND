@@ -112,20 +112,30 @@ class Interpreter:
                 self.isDivideZero(right,astTree)
                 return self.eval(left)%right
             if op=="=":
-                var=self.getVarNameFromAsttree(left)
-                if var:
-                    return self.now_env.setValue(var,self.eval(right))
+                env,leftname=self.resolve_lvalue(left)
+                if leftname:
+                    return env.setValue(leftname,self.eval(right))
                 else:
                     raise InterpreterException("failed to set value of",left.getToken())
-
         return self.eval(astTree.child[0])
+    def resolve_lvalue(self,left_asttree):
+        env=self.now_env
+        leftname=self.getVarNameFromAsttree(left_asttree)
+        if left_asttree.getType()!="primary":
+            #suppose left as a primary
+            raise InterpreterException("Unable to get lvalue")
+        if left_asttree.getChildNum()==0:
+            pass
+        else:
+            env,leftname=self.do_pri(left_asttree,isLeft=True)
+        return env,leftname
     def getVarNameFromAsttree(self,astTree):
         if type(astTree)==ASTfruit:
             token=astTree.getToken()
             if token.getType()=="IDENTIFIER":
                 return token.getValue()
         return 0
-    def do_pri(self,astTree):
+    def do_pri(self,astTree,isLeft=False):
         num_child=astTree.getChildNum()
         child=astTree.getChild()
         if num_child==0 and type(astTree)==ASTfruit:
@@ -137,16 +147,20 @@ class Interpreter:
             return self.do_lambda(astTree)
         elif num_child>0:
             primary=astTree.getValue()
+            cnt=0
             env=self.now_env
             for postfix in child:
                 if postfix.getType()=="postfix":
-                    primary=self.do_postfix(primary,postfix)
+                    primary=self.do_postfix(primary,postfix,env)
                 elif postfix.getType()=="dot":
-                    primary=self.do_dot(primary,postfix)
+                    env,primary=self.do_dot(primary,postfix,env)
+                    if isLeft and cnt==len(child)-1:
+                        return env,self.getVarNameFromAsttree(postfix.getChild(0))
+                    
                 else:
                     return self.eval(postfix)
+                cnt+=1
             return primary
-        
         return self.eval(astTree.child[0])
     def init_env_classinstance(self,obj):
         instance=ClassInstance(obj.getEnv())
@@ -154,20 +168,22 @@ class Interpreter:
         self.eval(obj.getAsttree())
         self.now_env=instance.getFatherEnv()
         return instance
-    def do_dot(self,primary,postfix):
+    def do_dot(self,primary,postfix,env):
         varname=postfix.getChild(0)
         varname=self.getVarNameFromAsttree(varname)
-        obj=self.now_env.getValue(primary)
+        obj=env.getValue(primary)
         #<obj>.<varname>
+        #a.b.c.d
         if varname=="new":
             if not isinstance(obj,Class):
                 raise InterpreterException("Only class can create instance")
-            return self.init_env_classinstance(obj)
+            instance=self.init_env_classinstance(obj)
+            return obj.getEnv(),instance
         else:
             if not isinstance(obj,ClassInstance):
                 raise InterpreterException("You should make a instance from class before to use")
             env=obj.getEnv()
-            return env.getValue(varname)
+            return env,env.getValue(varname)
 
 
 
@@ -175,10 +191,15 @@ class Interpreter:
         args=self.get_args(astTree.child[0])
         fun=astTree.child[1]
         return Function("lambda",args,fun,self.now_env)
-    def do_postfix(self,primary,postfix):
-        
+    def do_postfix(self,primary,postfix,env):
+        nowenv=self.now_env
+        self.now_env=env
         fun_name=primary
-        return self.do_fun(fun_name,self.get_args(postfix))
+
+        result=self.do_fun(fun_name,self.get_args(postfix))
+
+        self.now_env=self.now_env
+        return result
     def do_fun(self,fun,args):
         if isinstance(fun,str):
             fun:Function=self.now_env.getValue(fun)
