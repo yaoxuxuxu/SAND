@@ -2,6 +2,7 @@ from Token import Token
 from lexer import Lexer
 from asttree import ASTnode,ASTfruit
 from StoneException import StoneException,ParserException
+from contextlib import contextmanager
 #all of the [] part is not done
 class Parser:
     BADMATCH="!bad match!"
@@ -51,6 +52,17 @@ class Parser:
         if token.stonetype in rule:
             return 1
         return 0
+    @contextmanager
+    def get_bracket(self,left,right):
+        if self.match(left):
+            self.consume()
+            yield True
+            if self.match(right):
+                self.consume()
+            else:
+                raise ParserException("expected '"+right+"' at ",self.getErrorLine())
+        else:
+            yield False        
     def isOperator(self,token):
         op=r"+-*/% >= <= == && ||"
         if token==Token.EOF:
@@ -102,23 +114,20 @@ class Parser:
             return self.createNode("extents",[father],extoken)
         return self.BADMATCH
     def class_body(self):
-        if self.match("{"):
-            self.consume()
-            members=[self.member()]
-            while True:
-                if members[-1]==self.BADMATCH:
-                    members.pop()
-                    break
-                if self.match(";"):
-                    self.consume()
-                elif not self.check_EOL():
-                    break
-                members.append(self.member())
-            if self.match("}"):
-                self.consume()
-            else:
-                raise ParserException("Expected '}' at ",self.peek())
-            return self.createNode("class_body",members)
+        with self.get_bracket("{","}") as isMatch:
+            if isMatch:
+                members=[self.member()]
+                while True:
+                    if members[-1]==self.BADMATCH:
+                        members.pop()
+                        break
+                    if self.match(";"):
+                        self.consume()
+                    elif not self.check_EOL():
+                        break
+                    members.append(self.member())
+                return self.createNode("class_body",members)
+        
         return self.BADMATCH
     def member(self):
         mb=self.fun()
@@ -138,17 +147,14 @@ class Parser:
             return self.createNode("function",[funname,param_list,self.block()],deftoken)
         return self.BADMATCH
     def param_list(self):
-        if self.match("("):
-            self.consume()
-            params=self.params()
-            if self.match(")"):
-                self.consume()
-            else:
-                raise ParserException("expected ')' at ",self.peek())
-            if params==self.BADMATCH:
-                return self.createNode("param_list",[])
-            return self.createNode("param_list",[params])
+        with self.get_bracket("(",")") as isMatch:
+            if isMatch:
+                params=self.params()
+                if params==self.BADMATCH:
+                    return self.createNode("param_list",[])
+                return self.createNode("param_list",[params])
         return self.BADMATCH
+    
     def params(self):
         child=[self.param()]
         if child[0]==self.BADMATCH:
@@ -163,27 +169,22 @@ class Parser:
     def param(self):
         return self.getnextID()
     def block(self):
-        if self.match("{"):
-            self.consume()
-            child=[self.statement()]
-            while True:
-                if self.match(";"):
-                    self.consume()
-                elif not self.check_EOL():
-                    break
-                tmp=self.statement()
-                if tmp==self.BADMATCH:
-                    break
-                child.append(tmp)
-                
-            if self.match("}"):
-                self.consume()
-            else:
-                token=self.consume()
-                raise StoneException("expected } at",self.getErrorLine())
-            if child[0]==self.BADMATCH:
-                return self.createNode("block")
-            return self.createNode("block",child)
+        with self.get_bracket("{","}") as isMatch:
+            if isMatch:
+                child=[self.statement()]
+                while True:
+                    if self.match(";"):
+                        self.consume()
+                    elif not self.check_EOL():
+                        break
+                    tmp=self.statement()
+                    if tmp==self.BADMATCH:
+                        break
+                    child.append(tmp)
+                if child[0]==self.BADMATCH:
+                    return self.createNode("block")
+                return self.createNode("block",child)
+            
     def statement(self):
         if self.match("if"):
             iftoken=self.consume()
@@ -268,21 +269,17 @@ class Parser:
             return self.createNode("factor",[self.token2leaf(token),self.primary()])
         return self.primary()
     def primary(self):
-        if self.match("("):
-            #did not put () into ASTtree
-            self.consume()
-            child=[self.expression()]
-            if self.match(")"):
-                self.consume()
-            else:
-                raise ParserException("bracket is not matched",self.peek(0))
-            while True:
-                pf=self.postfix()
-                if pf==self.BADMATCH:
-                    break
-                child.append(pf)
-            return self.createNode("primary",child)
-        elif self.match("lambda"):
+        with self.get_bracket("(",")") as isMatch:
+            if isMatch:
+                #did not put () into ASTtree
+                child=[self.expression()]
+                while True:
+                    pf=self.postfix()
+                    if pf==self.BADMATCH:
+                        break
+                    child.append(pf)
+                return self.createNode("primary",child)
+        if self.match("lambda"):
             lambda_token=self.consume()
             return self.lambda_fun(lambda_token)
         else:
@@ -300,13 +297,12 @@ class Parser:
     def lambda_fun(self,lambda_token):
 
         return self.createNode("primary",[self.param_list(),self.block()],lambda_token)
-    # 看这里 你的class的postfix parser还没有加上去
     def postfix(self):
         if self.match("."):
             dottoken=self.consume()
             name=self.getnextID()
             return self.createNode("dot",[name],dottoken)
-        if self.match("("):
+        elif self.match("("):
             self.consume()
             args=self.args()
             if self.match(")"):

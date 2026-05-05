@@ -46,7 +46,7 @@ class NativeFunctionManager:
                        "getTime":self.eval_getTime,
                        "input":self.eval_input,
                        "int":self.eval_int,
-
+                       "str":self.eval_str,
                        #"":self.eval_,
                        }
     def eval(self,native_fun):
@@ -57,6 +57,10 @@ class NativeFunctionManager:
         if funname not in self.fun_list:
             raise FunctionException("No such native function!"+funname)
         return self.fun_list[funname](args)
+    def eval_str(self,args):
+        if len(args)>1:
+            raise FunctionException("str function at most need 1 param")
+        return str(args[0])
     def eval_print(self,args):
         for i in args:
             print(i,end=" ")
