@@ -13,12 +13,13 @@ class Lexer:
             line+=1
     def get_words_from_code(self,code,line):
         regex = r"""
-                \s*(?://.* |
-                (?P<NUMBER>[0-9]+) |
-                (?P<STRING>"(?:\\"|\\\\|\\n|[^"])*") |
-                (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]*) |
-                (?P<OP>!=|==|<=|>=|&&|\|\||[^\w\s])
-                )
+                \s*(?:
+                    (?P<COMMENT>//.*) |
+                    (?P<NUMBER>[0-9]+) |
+                    (?P<STRING>"(?:\\"|\\\\|\\n|[^"])*") |
+                    (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]*) |
+                    (?P<OP>!=|==|<=|>=|&&|\|\||[^\w\s])
+                    )
                 """
         pattern=re.compile(regex,re.VERBOSE)
         for m in pattern.finditer(code):
@@ -37,6 +38,8 @@ class Lexer:
                 self.createToken("IDENTIFIER",word,line)
             elif token_type == "OP":
                 self.createToken("OP",word,line)
+            elif token_type == "COMMENT":
+                pass
             else:
                 raise StoneException("Failed to get the type from a word",line)
     def createToken(self,stonetype,value,line):

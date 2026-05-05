@@ -12,10 +12,12 @@ class Interpreter:
         self.now_env=self.global_env
         
 
-    def debug(self):
+    def debug(self,astTree):
         print(self.now_env.var)
         print(self.now_env)
-        time.sleep(0.1)
+        print(astTree)
+        time.sleep(0.5)
+        
 
     def eval(self,astTree):
         if astTree.getType()=="function":
@@ -34,7 +36,7 @@ class Interpreter:
         for i in astTree.child:
             last=self.eval(i)
 
-        #self.debug()
+        #self.debug(astTree)
         return last
     def set_native_function(self):
         self.nfm=NativeFunctionManager()
@@ -263,13 +265,11 @@ class Interpreter:
         fun=astTree.child[1]
         return Function("lambda",args,fun,self.now_env)
     def do_postfix(self,primary,postfix,env):
-        nowenv=self.now_env
-        self.now_env=env
         fun_name=primary
+        args=self.get_args(postfix)
+        
+        result=self.do_fun(fun_name,args)
 
-        result=self.do_fun(fun_name,self.get_args(postfix))
-
-        self.now_env=nowenv
         return result
     def do_fun(self,fun,args):
         if isinstance(fun,str):
@@ -278,10 +278,13 @@ class Interpreter:
         if isinstance(fun,NativeFunction):
             fun.setArgs(args)
             return self.nfm.eval(fun)
-        self.now_env=fun.runInit(args)
-        result=self.eval(fun.getASTtree())
-        self.now_env=fun.runUnwind()
-        
+
+        env=fun.runInit(args)
+        #print(fun.getName(),self.now_env.var)
+        result=self.eval_with_env(fun.getASTtree(),env)
+        fun.runUnwind()
+        #print(fun.getName(),self.now_env.var)
+
         if self.now_env==None:
             raise InterpreterException("Environment error!Now env is None")
         return result
