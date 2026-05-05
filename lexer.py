@@ -17,7 +17,7 @@ class Lexer:
                 (?P<NUMBER>[0-9]+) |
                 (?P<STRING>"(?:\\"|\\\\|\\n|[^"])*") |
                 (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]*) |
-                (?P<OP>==|<=|>=|&&|\|\||[^\w\s])
+                (?P<OP>!=|==|<=|>=|&&|\|\||[^\w\s])
                 )
                 """
         pattern=re.compile(regex,re.VERBOSE)
@@ -31,6 +31,7 @@ class Lexer:
                     raise StoneException("Failed to get number token",line)
                 self.createToken("NUMBER",value,line)
             elif token_type=="STRING":
+                word=word.replace('"','')
                 self.createToken("STRING",word,line)
             elif token_type == "IDENTIFIER":
                 self.createToken("IDENTIFIER",word,line)

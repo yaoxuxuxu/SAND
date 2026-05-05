@@ -60,7 +60,7 @@ class Parser:
             if self.match(right):
                 self.consume()
             else:
-                raise ParserException("expected '"+right+"' at ",self.getErrorLine())
+                raise ParserException("expected '"+right+"' at "+str(self.getErrorLine()),self.peek())
         else:
             yield False        
     def isOperator(self,token):
@@ -279,6 +279,9 @@ class Parser:
                         break
                     child.append(pf)
                 return self.createNode("primary",child)
+        with self.get_bracket("[","]") as isMatch:
+            if isMatch:
+                return self.createNode("primary_array",[self.elements()])
         if self.match("lambda"):
             lambda_token=self.consume()
             return self.lambda_fun(lambda_token)
@@ -294,24 +297,39 @@ class Parser:
                 return self.createNode("primary",child,token)
             else:
                 return self.BADMATCH
-    def lambda_fun(self,lambda_token):
+    def elements(self):
+        child=[]
+        while True:
+            exp=self.expression()
+            if exp==self.BADMATCH:
+                break
+            child.append(exp)
 
+            if self.match(","):
+                self.consume()
+            else:
+                break
+        return self.createNode("elements",child)
+
+    def lambda_fun(self,lambda_token):
         return self.createNode("primary",[self.param_list(),self.block()],lambda_token)
     def postfix(self):
         if self.match("."):
             dottoken=self.consume()
             name=self.getnextID()
             return self.createNode("dot",[name],dottoken)
-        elif self.match("("):
-            self.consume()
-            args=self.args()
-            if self.match(")"):
-                self.consume()
-            else:
-                raise ParserException("expected ')' at",self.peek())
-            if args==self.BADMATCH:
-                args=self.createNode("args",[])
-            return self.createNode("postfix",[args])
+        with self.get_bracket("(",")") as isMatch:
+            if isMatch:
+                args=self.args()
+                if args==self.BADMATCH:
+                    args=self.createNode("args",[])
+                return self.createNode("postfix",[args])
+        with self.get_bracket("[","]") as isMatch:
+            if isMatch:
+                exp=self.expression()
+                if exp==self.BADMATCH:
+                    raise ParserException("Array index should not be empty",self.peek())
+                return self.createNode("array",[exp])
         return self.BADMATCH
     def createNode(self,terminal:str="auto",child:list=[],token:Token=None)->ASTnode:
         if token:
