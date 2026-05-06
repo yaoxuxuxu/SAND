@@ -46,11 +46,11 @@ class ScoreBoard {
     }
 
     def average() {
-        sum() / 10
+        this.sum() / 10
     }
 }
 
 board = ScoreBoard.new
 print(board.max(), 95)
 print(board.sum(), 790)
-//print(board.average(), 79)
+print(board.average(), 79)
