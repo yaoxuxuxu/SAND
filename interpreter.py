@@ -214,9 +214,11 @@ class Interpreter:
                 cnt+=1
             return primary
         return self.eval(astTree.child[0])
-    def init_env_classinstance(self,obj):
+    def create_classinstance(self,obj):
         instance=ClassInstance(obj.getEnv())
         self.eval_with_env(obj.getAsttree(),instance.getEnv())
+        #this
+        instance.env.setValueForce("this",instance)
         return instance
     def array_check(self,num,vector):
         if not isinstance(vector,Vector):
@@ -240,13 +242,14 @@ class Interpreter:
     def do_dot(self,primary,postfix,env):
         varname=postfix.getChild(0)
         varname=self.getVarNameFromAsttree(varname)
+        
         obj=env.getValue(primary)
         #<obj>.<varname>
         #a.b.c.d
         if varname=="new":
             if not isinstance(obj,Class):
                 raise InterpreterException("Only class can create instance")
-            instance=self.init_env_classinstance(obj)
+            instance=self.create_classinstance(obj)
             return obj.getEnv(),instance
         else:
             if not isinstance(obj,ClassInstance):
