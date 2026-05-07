@@ -1,7 +1,7 @@
-from asttree import ASTfruit,ASTnode
+from asttree import ASTfruit,ASTnode,ASTvar
 from StoneException import InterpreterException
 from environment import Environment,TreeEnv
-from function import Function,NativeFunction,NativeFunctionManager
+from function import Function,NativeFunction,NativeFunctionManager,FunctionVarOptimizer
 from oop import Class,ClassInstance
 from vector import Vector
 import time
@@ -90,9 +90,11 @@ class Interpreter:
         for expr in elements.getChild():
             values.append(self.eval(expr))
         return Vector(values)
-
     def env_add_fun(self,name,args,astTree):
-        return self.now_env.setValue(name,Function(name,args,astTree,self.now_env)) 
+        fun=self.now_env.setValue(name,Function(name,args,astTree,self.now_env))
+        fun_optim=FunctionVarOptimizer()
+        fun_optim.optimize(fun)
+        return fun
     def do_state(self,astTree):
         if type(astTree) is ASTfruit:
             op=astTree.getValue()

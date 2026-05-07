@@ -1,12 +1,15 @@
 from environment import TreeEnv
 from StoneException import FunctionException
+from asttree import ASTnode,ASTfruit,ASTvar
 import time
 class Function:
     def __init__(self,funname="fun",args=[],astTree=None,env=None):
         self.funname=funname
         self.astTree=astTree
         self.args=args
+        self.varsize=0
         self.env=env
+
     def getName(self):
         return self.funname
     def copy(self):
@@ -83,7 +86,33 @@ class NativeFunctionManager:
             return tmp
         except:
             raise FunctionException("failed to turn to int")
-            
+
+class FunctionVarOptimizer:
+    def __init__(self):
+        self.index=0
+        self.depth=0
+    def isVar(self,astTree):
+        if astTree.getChildNum()==0 and astTree.getType()=="primary":
+            token=astTree.getToken()
+            if token!=None and token.getType()=="IDENTIFIER":
+                return True
+        return False
+    def replace_var(self,astTree):
+        newnode=ASTvar.transferFromASTfruit(astTree,self.depth,self.index)
+        self.index+=1
+        return newnode
+    def find_var(self,astTree):
+        #find child
+        child=astTree.getChild()
+        for i in range(len(child)):
+            if self.isVar(child[i]):
+                child[i]=self.replace_var(child[i])
+            self.find_var(child[i])
+    def optimize(self,fun:Function):
+        astTree=fun.getASTtree()
+        self.find_var(astTree)
+    
+
 #test
 if __name__ == "__main__":
     nfm=NativeFunctionManager()

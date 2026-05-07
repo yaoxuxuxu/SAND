@@ -30,8 +30,10 @@ class ASTnode:
     def printtree(self,nownode,depth=0):
         res=depth*" "*4
         res+="type : "+nownode.getType()
-        if type(nownode) == ASTfruit:
-            res+=" value : "+str(nownode.getValue())   
+        if nownode.getValue():
+            res+=" value : "+str(nownode.getValue())  
+        if isinstance(nownode,ASTvar):
+            res+=" scope : "+str(nownode.depth)+" index : "+str(nownode.index) 
         res+="\n"     
         for i in nownode.getChild():
             #debug
@@ -49,6 +51,20 @@ class ASTfruit(ASTnode):
         return self.token
     def getValue(self):
         return self.token.getValue()
+class ASTvar(ASTfruit):
+    def __init__(self,token):
+        super().__init__(token)
+        self.index=0
+        self.depth=0
+    @classmethod
+    def transferFromASTfruit(cls,astfruit,depth,index):
+        obj=cls(astfruit.getToken())
+        obj.exp_type=astfruit.getType()
+        obj.value=astfruit.value
+        obj.child=astfruit.getChild()
+        obj.index=index
+        obj.depth=depth
+        return obj
     
     
 
