@@ -1,9 +1,9 @@
-from environment import TreeEnv
+from environment import IndexEnv
 from StoneException import FunctionException
 from asttree import ASTnode,ASTfruit,ASTvar
 import time
 class Function:
-    def __init__(self,funname="fun",args=[],astTree=None,env=None):
+    def __init__(self,funname="fun",args=[],astTree=None,env=None,varSize:int=0):
         self.funname=funname
         self.astTree=astTree
         self.args=args
@@ -23,11 +23,11 @@ class Function:
     def setEnv(self,env):
         self.env=env
     def runInit(self,args):
-        self.env=TreeEnv(self.env)
+        self.env=IndexEnv(self.env)
         if len(self.args) != len(args):
             raise FunctionException("The number of the arguments is not correct")
         for i in range(len(args)):
-            self.env.setValueForce(self.args[i],args[i])
+            self.env.setValue(self.args[i],args[i])
         return self.env
     def runUnwind(self):
         self.env=self.env.getFatherEnv()
@@ -90,15 +90,26 @@ class NativeFunctionManager:
 class FunctionVarOptimizer:
     def __init__(self):
         self.index=0
-        self.depth=0
+        self.depth=1
+        self.local_var={}
     def isVar(self,astTree):
         if astTree.getChildNum()==0 and astTree.getType()=="primary":
             token=astTree.getToken()
             if token!=None and token.getType()=="IDENTIFIER":
                 return True
         return False
+    def getVar(self,varname):
+        if varname in self.local_var:
+           return self.local_var[varname]
+        else:
+            pos=(self.depth,self.index)
+            self.index+=1
+            self.local_var[varname]=pos
+            return pos
+             
     def replace_var(self,astTree):
-        newnode=ASTvar.transferFromASTfruit(astTree,self.depth,self.index)
+        depth,index=self.getVar(astTree.getValue())
+        newnode=ASTvar.transferFromASTfruit(astTree,depth,index)
         self.index+=1
         return newnode
     def find_var(self,astTree):

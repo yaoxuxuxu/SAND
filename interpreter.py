@@ -192,6 +192,8 @@ class Interpreter:
             if varname:
                 return self.now_env.getValue(varname)
             return astTree.getValue()
+        elif isinstance(astTree,ASTvar):
+            self.now_env.getValue
         elif astTree.getValue()=="lambda":
             return self.do_lambda(astTree)
         elif num_child>0:

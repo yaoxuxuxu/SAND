@@ -51,4 +51,18 @@ class TreeEnv(Environment):
             s+=str(cnt)
             env=env.getFatherEnv()
             cnt+=1
-        return s 
+        return s
+
+class IndexEnv():
+    def __init__(self,varSize,father):
+        self.local_var=[varSize * None]
+        self.varSize=varSize
+        self.father=father
+    def getFatherEnv(self):
+        return self.father
+    def getValue(self,depth,index):
+        return self.local_var[index]
+    def setValue(self,depth,index,value):
+        self.local_var[index]=value
+        return value
+        
