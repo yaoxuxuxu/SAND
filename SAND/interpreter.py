@@ -190,6 +190,10 @@ class Interpreter:
         if num_child==0 and type(astTree)==ASTfruit:
             varname=self.getVarNameFromAsttree(astTree)
             if varname:
+                #special feature for return argument
+                if varname == "return_all":
+                    return ClassInstance(self.now_env)
+                #special feature ends
                 return self.now_env.getValue(varname)
             return astTree.getValue()
         elif astTree.getValue()=="lambda":
