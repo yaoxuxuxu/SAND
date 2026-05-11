@@ -1,8 +1,12 @@
 from google import genai
 class ModelManager:
     def __init__(self):
-        self.client = genai.Client(api_key="AIzaSyD0EFhsDN1Y4Yf19cYEZVH8BFDUGoJUuck")
+        self.client = genai.Client(api_key=self.readApiKey())
         self.chat=self.client.chats.create(model="gemini-2.5-flash",config=self.config())
+    def readApiKey(self):
+        with open("./CodeGen/apikey","r+") as fp:
+            api=fp.read()
+        return api
     def config(self):
         with open("./CodeGen/prompt_config.txt","r+") as fp:
             config_prompt=fp.read()

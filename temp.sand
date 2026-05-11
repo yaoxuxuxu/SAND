@@ -1,8 +1,32 @@
-def fun(){
-    name="mark"
-    type="dog"
-    color="black"
-    return_all
+t0 = getTime()
+
+def fib(n) {
+    if n == 0 {
+        0
+    } else {
+        if n == 1 {
+            1
+        } else {
+            a = 0
+            b = 1
+            i = 2
+            while i <= n {
+                temp = b
+                b = a + b
+                a = temp
+                i = i + 1
+            }
+            b
+        }
+    }
 }
-a=fun()
-print(a.type)
+
+raw_input = input()
+num_n = int(raw_input)
+
+result = fib(num_n)
+
+print("fib(", num_n, ") =", result)
+
+t1 = getTime()
+print("Time(ms):", t1 - t0)
