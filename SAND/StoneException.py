@@ -1,4 +1,4 @@
-from Token import Token
+from .Token import Token
 class StoneException(Exception):   
     def __init__(self, message, line=None):
         super().__init__(message)

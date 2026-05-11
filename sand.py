@@ -1,7 +1,8 @@
 import os
-from parser import Parser
-from interpreter import Interpreter
+from SAND.parser import Parser
+from SAND.interpreter import Interpreter
 import argparse
+from CodeGen.modelManager import ModelManager
 def read_file(dir):
     try:
         with open(dir,"r+") as fp:
@@ -19,6 +20,7 @@ def main():
     console_parser.add_argument("file")
     console_parser.add_argument("--tokenize", action="store_true")
     console_parser.add_argument("--asttree", action="store_true")
+    console_parser.add_argument("--aifix", action="store_true")
     console_parser.add_argument("--return_all", action="store_true",help="Debug return each value of all the statement.")
     args=console_parser.parse_args()
     
@@ -27,9 +29,14 @@ def main():
     code=read_file(dir)
     if code==-1:
         return
+    if args.aifix:
+        mm=ModelManager()
+        code=mm.fix_code(code)
+        with open("./temp.sand", "w+") as fp:
+            fp.write(code)
+
     parser=Parser(code)
     itpt=Interpreter()
-
     if args.tokenize:
         tokens=parser.lexer.tokens
         for token in tokens:

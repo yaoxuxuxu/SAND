@@ -1,5 +1,5 @@
-from StoneException import StoneException
-from asttree import ASTnode
+from .StoneException import StoneException
+from .asttree import ASTnode
 class Environment:
     def __init__(self):
         self.var={}

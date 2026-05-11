@@ -1,11 +1,9 @@
-i=0
-a=[0,0,0]
-while i<3{
-    a[i]=i
-    i=i+1
+def fib{
+    calculate number of fib(n)
 }
-i=0
-while i<3{
-    print(a[i])
-    i=i+1
-}
+
+input n
+
+do fib n
+
+remember to print the time used

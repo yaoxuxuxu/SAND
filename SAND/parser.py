@@ -1,7 +1,7 @@
-from Token import Token
-from lexer import Lexer
-from asttree import ASTnode,ASTfruit
-from StoneException import StoneException,ParserException
+from .Token import Token
+from .lexer import Lexer
+from .asttree import ASTnode,ASTfruit
+from .StoneException import StoneException,ParserException
 from contextlib import contextmanager
 #all of the [] part is not done
 class Parser:

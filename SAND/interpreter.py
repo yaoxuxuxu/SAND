@@ -1,9 +1,9 @@
-from asttree import ASTfruit,ASTnode
-from StoneException import InterpreterException
-from environment import Environment,TreeEnv
-from function import Function,NativeFunction,NativeFunctionManager
-from oop import Class,ClassInstance
-from vector import Vector
+from .asttree import ASTfruit,ASTnode
+from .StoneException import InterpreterException
+from .environment import Environment,TreeEnv
+from .function import Function,NativeFunction,NativeFunctionManager
+from .oop import Class,ClassInstance
+from .vector import Vector
 import time
 class Interpreter:
     def __init__(self):
@@ -15,7 +15,7 @@ class Interpreter:
     def debug(self,astTree):
         print(self.now_env.var)
         print(self.now_env)
-        print(astTree)
+        #print(astTree)
         time.sleep(0.5)
         
 
@@ -137,6 +137,8 @@ class Interpreter:
                 return self.eval(left)>=self.eval(right)
             if op=="<=":
                 return self.eval(left)<=self.eval(right)
+            if op=="==":
+                return self.eval(left)==self.eval(right)
             if op=="/":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)

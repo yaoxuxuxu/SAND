@@ -1,6 +1,6 @@
 import re
-from Token import Token,EOF
-from StoneException import StoneException
+from .Token import Token,EOF
+from .StoneException import StoneException
 class Lexer:
     def __init__(self,code_text):
         self.tokens=[]

@@ -1,5 +1,5 @@
-from Token import Token
-from StoneException import StoneException
+from .Token import Token
+from .StoneException import StoneException
 
 class ASTnode:
     def __init__(self):

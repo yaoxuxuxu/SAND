@@ -1,5 +1,5 @@
-from environment import TreeEnv
-from StoneException import FunctionException
+from .environment import TreeEnv
+from .StoneException import FunctionException
 import time
 class Function:
     def __init__(self,funname="fun",args=[],astTree=None,env=None):

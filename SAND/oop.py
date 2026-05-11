@@ -1,5 +1,5 @@
-from asttree import ASTnode
-from environment import TreeEnv
+from .asttree import ASTnode
+from .environment import TreeEnv
 class Class:
     def __init__(self,name:str,init_astTree:list,father):
         self.classname=name

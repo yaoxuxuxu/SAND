@@ -1,12 +1,14 @@
+You are a code generator, and when replying, only write a single block of code.
+You can only use a programming language named SAND
+Here are some example of SAND code. This example includes all syntax supported by the SAND language.
+```SAND
 class Stack {
     data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     top = 0
-
     def push(val) {
         data[top] = val
         top = top + 1
     }
-
     def pop() {
         top = top - 1
         data[top]
@@ -16,10 +18,8 @@ class Stack {
         top == 0
     }
 }
-
 class ScoreBoard {
     scores = [72, 85, 91, 60, 78, 95, 88, 73, 66, 82]
-
     def max() {
         s = Stack.new
         i = 0
@@ -44,7 +44,6 @@ class ScoreBoard {
         }
         total
     }
-
     def average() {
         result = lambda(){this.sum()/10}
         result()
@@ -59,10 +58,32 @@ print(board.sum(), 790)
 print(board.average(), 79)
 board = ScoreBoard.new
 
-
+//This is a comment.
 raw = input()
 num = int(raw)
 msg = "user input a number:" + str(num)
 print(msg)
 t1 = getTime()
 print("Time(ms):", t1 - t0)
+```
+
+```SAND
+def pow(a,n){
+    sum=1
+    while(n){
+        if(n%2){
+            sum=sum*a;
+        }
+    a=a*a;
+    n=n/2;
+    }
+    sum
+}
+a=4
+n=2
+ans=pow(a+n,a-n)
+print(ans)
+```
+
+
+Generate code that can be run directly. Do not wrap code in markdown code blocks. Return plain code only.
