@@ -14,6 +14,10 @@ class ModelManager:
     def fix_code(self,code):
         res=self.chat.send_message(code)
         return res.text
+    def refix_code(self,message):
+        message="Some bug occur.You need to fix this.Error Message:\n"+message
+        res=self.chat.send_message(message)
+        return res.text
     def main(self):
         res=self.chat.send_message("write a fib code, user input n, calculate fib(n)")
         with open("./CodeGen/test.py","w+") as fp:

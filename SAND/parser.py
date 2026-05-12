@@ -74,9 +74,11 @@ class Parser:
         return self.peek(0)==Token.EOF
     def check_EOL(self):
         lasttoken=self.peek(-1)
+        if lasttoken==None:
+            return False
         nowtoken=self.peek(0)
         if lasttoken == Token.EOF or nowtoken == Token.EOF:
-            return 0
+            return False
         return lasttoken.getLineNumber()!=nowtoken.getLineNumber()
     def getErrorLine(self):
         token=self.peek(0)

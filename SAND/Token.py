@@ -17,19 +17,3 @@ class Token:
 EOF=Token()
 EOF.value="\n"
 Token.EOF=EOF
-
-"""class NumberToken(Token):
-    def __init__(self, linenumber=-1,value=0):
-        super().__init__(linenumber)
-        self.stonetype="NUMBER"
-        self.value=value
-class StringToken(Token):
-    def __init__(self, linenumber=-1,value=""):
-        super().__init__(linenumber)
-        self.stonetype="STRING"
-        self.value=value
-class IDToken(Token):
-    def __init__(self, linenumber=-1,value=""):
-        super().__init__(linenumber)
-        self.stonetype="IDENTIFIER"
-        self.value=value"""

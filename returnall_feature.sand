@@ -1,0 +1,8 @@
+def fun(){
+    name="bob"
+    age="13"
+
+    return_all
+}
+a=fun()
+print(a.age)
