@@ -6,7 +6,6 @@ from CodeGen.modelManager import ModelManager
 class SandRunner:
     def __init__(self):
         self.getArgsFromConsole()
-        self.itpt=Interpreter()
     def getArgsFromConsole(self):
         console_parser=argparse.ArgumentParser()
         console_parser.add_argument("file")
@@ -41,6 +40,8 @@ class SandRunner:
             print(i)
         return
     def run(self):
+        dir=os.path.abspath(self.args.file)
+        self.itpt=Interpreter(os.path.dirname(dir))
         for i in self.parser.parse():
             result=self.itpt.eval(i)
             if self.args.return_all:

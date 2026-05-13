@@ -6,9 +6,3 @@ def fib(n){
         fib(n-1)+fib(n-2)
     }
 }
-
-a=input()
-a=int(a)
-t=getTime()
-print(fib(a))
-print("Used Time:",getTime()-t)

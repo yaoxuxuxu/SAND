@@ -1,2 +1,2 @@
-import time
-from time import Date,Timer
+from fib import ALL
+print(fib(25))

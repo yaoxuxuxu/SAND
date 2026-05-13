@@ -4,12 +4,15 @@ from .environment import Environment,TreeEnv
 from .function import Function,NativeFunction,NativeFunctionManager
 from .oop import Class,ClassInstance
 from .vector import Vector
+from .parser import Parser
+import os
 import time
 class Interpreter:
-    def __init__(self):
+    def __init__(self,dir=""):
         self.global_env=Environment()
         self.set_native_function()
         self.now_env=self.global_env
+        self.dir=dir
         
 
     def debug(self,astTree):
@@ -20,6 +23,8 @@ class Interpreter:
         
 
     def eval(self,astTree):
+        if astTree.getType()=="import_lib":
+            return self.import_lib(astTree)
         if astTree.getType()=="function":
             return self.create_fun(astTree)
         if astTree.getType()=="class":
@@ -42,6 +47,42 @@ class Interpreter:
         self.nfm=NativeFunctionManager()
         for i in self.nfm.fun_list:
             self.global_env.setValue(i,NativeFunction(i,[]))
+    def getLibEnvFromDir(self,dir):
+        with open(dir,"r+") as fp:
+            code=fp.read()
+        parser=Parser(code)
+        itpt=Interpreter(os.path.dirname(dir))
+        for program in parser.parse():
+            itpt.eval(program)
+        return itpt.global_env
+    def eval_import(self,astTree):
+        libs=astTree.getChild()
+        for lib in libs:
+            name=self.getVarNameFromAsttree(lib)
+            libdir = os.path.join(self.dir,name+".sand")
+            env=self.getLibEnvFromDir(libdir)
+            self.now_env.setValueForce(name,ClassInstance(env))
+    def eval_from(self,astTree):
+        name=self.getVarNameFromAsttree(astTree.getChild(0))
+        objects=astTree.getChild(1).getChild()
+        dir=os.path.join(self.dir,name+".sand")
+        env=self.getLibEnvFromDir(dir)
+        if len(objects)==1 and objects[0].getValue()=="ALL":
+            for varname,value in env.var.items():
+                self.now_env.setValueForce(varname,value)
+            return
+        for object in objects:
+            name=self.getVarNameFromAsttree(object)
+            self.now_env.setValueForce(name,env.getValue(name))
+        return
+    def import_lib(self,astTree):
+        astTree=astTree.getChild(0)
+        if astTree.getType()=="from":
+            self.eval_from(astTree)
+        elif astTree.getType()=="import":
+            self.eval_import(astTree)
+        else:
+            raise InterpreterException("unable to eval import_lib statement, Parser has sth. wrong")
     def create_class(self,astTree):
         child=astTree.getChild()
         if len(child)==2:

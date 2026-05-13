@@ -6,6 +6,8 @@ class Environment:
     def setValue(self,name,value):
         self.var[name]=value
         return value
+    def setValueForce(self,name,value):
+        return self.setValue(name,value)
     def getValue(self,name):
         if name in self.var:
             return self.var[name]
