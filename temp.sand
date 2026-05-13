@@ -1,33 +1,31 @@
-class FibCalculator {
-    def fib(n) {
-        if(n == 0) { 0 }
-        else {
-            if(n == 1) { 1 }
-            else {
-                a = 0
-                b = 1
-                i = 2
-                while(i <= n) {
-                    temp = b
-                    b = a + b
-                    a = temp
-                    i = i + 1
-                }
-                b
+t0 = getTime()
+
+def fib(n) {
+    if n == 0 {
+        0
+    } else {
+        if n == 1 {
+            1
+        } else {
+            a = 0
+            b = 1
+            i = 2
+            while i <= n {
+                temp = b
+                b = a + b
+                a = temp
+                i = i + 1
             }
+            b
         }
     }
 }
 
-t0 = getTime()
+raw = input()
+n = int(raw)
 
-raw_input = input()
-num = int(raw_input)
-
-calculator = FibCalculator.new
-result = calculator.fib(num)
-
-print("Fibonacci(", num, ") =", result)
+result = fib(n)
+print("Fib(", n, ") =", result)
 
 t1 = getTime()
 print("Time(ms):", t1 - t0)

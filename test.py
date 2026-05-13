@@ -1,3 +1,3 @@
-a="asd"
-a.replace('a',"")
-print(a)
+#statement = "import" IDentifier
+import a
+#statement

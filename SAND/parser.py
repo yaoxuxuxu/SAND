@@ -88,6 +88,8 @@ class Parser:
     def program(self):
         pg=self.defclass()
         if pg==self.BADMATCH:
+            pg=self.import_lib()
+        if pg==self.BADMATCH:
             pg=self.fun()
         if pg==self.BADMATCH:
             pg=self.statement()
@@ -97,6 +99,36 @@ class Parser:
         if self.match(";"):
             self.consume()
         return ASTtree
+    def import_lib(self):
+        # import_lib = from_state or import_state
+        # from_state = 'from' ID import_state
+        # import_state = 'import' ID {',' ID}
+        child = self.from_state()
+        if child == self.BADMATCH:
+            child = self.import_state()
+        if child == self.BADMATCH:
+            return self.BADMATCH
+        return self.createNode("import_lib",[child])
+    def import_state(self):
+        if self.match("import"):
+            importtoken=self.consume()
+            child=[self.getnextID()]
+            if child[0] == self.BADMATCH:
+                raise ParserException("empty import is not allowed",importtoken)
+            while True:
+                if self.match(","):
+                    self.consume()
+                else:
+                    break
+                child.append(self.getnextID())
+            return self.createNode("import",child,importtoken)
+        return self.BADMATCH
+    def from_state(self):
+        if self.match("from"):
+            fromtoken=self.consume()
+            libname=self.getnextID()
+            return self.createNode("from",[libname,self.import_state()],fromtoken)
+        return self.BADMATCH
     def defclass(self):
         if self.match("class"):
             classtoken=self.consume()
@@ -350,6 +382,8 @@ class Parser:
         token=self.peek()
         if token.getType()=="IDENTIFIER":
             return self.createNode("ID",[],self.consume())
+        else:
+            raise ParserException("Failed to get a IDENTIFIER",token)
         return self.BADMATCH
             
 if __name__ == "__main__":

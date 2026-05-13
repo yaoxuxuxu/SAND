@@ -40,7 +40,7 @@ class NativeFunction:
     def setArgs(self,args):
         self.args=args
         
-class NativeFunctionManager:
+class NativeFunctionManager:    
     def __init__(self):
         self.fun_list={"print":self.eval_print,
                        "getTime":self.eval_getTime,

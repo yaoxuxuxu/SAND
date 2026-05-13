@@ -1,9 +1,2 @@
-def fib{
-    calculate number of fib(n)
-}
-
-input n
-
-do fib n
-
-remember to print the time used
+import time
+from time import Date,Timer
