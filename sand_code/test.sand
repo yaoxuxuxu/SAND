@@ -1,2 +1,0 @@
-from fib import ALL
-print(fib(25))
