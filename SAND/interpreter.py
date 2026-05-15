@@ -5,12 +5,13 @@ from .function import Function,NativeFunction,NativeFunctionManager
 from .oop import Class,ClassInstance
 from .vector import Vector
 from .parser import Parser
-import os
-import time
+from .library import BuiltInLibraryManager,BuiltInLibrary
+import os,time,types
 class Interpreter:
     def __init__(self,dir=""):
         self.global_env=Environment()
         self.set_native_function()
+        self.bilm=BuiltInLibraryManager()
         self.now_env=self.global_env
         self.dir=dir
         
@@ -48,25 +49,38 @@ class Interpreter:
         for i in self.nfm.fun_list:
             self.global_env.setValue(i,NativeFunction(i,[]))
     def getLibEnvFromDir(self,dir):
-        with open(dir,"r+") as fp:
-            code=fp.read()
+        try:
+            with open(dir,"r+") as fp:
+                code=fp.read()
+        except:
+            return None
         parser=Parser(code)
         itpt=Interpreter(os.path.dirname(dir))
         for program in parser.parse():
             itpt.eval(program)
         return itpt.global_env
+    def try_import(self,astTree):
+        name=self.getVarNameFromAsttree(astTree)
+        dir=os.path.join(self.dir,name+".sand")
+        env=self.getLibEnvFromDir(dir)
+        if env==None:
+            if self.bilm.isBuiltInLibrary(name):
+                env=self.bilm.importLib(name)
+            else:
+                raise InterpreterException("Can't Find Library "+name)
+        return name,env
     def eval_import(self,astTree):
         libs=astTree.getChild()
         for lib in libs:
-            name=self.getVarNameFromAsttree(lib)
-            libdir = os.path.join(self.dir,name+".sand")
-            env=self.getLibEnvFromDir(libdir)
-            self.now_env.setValueForce(name,ClassInstance(env))
+            name,env=self.try_import(lib)
+            if isinstance(env,BuiltInLibrary):
+                self.now_env.setValueForce(name,env)
+            else:
+                self.now_env.setValueForce(name,ClassInstance(env))
+
     def eval_from(self,astTree):
-        name=self.getVarNameFromAsttree(astTree.getChild(0))
+        name,env=self.try_import(astTree.getChild(0))
         objects=astTree.getChild(1).getChild()
-        dir=os.path.join(self.dir,name+".sand")
-        env=self.getLibEnvFromDir(dir)
         if len(objects)==1 and objects[0].getValue()=="ALL":
             for varname,value in env.var.items():
                 self.now_env.setValueForce(varname,value)
@@ -292,6 +306,8 @@ class Interpreter:
         
         obj=env.getValue(primary)
         #<obj>.<varname>
+        if isinstance(obj,BuiltInLibrary):
+            return env,obj.importFunByName(varname)
         #a.b.c.d
         if varname=="new":
             if not isinstance(obj,Class):
@@ -315,11 +331,11 @@ class Interpreter:
         fun=astTree.child[1]
         return Function("lambda",args,fun,self.now_env)
     def do_postfix(self,primary,postfix,env):
-        fun_name=primary
         args=self.get_args(postfix)
-        
+        if isinstance(primary,types.MethodType):
+            return primary(args)
+        fun_name=primary
         result=self.do_fun(fun_name,args)
-
         return result
     def do_fun(self,fun,args):
         if isinstance(fun,str):
@@ -328,7 +344,6 @@ class Interpreter:
         if isinstance(fun,NativeFunction):
             fun.setArgs(args)
             return self.nfm.eval(fun)
-
         env=fun.runInit(args)
         #print(fun.getName(),self.now_env.var)
         result=self.eval_with_env(fun.getASTtree(),env)
