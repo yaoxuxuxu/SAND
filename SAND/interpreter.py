@@ -320,6 +320,8 @@ class Interpreter:
         #<obj>.<varname>
         if isinstance(obj,BuiltInLibrary):
             return env,obj.importFunByName(varname)
+        if isinstance(obj,Vector):
+            return env,obj.fetch_method(varname)
         #a.b.c.d
         if varname=="new":
             if not isinstance(obj,Class):
@@ -353,7 +355,7 @@ class Interpreter:
         if isinstance(fun,NativeFunction):
             fun.setArgs(args)
             return self.nfm.eval(fun)
-        if isinstance(fun, (types.MethodType)):
+        if isinstance(fun, (types.MethodType,types.FunctionType)):
             return fun(args)
         env=fun.runInit(args)
         #print(fun.getName(),self.now_env.var)
