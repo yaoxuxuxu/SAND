@@ -1,29 +1,59 @@
 from google import genai
+from google.genai import types
+import time
 class ModelManager:
     def __init__(self):
         self.client = genai.Client(api_key=self.readApiKey())
-        self.chat=self.client.chats.create(model="gemini-2.5-flash",config=self.config())
+        #self.show_available_models()
+        self.useful_models=["gemini-2.5-flash","gemini-3-flash-preview"]
+        self.history=[]
+        #self.chat=self.client.chats.create(model="gemini-2.5-flash",config=self.config())
+    def show_available_models(self):
+        models = self.client.models.list()
+        for model in models:
+            print(model.name)
+        return
     def readApiKey(self):
         with open("./CodeGen/apikey","r+") as fp:
             api=fp.read()
         return api
-    def config(self):
-        with open("./CodeGen/prompt_config.txt","r+") as fp:
-            config_prompt=fp.read()
+    def config(self,config_prompt):
         return {"system_instruction": config_prompt}
-    def fix_code(self,code):
-        res=self.chat.send_message(code)
+    def user(self,message):
+        message=types.UserContent(
+        parts=[types.Part(text=message)]
+        )
+        return message
+    def assistant(self,message):
+        message=types.Content(
+        parts=[types.Part(text=message)]
+        )
+        return message
+    def user_input(self):
+        res=input()
+        self.history.append(self.user(res))
+        return
+    def send(self,config_prompt):
+        cnt=0
+        while True:
+            try:
+                res=self.client.models.generate_content(model=self.useful_models[cnt],
+                                                config=self.config(config_prompt),
+                                                contents=self.history)
+                break
+            except Exception as e:
+                print(f"Error occurred: {e}")
+                time.sleep(5)  # Wait for 1 second before retrying
+                cnt=(cnt+1)%len(self.useful_models)
+        self.history.append(self.assistant(res.text))
         return res.text
-    def refix_code(self,message):
-        message="Some bug occur.You need to fix this.Error Message:\n"+message
-        res=self.chat.send_message(message)
-        return res.text
-    def main(self):
-        res=self.chat.send_message("write a fib code, user input n, calculate fib(n)")
-        with open("./CodeGen/test.py","w+") as fp:
-            fp.write(res.text)
-
 if __name__ == "__main__":
     mm=ModelManager()
-    mm.main()
+    while True:
+        s=input()
+        if s=="exit":
+            break
+        res=mm.send(s)
+        print(res)
+    print(mm.history)
     

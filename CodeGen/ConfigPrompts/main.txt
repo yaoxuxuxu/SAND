@@ -1,0 +1,5 @@
+## Global Rules
+You are now working on a project divided into multiple stages. Each stage has its own task and objective.
+When you believe the current stage is complete and ready to move forward, or when the user confirms that the current solution is acceptable, respond with:
+"!!!next stage!!!"
+During implementation, you must use only a programming language called SAND. The syntax and language specification will be provided when needed.
