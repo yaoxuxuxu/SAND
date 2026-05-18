@@ -81,6 +81,18 @@ class Interpreter:
     def eval_from(self,astTree):
         name,env=self.try_import(astTree.getChild(0))
         objects=astTree.getChild(1).getChild()
+        #built in library support
+        if isinstance(env,BuiltInLibrary):
+            funs=env.returnAllMethod()
+            if len(objects)==1 and objects[0].getValue()=="ALL":
+                for varname,value in funs:
+                    self.now_env.setValueForce(varname,value)
+                return
+            for object in objects:
+                name=self.getVarNameFromAsttree(object)
+                self.now_env.setValueForce(name,env.importFunByName(name))  
+            return
+        #normal library support
         if len(objects)==1 and objects[0].getValue()=="ALL":
             for varname,value in env.var.items():
                 self.now_env.setValueForce(varname,value)
@@ -332,18 +344,17 @@ class Interpreter:
         return Function("lambda",args,fun,self.now_env)
     def do_postfix(self,primary,postfix,env):
         args=self.get_args(postfix)
-        if isinstance(primary,types.MethodType):
-            return primary(args)
         fun_name=primary
         result=self.do_fun(fun_name,args)
         return result
     def do_fun(self,fun,args):
         if isinstance(fun,str):
             fun:Function=self.now_env.getValue(fun)
-        
         if isinstance(fun,NativeFunction):
             fun.setArgs(args)
             return self.nfm.eval(fun)
+        if isinstance(fun, (types.MethodType)):
+            return fun(args)
         env=fun.runInit(args)
         #print(fun.getName(),self.now_env.var)
         result=self.eval_with_env(fun.getASTtree(),env)

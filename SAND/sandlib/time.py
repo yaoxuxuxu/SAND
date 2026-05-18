@@ -1,6 +1,9 @@
 import time
-class Time:
+from ..library import StandardLibrary
+class Time(StandardLibrary):
     def __init__(self):
-        pass
+        super().__init__()
+        
     def time(self,args):
+    
         return time.time()

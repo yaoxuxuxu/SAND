@@ -120,13 +120,18 @@ class Parser:
                     self.consume()
                 else:
                     break
-                child.append(self.getnextID())
+                nextchild=self.getnextID()
+                if nextchild == self.BADMATCH:
+                    break
+                child.append(nextchild)
             return self.createNode("import",child,importtoken)
         return self.BADMATCH
     def from_state(self):
         if self.match("from"):
             fromtoken=self.consume()
             libname=self.getnextID()
+            if libname == self.BADMATCH:
+                raise ParserException("empty import is not allowed",fromtoken)
             return self.createNode("from",[libname,self.import_state()],fromtoken)
         return self.BADMATCH
     def defclass(self):
@@ -383,8 +388,7 @@ class Parser:
         if token.getType()=="IDENTIFIER":
             return self.createNode("ID",[],self.consume())
         else:
-            raise ParserException("Failed to get a IDENTIFIER",token)
-        return self.BADMATCH
+            return self.BADMATCH
             
 if __name__ == "__main__":
     dir="./sand_code/ez_plus.sand"

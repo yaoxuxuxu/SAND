@@ -19,4 +19,7 @@ class FunctionException(StoneException):
     def __init__(self,message=""):
         message+="\nFunction Error\n"+message
         super().__init__(message)
-    
+class LibException(StoneException):
+    def __init__(self, des,message, line=None):
+        message=des+"\n"+message
+        super().__init__(message)
