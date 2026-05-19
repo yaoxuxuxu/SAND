@@ -1,8 +1,0 @@
-a=[]
-i=0
-while(i<10){
-    a.append(i)
-    i=i+1
-}
-print(a.length())
-print(a.pop())

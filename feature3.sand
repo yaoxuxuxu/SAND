@@ -1,6 +1,0 @@
-from File import read,write
-res=read("./test.txt")
-print(res)
-res=res+"!!!OK!!!"
-print(res)
-write("./test.txt",res)

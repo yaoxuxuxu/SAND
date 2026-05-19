@@ -33,6 +33,7 @@ class Lexer:
                 self.createToken("NUMBER",value,line)
             elif token_type=="STRING":
                 word=word.replace('"','')
+                word=self.strEscape(word)
                 self.createToken("STRING",word,line)
             elif token_type == "IDENTIFIER":
                 self.createToken("IDENTIFIER",word,line)
@@ -50,6 +51,10 @@ class Lexer:
         return
     def getTokens(self):
         return self.tokens
+    def strEscape(self,word):
+        word=word.replace(r'\\','\\')
+        word=word.replace(r'\n','\n')
+        return word
     def read(self):
         if len(self.tokens)==0:
             return Token.EOF
