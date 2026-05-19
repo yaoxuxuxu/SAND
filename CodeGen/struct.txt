@@ -1,0 +1,14 @@
+
+WorkFlow:
+    main prompt()
+    Q&A()
+    files=file arrange()
+
+    for file in files:
+        generate outline(file)
+        generate code()
+        debug()
+    
+    final_debug()
+        
+        

@@ -3,6 +3,11 @@ class Stage:
     def __init__(self,name,model):
         self.model=model
         self.name=name
+
+        #record message index for this stage
+        self.start_context_index=self.model.len(self.model.history)
+        self.end_context_index=self.start_context_index
+
         self.running_dir=os.path.dirname(os.path.abspath(__file__))
         self.config_prompt=self.config()
     def config(self):
@@ -24,5 +29,5 @@ class Stage:
                 break
             print(res)
             self.model.user_input()
-        
+        self.go_next_stage()
         

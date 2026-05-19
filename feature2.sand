@@ -1,0 +1,6 @@
+import File
+res=File.read("./test.txt")
+print(res)
+res=res+"!!!OK!!!"
+print(res)
+File.write("./test.txt",res)
