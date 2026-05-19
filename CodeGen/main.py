@@ -6,5 +6,6 @@ def main():
     Stage("question",mm).run(3)
     Stage("file_arrange",mm).run()
     
+    Stage("",mm).run()
 if __name__ == "__main__":
     main()
