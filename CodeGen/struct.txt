@@ -1,7 +1,19 @@
 
+"do fib function"
+
+context
+
+
+def generate code("asdasd"){
+    
+}
+
 WorkFlow:
     main prompt()
-    Q&A()
+
+    if len(prmpt)<3:
+        context=Q&A()
+
     files=file arrange()
 
     for file in files:

@@ -5,7 +5,7 @@ class ModelManager:
     def __init__(self):
         self.client = genai.Client(api_key=self.readApiKey())
         #self.show_available_models()
-        self.useful_models=["gemini-2.5-flash","gemini-3-flash-preview"]
+        self.useful_models=["gemini-2.5-flash","gemini-3-flash-preview","gemma-4-26b-a4b-it","gemma-4-31b-it"]
         self.history=[]
         #self.chat=self.client.chats.create(model="gemini-2.5-flash",config=self.config())
     def show_available_models(self):
@@ -29,6 +29,19 @@ class ModelManager:
         parts=[types.Part(text=message)]
         )
         return message
+    def getLastSolution(self,returnText=True):
+        cnt=len(self.history)-1
+        while cnt>=0:
+            if self.history[cnt].parts[0].text == "!!!next stage!!!":
+                cnt-=1
+                continue
+            if type(self.history[cnt])==types.Content:
+                if returnText:
+                    return self.history[cnt].parts[0].text
+                return self.history[cnt]
+            cnt-=1
+        return None
+    
     def user_input(self):
         res=input()
         self.history.append(self.user(res))
