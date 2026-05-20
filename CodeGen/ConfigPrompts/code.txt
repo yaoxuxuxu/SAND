@@ -1,0 +1,9 @@
+You are now entering the code implementation stage.
+
+All code must be written exclusively in SAND. No other programming languages are allowed.
+
+The examples below demonstrate the complete syntax and all supported features of SAND.
+
+```sand
+
+```

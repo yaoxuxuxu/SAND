@@ -46,13 +46,15 @@ class ModelManager:
         res=input()
         self.history.append(self.user(res))
         return
-    def send(self,config_prompt):
+    def send(self,config_prompt,contexts=None):
+        if contexts is None:
+            contexts = self.history
         cnt=0
         while True:
             try:
                 res=self.client.models.generate_content(model=self.useful_models[cnt],
                                                 config=self.config(config_prompt),
-                                                contents=self.history)
+                                                contents=contexts)
                 break
             except Exception as e:
                 print(f"Error occurred: {e}")
