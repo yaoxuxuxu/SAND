@@ -43,7 +43,6 @@ class NativeFunction:
 class NativeFunctionManager:    
     def __init__(self):
         self.fun_list={"print":self.eval_print,
-                       "getTime":self.eval_getTime,
                        "input":self.eval_input,
                        "int":self.eval_int,
                        "str":self.eval_str,
@@ -65,8 +64,6 @@ class NativeFunctionManager:
         for i in args:
             print(i,end=" ")
         print("")
-    def eval_getTime(self,args):
-        return time.time()
     def eval_input(self,args):
         if len(args)>1:
             raise FunctionException("input function at most need 1 param")

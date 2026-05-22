@@ -1,3 +1,4 @@
+import Time
 class Stack {
     data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     top = 0
@@ -50,7 +51,7 @@ class ScoreBoard {
         result()
     }
 }
-t0 = getTime()
+t0 = Time.time()
 
 board = ScoreBoard.new
 
@@ -59,10 +60,5 @@ print(board.sum(), 790)
 print(board.average(), 79)
 board = ScoreBoard.new
 
-
-raw = input()
-num = int(raw)
-msg = "user input a number:" + str(num)
-print(msg)
-t1 = getTime()
+t1 = Time.time()
 print("Time(ms):", t1 - t0)

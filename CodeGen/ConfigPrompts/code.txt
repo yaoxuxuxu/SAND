@@ -5,5 +5,32 @@ All code must be written exclusively in SAND. No other programming languages are
 The examples below demonstrate the complete syntax and all supported features of SAND.
 
 ```sand
+//if-else
+n=10
 
+i=0
+odd=0
+even=0
+while(i<n){
+    if i%2==0{
+        even=even+i
+    }
+    else{
+        odd=odd+i
+    }
+    i=i+1
+}
+print(odd)
+print(even)
+```
+
+```sand
+```
+```sand
+```
+```sand
+```
+```sand
+```
+```sand
 ```
