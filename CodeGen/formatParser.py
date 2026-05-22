@@ -3,8 +3,11 @@ class Parser:
     def __init__(self):
         self.modes={"json":self.parse_json}
     def parse(self,mode,text):
-        if mode not in self.modes:
+        print(mode,text)
+        if mode in self.modes:
             return self.modes[mode](text)
+        else:
+            return self.parse_default(mode,text)
     @staticmethod
     def parse_default(mode,text):
         begin_str="```"+mode

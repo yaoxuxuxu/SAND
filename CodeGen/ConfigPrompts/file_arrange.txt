@@ -5,15 +5,20 @@ You should specify which files need to be created and briefly describe the purpo
 SAND source files must use the `.sand` file extension.
 `main.sand` must serve as the primary entry point of the project. This file is mandatory and must always be included.
 You need to output as a json format
+You may proceed to the next stage only after the user approves your proposed solution. Otherwise, continue refining and modifying it until approval is obtained.
 An example is shown below:
+```json
 {
     "main.sand":"Project entry point. Initializes the application, loads configuration, creates core modules, and starts the main workflow.",
     "database.sand":"write a class to be a database.",
     "query.sand":"write the query functions to support some methods of queries",
     "config.txt":"some configs that user could change"
 }
+```
 
 only one file is also ok:
+```json
 {
     "main.sand":"a fibo function"
 }
+```

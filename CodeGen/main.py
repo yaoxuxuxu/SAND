@@ -8,10 +8,10 @@ def main():
     #main prompt
     mm.history.append(mm.user("implement a fib function."))
     #question
-    sum=Stage("question",mm).run(3,return_mode="summary")
-    print(sum)
+    #sum=Stage("question",mm).run(3,return_mode="summary")
     #file arrange
     files=Stage("file_arrange",mm).run(return_mode="parse_json")
+    print(files)
     #main coding
     for file,des in files.items():
         tmp_stage=Stage("code",mm)

@@ -22,11 +22,12 @@ class Stage:
             return self.model.getLastSolution()
         if mode[0:6]=="parse_":
             #parse_xxx: xxx is the format.
-            return self.parser.parse(mode[6:])
+            return self.parser.parse(mode[6:],self.model.getLastSolution())
         if mode=="summary":
             return self.summary()
         if mode=="remain_all":
             return "!!!RemainAll!!!"
+        print(f"Unknown return mode: {mode}")
         return None
     def send(self):
         res=self.model.send(self.config_prompt)
@@ -50,11 +51,11 @@ class Stage:
         result=self.returnByMode(return_mode)
         if result != "!!!RemainAll!!!":
             self.clear_history()
-            self.model.history.append(self.model.assistant(result))
+            self.model.history.append(self.model.assistant(str(result)))
         return result
     
     def clear_history(self):
-        self.model.history=self.model.history[:self.end_context_index]
+        self.model.history=self.model.history[:self.start_context_index]
     def summary(self):
         res=self.model.send("please summarize the above conversation in few sentence.",
                             self.model.history[self.start_context_index:self.end_context_index])
