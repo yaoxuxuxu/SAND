@@ -1,0 +1,57 @@
+from database import ProductDB
+
+db = ProductDB.new
+
+// ── TEST 1: add() ─────────────────────────────────────
+print("=== TEST 1: add ===")
+id1 = db.add("Apple",  3,  120)
+id2 = db.add("Banana", 1,  200)
+id3 = db.add("Cherry", 15, 40)
+print("id1 expect 1:",  id1)
+print("id2 expect 2:",  id2)
+print("id3 expect 3:",  id3)
+print("length expect 3:", db.records.length())
+
+// ── TEST 2: all() ─────────────────────────────────────
+print("=== TEST 2: all ===")
+rows = db.all()
+print("rows length expect 3:", rows.length())
+print("rows[0] expect [1,Apple,3,120]:",  rows[0])
+print("rows[2] expect [3,Cherry,15,40]:", rows[2])
+
+// ── TEST 3: find() 正常情况 ───────────────────────────
+print("=== TEST 3: find (hit) ===")
+item = db.find(2)
+print("item.id    expect 2:",      item.id)
+print("item.name  expect Banana:", item.name)
+print("item.price expect 1:",      item.price)
+print("item.stock expect 200:",    item.stock)
+
+// ── TEST 4: find() 不存在 ─────────────────────────────
+print("=== TEST 4: find (miss) ===")
+miss = db.find(99)
+print("miss expect -1:", miss)
+
+// ── TEST 5: updateStock() ─────────────────────────────
+print("=== TEST 5: updateStock ===")
+db.updateStock(1, -30)  // Apple: 120 - 30 = 90
+db.updateStock(3, 60)   // Cherry: 40 + 60 = 100
+a = db.find(1)
+c = db.find(3)
+print("Apple  stock expect 90:",  a.stock)
+print("Cherry stock expect 100:", c.stock)
+
+// ── TEST 6: remove() ──────────────────────────────────
+print("=== TEST 6: remove ===")
+db.remove(2)
+print("length expect 2:", db.records.length())
+miss2 = db.find(2)
+print("find removed expect -1:", miss2)
+
+// ── TEST 7: stats() ───────────────────────────────────
+print("=== TEST 7: stats ===")
+// 剩余: Apple(stock=90), Cherry(stock=100)
+s = db.stats()
+print("count       expect 2:",   s.count)
+print("total_stock expect 190:", s.total_stock)
+print("best_id     expect 3:",   s.best_id)

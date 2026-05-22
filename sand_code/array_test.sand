@@ -1,6 +1,15 @@
-a=[2,3,4,]
+a=[2,3,4]
 print(a[1])
 a[1]="three"
 print("a[1]:"+a[1])
 b=[["one",1],["two",2]]
 print(b[1][0]+":"+str(b[1][1]))
+
+a.append(5)
+a.pop(1)
+i=0
+while(i<a.length()){
+    a[i]=a[i]+1;
+    i=i+1;
+}
+print(a,[3,5,6])

@@ -1,0 +1,79 @@
+class ProductDB {
+    records = []
+    next_id = 1
+
+    def add(name, price, stock) {
+        id = next_id
+        next_id = next_id + 1
+        records.append([id, name, price, stock])
+        id
+    }
+
+    def find(id) {
+        i = 0
+        found = -1
+        while (i < records.length()) {
+            row = records[i]
+            if (row[0] == id) { found = i }
+            i = i + 1
+        }
+        if (found == -1) { -1 }
+        else {
+            row   = records[found]
+            id    = row[0]
+            name  = row[1]
+            price = row[2]
+            stock = row[3]
+            return_all
+        }
+    }
+
+    def updateStock(id, delta) {
+        i = 0
+        while (i < records.length()) {
+            row = records[i]
+            if (row[0] == id) {
+                records[i][3] = row[3] + delta
+            }
+            i = i + 1
+        }
+    }
+
+    def remove(id) {
+        i = 0
+        while (i < records.length()) {
+            if (records[i][0] == id) {
+                records.pop(i)
+            }
+            i = i + 1
+        }
+    }
+
+    def stats() {
+        count       = records.length()
+        total_stock = 0
+        best_id     = -1
+        best_qty    = -1
+        i = 0
+        while (i < count) {
+            row = records[i]
+            total_stock = total_stock + row[3]
+            if (row[3] > best_qty) {
+                best_qty = row[3]
+                best_id  = row[0]
+            }
+            i = i + 1
+        }
+        return_all
+    }
+
+    def all() {
+        snap = []
+        i = 0
+        while (i < records.length()) {
+            snap.append(records[i])
+            i = i + 1
+        }
+        snap
+    }
+}

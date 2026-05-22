@@ -305,7 +305,7 @@ class Parser:
             tmp=self.primary()
             if tmp==self.BADMATCH:
                 raise StoneException("syntax error at",token.getLineNumber())
-            return self.createNode("factor",[self.token2leaf(token),self.primary()])
+            return self.createNode("factor",[tmp],token)
         return self.primary()
     def primary(self):
         with self.get_bracket("(",")") as isMatch:
