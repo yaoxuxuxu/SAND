@@ -1,0 +1,42 @@
+//main.sand
+from database import ProductDB
+from console_ui import ConsoleUI
+
+db = ProductDB.new
+ui = ConsoleUI.new
+
+// ── 录入商品 ──────────────────────────────
+db.add("Apple",  3,  120)
+db.add("Banana", 1,  200)
+db.add("Cherry", 15, 40)
+db.add("Durian", 80, 8)
+
+// ── 列出全部 ──────────────────────────────
+ui.listAll(db.all())
+
+// ── 查找 ──────────────────────────────────
+item = db.find(2)
+ui.printItem(item)
+
+item = db.find(99)
+ui.printItem(item)
+
+// ── 更新库存 ──────────────────────────────
+db.updateStock(1, -30)   // Apple 卖出 30
+db.updateStock(3, 60)    // Cherry 补货 60
+
+// ── 删除商品 ──────────────────────────────
+db.remove(4)             // 下架 Durian
+
+// ── 再次列出 ──────────────────────────────
+ui.listAll(db.all())
+
+// ── 统计 ──────────────────────────────────
+s = db.stats()
+ui.printStats(s)
+
+// ── 闭包演示 ──────────────────────────────
+warn = ui.makePrinter("[WARN] ")
+info = ui.makePrinter("[INFO] ")
+warn("Apple stock is low!")
+info("System ready.")
