@@ -1,0 +1,65 @@
+
+// main.sand
+
+class Fibonacci {
+    // Calculates the n-th Fibonacci number iteratively
+    def calculate(n) {
+        if (n <= 0) {
+            0
+        } else {
+            if (n == 1) {
+                1
+            } else {
+                // For n >= 2
+                prev = 0
+                curr = 1
+                i = 2
+                while (i <= n) {
+                    next_val = prev + curr
+                    prev = curr
+                    curr = next_val
+                    i = i + 1
+                }
+                curr
+            }
+        }
+    }
+
+    // Generates a list of Fibonacci numbers up to the n-th index
+    def generate_sequence(n) {
+        sequence = []
+        i = 0
+        while (i <= n) {
+            val = this.calculate(i)
+            sequence.append(val)
+            i = i + 1
+        }
+        sequence
+    }
+}
+
+// ── Main Entry Point ──────────────────────────────────────────
+
+fib = Fibonacci.new
+limit = 10
+
+// Calculate a specific number
+val = fib.calculate(limit)
+print("The Fibonacci number at index " + str(limit) + " is: " + str(val))
+
+// Generate and display a sequence
+print("Sequence from 0 to " + str(limit) + ":")
+seq = fib.generate_sequence(limit)
+
+// Printing the sequence items
+i = 0
+output_str = ""
+while (i < seq.length()) {
+    output_str = output_str + str(seq[i])
+    if (i < seq.length() - 1) {
+        output_str = output_str + ", "
+    }
+    i = i + 1
+}
+print("[" + output_str + "]")
+
