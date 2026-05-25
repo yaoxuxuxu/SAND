@@ -5,37 +5,37 @@ from console_ui import ConsoleUI
 db = ProductDB.new
 ui = ConsoleUI.new
 
-// ── 录入商品 ──────────────────────────────
+// ── records some goods ──────────────────────────────
 db.add("Apple",  3,  120)
 db.add("Banana", 1,  200)
 db.add("Cherry", 15, 40)
 db.add("Durian", 80, 8)
 
-// ── 列出全部 ──────────────────────────────
+// ── list all ──────────────────────────────
 ui.listAll(db.all())
 
-// ── 查找 ──────────────────────────────────
+// ── query ──────────────────────────────────
 item = db.find(2)
 ui.printItem(item)
 
 item = db.find(99)
 ui.printItem(item)
 
-// ── 更新库存 ──────────────────────────────
-db.updateStock(1, -30)   // Apple 卖出 30
-db.updateStock(3, 60)    // Cherry 补货 60
+// ── update stock ──────────────────────────────
+db.updateStock(1, -30)   // Apple sold 30
+db.updateStock(3, 60)    // Cherry reload 60
 
-// ── 删除商品 ──────────────────────────────
-db.remove(4)             // 下架 Durian
+// ── remove goods ──────────────────────────────
+db.remove(4)             // remove Durian
 
-// ── 再次列出 ──────────────────────────────
+// ── list again ──────────────────────────────
 ui.listAll(db.all())
 
-// ── 统计 ──────────────────────────────────
+// ── show statistic ──────────────────────────────────
 s = db.stats()
 ui.printStats(s)
 
-// ── 闭包演示 ──────────────────────────────
+// ── console show ──────────────────────────────
 warn = ui.makePrinter("[WARN] ")
 info = ui.makePrinter("[INFO] ")
 warn("Apple stock is low!")

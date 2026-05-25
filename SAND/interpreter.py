@@ -276,7 +276,6 @@ class Interpreter:
         elif token.getType()=="IDENTIFIER":
             varname=self.getVarNameFromAsttree(astTree)
             if varname=="return_all":
-                print("123456!!")
                 return ClassInstance(self.now_env)
             primary=self.now_env.getValue(varname)
             return self.do_decorate_var(primary,astTree.getChild(),isLeft)
