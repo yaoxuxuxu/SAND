@@ -17,6 +17,7 @@ class Lexer:
                     (?P<COMMENT>//.*) |
                     (?P<NUMBER>\d+\.\d+|\d+)  |
                     (?P<STRING>"(?:\\"|\\\\|\\n|[^"])*") |
+                    (?P<BOOL>true|false) |
                     (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]*) |
                     (?P<OP>!=|==|<=|>=|&&|\|\||[^\w\s])
                     )
@@ -35,6 +36,12 @@ class Lexer:
                 word=word.replace('"','')
                 word=self.strEscape(word)
                 self.createToken("STRING",word,line)
+            elif token_type=="BOOL":
+                if word=="ture":
+                    word=True
+                else:
+                    word=False
+                self.createToken("BOOL",word,line) 
             elif token_type == "IDENTIFIER":
                 self.createToken("IDENTIFIER",word,line)
             elif token_type == "OP":

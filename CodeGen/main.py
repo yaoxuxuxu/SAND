@@ -39,7 +39,7 @@ def main_workflow():
     #main coding
     for file,des in files.items():
         tmp_stage=Stage("code",mm,config=code_config)
-        tmp_stage.config_prompt+="now we are writing:"+file
+        tmp_stage.config_prompt+="now the file is:"+file
         writting_dir=os.path.join(project_dir,file)
         code=tmp_stage.run(return_mode="parse_sand",file=writting_dir)
         with open(writting_dir,"w+") as fp:
