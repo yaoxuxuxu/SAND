@@ -1,0 +1,160 @@
+
+// hanoi_display.sand
+// Handles all console-related output.
+// This file will contain functions to clear the console,
+// draw the current state of the Tower of Hanoi pegs and disks graphically,
+// and display messages to the user.
+class HanoiDisplay {
+    // Character representations for drawing
+    disk_char   = "#"
+    peg_char    = "|"
+    base_char   = "="
+    spacer_char = " "
+
+    // Drawing configuration (calculated based on num_disks)
+    peg_display_width = 0 // Max width a single disk/peg occupies
+    gap_between_pegs  = 7 // Spacing between the graphical representation of pegs
+
+    // Initializes the display with the total number of disks in the game.
+    // This is used to calculate the necessary drawing dimensions.
+    def init(num_disks) {
+        // The largest disk has size `num_disks`.
+        // A disk of size `S` will be represented by `(S * 2) - 1` characters.
+        // So, the largest disk (num_disks) will have `(num_disks * 2) - 1` characters.
+        // This sets the maximum width for each peg's display area.
+        peg_display_width = (num_disks * 2) - 1
+    }
+
+    // Helper function to repeat a character 'n' times.
+    def repeat(ch, n) {
+        s = ""
+        i = 0
+        while (i < n) {
+            s = s + ch
+            i = i + 1
+        }
+        s
+    }
+
+    // Clears the console by printing a large number of empty lines.
+    // This is a common workaround in environments without direct console clear commands.
+    def clear_console() {
+        i = 0
+        while (i < 50) { // Print 50 newlines to push existing content off-screen
+            print("")
+            i = i + 1
+        }
+    }
+
+    // Draws a single disk or a peg pole, centered within the `max_width`.
+    // `disk_size`: The size of the disk (1 for smallest, `num_disks` for largest).
+    //              If 0, it means an empty slot, so a peg pole is drawn.
+    // `max_width`: The total width available for drawing this disk/pole.
+    def draw_disk_or_pole(disk_size, max_width) {
+        if (disk_size == 0) { // No disk at this level, draw the peg pole
+            padding = (max_width - 1) / 2 // 1 character for the pole
+            // Handle odd/even width for centering correctly
+            return this.repeat(spacer_char, padding) +
+                   peg_char +
+                   this.repeat(spacer_char, max_width - 1 - padding)
+        } else { // Draw a disk
+            current_disk_width = (disk_size * 2) - 1
+            padding = (max_width - current_disk_width) / 2
+            
+            // Handle odd/even width for centering correctly
+            return this.repeat(spacer_char, padding) +
+                   this.repeat(disk_char, current_disk_width) +
+                   this.repeat(spacer_char, max_width - current_disk_width - padding)
+        }
+    }
+
+    // Draws the entire Tower of Hanoi board.
+    // `pegs_state`: A list of lists, representing the current state of disks on each peg.
+    //               Each inner list contains disk sizes, bottom-most disk at index 0.
+    // `num_disks`: The total number of disks in the game.
+    def draw_board(pegs_state, num_disks) {
+        // Ensure peg_display_width is correctly set based on current num_disks
+        // (re-calculate in case the display object was not initialized with the correct num_disks or if it changes)
+        peg_display_width = (num_disks * 2) - 1
+
+        // Iterate from the top-most possible disk position down to the base.
+        // `current_row` represents the display row, from `num_disks - 1` (top) down to `0` (just above the base).
+        current_row = num_disks - 1
+        while (current_row >= 0) {
+            line = ""
+            peg_idx = 0
+            while (peg_idx < pegs_state.length()) { // Iterate through each peg (0, 1, 2)
+                peg_disks = pegs_state[peg_idx]
+                disk_on_this_level = 0 // Default to 0 (no disk), so a pole will be drawn
+
+                // Calculate the corresponding index in `peg_disks` for the current display row.
+                // The `peg_disks` list stores disks from bottom to top (index 0 is the bottom-most disk).
+                // `num_disks - peg_disks.length()` gives the number of empty slots at the bottom of the peg.
+                // For example, if num_disks=3 and a peg has 1 disk ([1]), then `num_disks - peg_disks.length()` is 2.
+                // The disk [1] is at index 0 in `peg_disks`. It should be drawn at `current_row = 2`.
+                // So, `disk_idx_in_peg = current_row - (num_disks - peg_disks.length())`.
+                disk_idx_in_peg = current_row - (num_disks - peg_disks.length())
+
+                if (disk_idx_in_peg >= 0 && disk_idx_in_peg < peg_disks.length()) {
+                    disk_on_this_level = peg_disks[disk_idx_in_peg]
+                }
+                
+                line = line + this.draw_disk_or_pole(disk_on_this_level, peg_display_width)
+                if (peg_idx < pegs_state.length() - 1) {
+                    line = line + this.repeat(spacer_char, gap_between_pegs)
+                }
+                peg_idx = peg_idx + 1
+            }
+            print(line)
+            current_row = current_row - 1
+        }
+
+        // Draw the base line
+        base_line = ""
+        peg_idx = 0
+        while (peg_idx < pegs_state.length()) {
+            base_line = base_line + this.repeat(base_char, peg_display_width)
+            if (peg_idx < pegs_state.length() - 1) {
+                base_line = base_line + this.repeat(spacer_char, gap_between_pegs)
+            }
+            peg_idx = peg_idx + 1
+        }
+        print(base_line)
+
+        // Draw peg numbers (0, 1, 2) below the base
+        peg_numbers_line = ""
+        peg_idx = 0
+        while (peg_idx < pegs_state.length()) {
+            label_char_width = 1 // For '0', '1', '2'
+            padding_left = (peg_display_width - label_char_width) / 2
+            
+            // Adjust padding_right for proper centering in case of odd `peg_display_width`
+            peg_numbers_line = peg_numbers_line + this.repeat(spacer_char, padding_left) +
+                               str(peg_idx) +
+                               this.repeat(spacer_char, peg_display_width - label_char_width - padding_left)
+            if (peg_idx < pegs_state.length() - 1) {
+                peg_numbers_line = peg_numbers_line + this.repeat(spacer_char, gap_between_pegs)
+            }
+            peg_idx = peg_idx + 1
+        }
+        print(peg_numbers_line)
+    }
+
+    // Displays a general message to the user.
+    def show_message(msg) {
+        print("") // Add a newline for spacing
+        print(msg)
+    }
+
+    // Displays an error message to the user.
+    def show_error(msg) {
+        print("") // Add a newline for spacing
+        print("[ERROR] " + msg)
+    }
+
+    // Prompts the user for input and returns their response.
+    // Assumes SAND's `input` function works like Python's, returning a string.
+    def get_input(prompt) {
+        input(prompt)
+    }
+}

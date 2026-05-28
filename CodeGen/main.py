@@ -3,10 +3,9 @@ from .modelManager import ModelManager
 import os
 root_dir="./CodeGen/project"
 def main():
-    
     mm=ModelManager()
     #main prompt
-    mm.history.append(mm.user("implement a fib function."))
+    mm.history.append(mm.user("build a hanoi game in console."))
     #question
     sum=Stage("question",mm).run(3,return_mode="summary")
     #file arrange

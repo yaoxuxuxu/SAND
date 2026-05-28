@@ -1,6 +1,1 @@
-```json
-{
-    "main.sand": "Project entry point. It will call the Fibonacci function with a specific input and print the result.",
-    "fibonacci.sand": "Contains the implementation of the Fibonacci sequence algorithm."
-}
-```
+code completion

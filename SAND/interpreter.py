@@ -315,8 +315,6 @@ class Interpreter:
             raise InterpreterException("index '"+str(num)+"' out of range")
         return True
     def do_array(self,primary,postfix,env):
-        if isinstance(primary,str):
-            primary=env.getValue(primary)
         index=postfix.getChild(0)
         index=self.eval(index)
         self.array_check(index,primary)

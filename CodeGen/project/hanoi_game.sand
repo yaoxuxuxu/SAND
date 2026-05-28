@@ -41,10 +41,13 @@ class HanoiGame {
         if (from_peg_idx < 0 || from_peg_idx > 2) { return false }
         if (to_peg_idx < 0 || to_peg_idx > 2) { return false }
 
-        // 2. A disk must be moved, so the source peg cannot be empty.
+        // 2. Cannot move a disk from a peg to itself.
+        if (from_peg_idx == to_peg_idx) { return false }
+
+        // 3. A disk must be moved, so the source peg cannot be empty.
         if (pegs[from_peg_idx].length() == 0) { return false }
 
-        // 3. The disk to be moved must be smaller than the disk it's placed on.
+        // 4. The disk to be moved must be smaller than the disk it's placed on.
         // Get the top disk from the source peg.
         from_disk = pegs[from_peg_idx][pegs[from_peg_idx].length() - 1]
 
