@@ -1,7 +1,7 @@
 import os
 from .formatParser import Parser
 class Stage:
-    def __init__(self,name,model):
+    def __init__(self,name,model,config=None):
         self.model=model
         self.parser=Parser()
         self.name=name
@@ -10,7 +10,10 @@ class Stage:
         self.end_context_index=self.start_context_index
 
         self.running_dir=os.path.dirname(os.path.abspath(__file__))
-        self.config_prompt=self.config()
+        if config is None:
+            self.config_prompt=self.config()
+        else:
+            self.config_prompt=config()
     def config(self):
         with open(os.path.join(self.running_dir, "ConfigPrompts", "main.txt"), "r+") as fp:
             main_config=fp.read()
@@ -36,7 +39,7 @@ class Stage:
     def user_input(self):
         self.model.user_input()
         self.end_context_index+=1
-    def run(self,max_iter=100,return_mode="solution"):
+    def run(self,max_iter=100,return_mode="solution",file=None):
         if max_iter<0:
             max_iter=100
         for i in range(max_iter):
@@ -45,7 +48,7 @@ class Stage:
                 break
             if i == max_iter-1:
                 break
-            print(res)
+            self.interact(res,file)
             self.user_input()
         
         result=self.returnByMode(return_mode)
@@ -53,7 +56,15 @@ class Stage:
             self.clear_history()
             self.model.history.append(self.model.assistant(str(result)))
         return result
-    
+    def interact(self,text,file=None):
+        if file:
+            with open(file,"w+") as fp:
+                fp.write(text)
+            print("File Written: "+file)
+        else:
+            print(text)
+        print("Your turn: ")
+        return
     def clear_history(self):
         self.model.history=self.model.history[:self.start_context_index]
     def summary(self):

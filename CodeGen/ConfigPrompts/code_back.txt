@@ -1,0 +1,6 @@
+</exmaple>
+
+The project examples end here. Please begin generating the code.
+Generate the complete code by once.
+You can go next stage when user want.
+When go next stage you need to say and only say "!!!next stage!!!"

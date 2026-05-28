@@ -1,0 +1,240 @@
+You are now entering the code implementation stage.
+
+All code must be written exclusively in SAND. No other programming languages are allowed.
+There is no "elif" or "else if" in sand.
+The examples below demonstrate the complete syntax and all supported features of SAND.
+
+<exmaple>
+
+```sand
+//here shows some examples of buildinLibraries
+
+import Time
+import File
+//Time
+nowtime=Time.time() //1779940486.070278
+
+//File
+File.write("test.txt","hello")
+res=File.read("test.txt")
+print(res)//hello
+```
+
+```sand
+//main.sand
+from database import ProductDB
+from console_ui import ConsoleUI
+
+db = ProductDB.new
+ui = ConsoleUI.new
+
+// ── records some goods ──────────────────────────────
+db.add("Apple",  3,  120)
+db.add("Banana", 1,  200)
+db.add("Cherry", 15, 40)
+db.add("Durian", 80, 8)
+
+// ── list all ──────────────────────────────
+ui.listAll(db.all())
+
+// ── query ──────────────────────────────────
+item = db.find(2)
+ui.printItem(item)
+
+item = db.find(99)
+ui.printItem(item)
+
+// ── update stock ──────────────────────────────
+db.updateStock(1, -30)   // Apple sold 30
+db.updateStock(3, 60)    // Cherry reload 60
+
+// ── remove goods ──────────────────────────────
+db.remove(4)             // remove Durian
+
+// ── list again ──────────────────────────────
+ui.listAll(db.all())
+
+// ── show statistic ──────────────────────────────────
+s = db.stats()
+ui.printStats(s)
+
+// ── console show ──────────────────────────────
+warn = ui.makePrinter("[WARN] ")
+info = ui.makePrinter("[INFO] ")
+warn("Apple stock is low!")
+info("System ready.")
+```
+
+```sand
+//here shows some examples of buildInFunctions
+
+//IO
+res=input()
+print(res)
+
+//type transfer
+s="123"
+s=int(s)
+print(s)
+s=str(s)
+print(s)
+```
+
+```sand
+//console_ui.sand
+class Formatter {
+    width = 40
+
+    def repeat(ch, n) {
+        s = ""
+        i = 0
+        while (i < n) {
+            s = s + ch
+            i = i + 1
+        }
+        s
+    }
+
+    def line() {
+        print(this.repeat("-", width))
+    }
+
+    def header(title) {
+        this.line()
+        print("| " + title)
+        this.line()
+    }
+}
+
+class ConsoleUI extends Formatter {
+
+    def printRow(row) {
+        id    = row[0]
+        name  = row[1]
+        price = row[2]
+        stock = row[3]
+        print("[" + str(id) + "] " + name +
+              "  price:" + str(price) +
+              "  stock:" + str(stock))
+    }
+
+    def listAll(rows) {
+        this.header("Product List")
+        i = 0
+        while (i < rows.length()) {
+            this.printRow(rows[i])
+            i = i + 1
+        }
+        this.line()
+    }
+
+    def printItem(item) {
+        if (item == -1) {
+            print("[not found]")
+        } else {
+            print("Found: [" + str(item.id) + "] " + item.name +
+                  "  price:" + str(item.price) +
+                  "  stock:" + str(item.stock))
+        }
+    }
+
+    def printStats(s) {
+        this.header("Statistics")
+        print("total products : " + str(s.count))
+        print("total stock    : " + str(s.total_stock))
+        print("most stocked id: " + str(s.best_id))
+        this.line()
+    }
+
+    def makePrinter(prefix) {
+        lambda(msg){ print(prefix + msg) }
+    }
+}
+```
+
+```sand
+//database.sand
+class ProductDB {
+    records = []
+    next_id = 1
+
+    def add(name, price, stock) {
+        id = next_id
+        next_id = next_id + 1
+        records.append([id, name, price, stock])
+        id
+    }
+
+    def find(id) {
+        i = 0
+        found = -1
+        while (i < records.length()) {
+            row = records[i]
+            if (row[0] == id) { found = i }
+            i = i + 1
+        }
+        if (found == -1) { -1 }
+        else {
+            row   = records[found]
+            id    = row[0]
+            name  = row[1]
+            price = row[2]
+            stock = row[3]
+            return_all
+        }
+    }
+
+    def updateStock(id, delta) {
+        i = 0
+        while (i < records.length()) {
+            row = records[i]
+            if (row[0] == id) {
+                records[i][3] = row[3] + delta
+            }
+            i = i + 1
+        }
+    }
+
+    def remove(id) {
+        i = 0
+        while (i < records.length()) {
+            if (records[i][0] == id) {
+                records.pop(i)
+            }
+            i = i + 1
+        }
+    }
+
+    def stats() {
+        count       = records.length()
+        total_stock = 0
+        best_id     = -1
+        best_qty    = -1
+        i = 0
+        while (i < count) {
+            row = records[i]
+            total_stock = total_stock + row[3]
+            if (row[3] > best_qty) {
+                best_qty = row[3]
+                best_id  = row[0]
+            }
+            i = i + 1
+        }
+        return_all
+    }
+
+    def all() {
+        snap = []
+        i = 0
+        while (i < records.length()) {
+            snap.append(records[i])
+            i = i + 1
+        }
+        snap
+    }
+}
+```
+</exmaple>
+
+The project examples end here. Please begin generating the code.
+Generate the complete code by once.

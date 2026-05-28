@@ -15,7 +15,7 @@ class Lexer:
         regex = r"""
                 \s*(?:
                     (?P<COMMENT>//.*) |
-                    (?P<NUMBER>[0-9]+) |
+                    (?P<NUMBER>\d+\.\d+|\d+)  |
                     (?P<STRING>"(?:\\"|\\\\|\\n|[^"])*") |
                     (?P<IDENTIFIER>[A-Za-z_][A-Za-z0-9_]*) |
                     (?P<OP>!=|==|<=|>=|&&|\|\||[^\w\s])
@@ -27,7 +27,7 @@ class Lexer:
             word=m.group(0).strip()
             if token_type=="NUMBER":
                 try:
-                    value=int(word)
+                    value=float(word)
                 except:
                     raise StoneException("Failed to get number token",line)
                 self.createToken("NUMBER",value,line)
