@@ -1,0 +1,22 @@
+
+class GameConfig {
+    min_val = 0
+    max_val = 100
+    max_guesses = 6
+
+    def getSettings() {
+        min_val = this.min_val
+        max_val = this.max_val
+        max_guesses = this.max_guesses
+        return_all
+    }
+
+    def updateLimit(new_limit) {
+        this.max_guesses = new_limit
+    }
+
+    def updateRange(low, high) {
+        this.min_val = low
+        this.max_val = high
+    }
+}

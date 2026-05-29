@@ -14,5 +14,5 @@ Including most features of script programing language.
 - [x] functions
 - [x] object oriented programming
 - [x] array
-- [x] build in functions and librarys
+- [x] build in functions and libraries
 - [x] import files
