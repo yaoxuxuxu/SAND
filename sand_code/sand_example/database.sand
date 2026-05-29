@@ -1,3 +1,4 @@
+//database.sand
 class ProductDB {
     records = []
     next_id = 1

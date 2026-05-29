@@ -54,10 +54,10 @@ class Parser:
         return 0
     @contextmanager
     def get_bracket(self,left,right):
-        if self.match(left):
+        if self.match(left) and self.match_type("OP"):
             self.consume()
             yield True
-            if self.match(right):
+            if self.match(right) and self.match_type("OP"):
                 self.consume()
             else:
                 raise ParserException("expected '"+right+"' at "+str(self.getErrorLine()),self.peek())
@@ -300,10 +300,11 @@ class Parser:
         return left
             
     def factor(self):
-        if self.match("-"):
+        if self.match("-") and self.match_type("OP"):
             token=self.consume()
             tmp=self.primary()
             if tmp==self.BADMATCH:
+                print(self.peek(-1),self.peek(0),self.peek(1))
                 raise StoneException("syntax error at",token.getLineNumber())
             return self.createNode("factor",[tmp],token)
         return self.primary()

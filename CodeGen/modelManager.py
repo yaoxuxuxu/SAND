@@ -5,6 +5,7 @@ class ModelManager:
     def __init__(self):
         self.client = genai.Client(api_key=self.readApiKey())
         #self.show_available_models()
+        self.model_pool=0
         self.useful_models=["gemini-2.5-flash","gemini-3-flash-preview","gemma-4-26b-a4b-it","gemma-4-31b-it"]
         self.history=[]
         #self.chat=self.client.chats.create(model="gemini-2.5-flash",config=self.config())
@@ -32,12 +33,13 @@ class ModelManager:
     def getLastSolution(self,returnText=True):
         cnt=len(self.history)-1
         while cnt>=0:
-            if self.history[cnt].parts[0].text == "!!!next stage!!!":
+            text=self.history[cnt].parts[0].text
+            if text == "!!!next stage!!!" and len(text)<20:
                 cnt-=1
                 continue
             if type(self.history[cnt])==types.Content:
                 if returnText:
-                    return self.history[cnt].parts[0].text
+                    return text
                 return self.history[cnt]
             cnt-=1
         return None
@@ -46,20 +48,22 @@ class ModelManager:
         res=input()
         self.history.append(self.user(res))
         return
+    def model_pooling(self):
+        
+            return res
     def send(self,config_prompt,contexts=None):
         if contexts is None:
             contexts = self.history
-        cnt=0
         while True:
             try:
-                res=self.client.models.generate_content(model=self.useful_models[cnt],
-                                                config=self.config(config_prompt),
-                                                contents=contexts)
+                res=self.client.models.generate_content(model=self.useful_models[self.model_pool],
+                                                    config=self.config(config_prompt),
+                                                    contents=contexts)
                 break
             except Exception as e:
                 print(f"Error occurred: {e}")
                 time.sleep(5)  # Wait for 1 second before retrying
-                cnt=(cnt+1)%len(self.useful_models)
+                self.model_pool=(self.model_pool+1)%len(self.useful_models)
         self.history.append(self.assistant(res.text))
         return res.text
 if __name__ == "__main__":

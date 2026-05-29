@@ -1,0 +1,42 @@
+//main.sand
+from database import ProductDB
+from console_ui import ConsoleUI
+
+db = ProductDB.new
+ui = ConsoleUI.new
+
+// ── records some goods ──────────────────────────────
+db.add("Apple",  3,  120)
+db.add("Banana", 1,  200)
+db.add("Cherry", 15, 40)
+db.add("Durian", 80, 8)
+
+// ── list all ──────────────────────────────
+ui.listAll(db.all())
+
+// ── query ──────────────────────────────────
+item = db.find(2)
+ui.printItem(item)
+
+item = db.find(99)
+ui.printItem(item)
+
+// ── update stock ──────────────────────────────
+db.updateStock(1, -30)   // Apple sold 30
+db.updateStock(3, 60)    // Cherry reload 60
+
+// ── remove goods ──────────────────────────────
+db.remove(4)             // remove Durian
+
+// ── list again ──────────────────────────────
+ui.listAll(db.all())
+
+// ── show statistic ──────────────────────────────────
+s = db.stats()
+ui.printStats(s)
+
+// ── console show ──────────────────────────────
+warn = ui.makePrinter("[WARN] ")
+info = ui.makePrinter("[INFO] ")
+warn("Apple stock is low!")
+info("System ready.")

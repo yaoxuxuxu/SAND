@@ -276,7 +276,6 @@ class Interpreter:
         elif token.getType()=="IDENTIFIER":
             varname=self.getVarNameFromAsttree(astTree)
             if varname=="return_all":
-                print("123456!!")
                 return ClassInstance(self.now_env)
             primary=self.now_env.getValue(varname)
             return self.do_decorate_var(primary,astTree.getChild(),isLeft)
@@ -316,8 +315,6 @@ class Interpreter:
             raise InterpreterException("index '"+str(num)+"' out of range")
         return True
     def do_array(self,primary,postfix,env):
-        if isinstance(primary,str):
-            primary=env.getValue(primary)
         index=postfix.getChild(0)
         index=self.eval(index)
         self.array_check(index,primary)

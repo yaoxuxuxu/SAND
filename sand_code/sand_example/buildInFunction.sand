@@ -1,0 +1,12 @@
+//here shows some examples of buildInFunctions
+
+//IO
+res=input()
+print(res)
+
+//type transfer
+s="123"
+s=int(s)
+print(s)
+s=str(s)
+print(s)

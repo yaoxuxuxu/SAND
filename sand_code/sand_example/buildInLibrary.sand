@@ -1,0 +1,11 @@
+//here shows some examples of buildinLibraries
+
+import Time
+import File
+//Time
+nowtime=Time.time() //1779940486.070278
+
+//File
+File.write("test.txt","hello")
+res=File.read("test.txt")
+print(res)//hello

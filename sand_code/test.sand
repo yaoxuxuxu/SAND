@@ -1,25 +1,2 @@
-// TEST A: 负数字面量本身
-a = -1
-print("A: expect -1:", a)
-
-// TEST B: else 返回负数
-def f1(n) {
-    if (n > 0) { 1 }
-    else { -1 }
-}
-print("B: f1(-3) expect -1:", f1(-3))
-
-// TEST C: else 返回变量（不是字面量）
-def f2(n) {
-    r = -1
-    if (n > 0) { r = 1 }
-    r
-}
-print("C: f2(-3) expect -1:", f2(-3))
-
-// TEST D: else 返回表达式
-def f3(n) {
-    if (n > 0) { 1 }
-    else { 0 - 1 }
-}
-print("D: f3(-3) expect -1:", f3(-3))
+s="123134"
+print(s[1])
