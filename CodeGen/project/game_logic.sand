@@ -1,0 +1,80 @@
+
+import Math // For Math.random_int and Math.abs
+
+class GameLogic {
+    secret_number = 0
+    min_range = 0
+    max_range = 100
+    // last_abs_diff stores the absolute difference of the *previous* guess.
+    // Initialized to a value larger than any possible difference (max_range - min_range + 1)
+    // to ensure the first non-correct guess is always considered "warmer".
+    last_abs_diff = 0 
+
+    def new() {
+        this.min_range = 0
+        this.max_range = 100
+        // Generate a random integer between min_range and max_range (inclusive)
+        this.secret_number = Math.random_int(this.min_range, this.max_range)
+        // Initialize last_abs_diff to a value that guarantees the first valid guess,
+        // if not correct, will result in `is_warmer` being true.
+        this.last_abs_diff = this.max_range - this.min_range + 1 
+    }
+
+    // Returns the secret number. Used by main.sand for the final reveal.
+    def get_secret_number() {
+        this.secret_number
+    }
+
+    // Returns the minimum allowed range for guesses.
+    def get_min_range() {
+        this.min_range
+    }
+
+    // Returns the maximum allowed range for guesses.
+    def get_max_range() {
+        this.max_range
+    }
+
+    // Compares the player's guess to the secret number and provides feedback info.
+    // Returns a list: [status, current_abs_diff, is_warmer, is_colder]
+    // status: "correct", "low", "high"
+    // current_abs_diff: absolute difference between guess and secret
+    // is_warmer: true if the current guess is closer to the secret than the previous one
+    // is_colder: true if the current guess is further from the secret than the previous one
+    def check_guess(guess) {
+        status = ""
+        is_warmer = false
+        is_colder = false
+
+        current_abs_diff = Math.abs(this.secret_number - guess)
+
+        if (guess == this.secret_number) {
+            status = "correct"
+            // If the guess is correct, it's considered "warmer" than any previous non-zero difference.
+            is_warmer = true 
+            is_colder = false
+        } else if (guess < this.secret_number) {
+            status = "low"
+            if (current_abs_diff < this.last_abs_diff) {
+                is_warmer = true
+            } else if (current_abs_diff > this.last_abs_diff) {
+                is_colder = true
+            }
+            // If current_abs_diff == last_abs_diff, both is_warmer and is_colder remain false,
+            // indicating the guess is at the same distance as the previous one.
+        } else { // guess > this.secret_number
+            status = "high"
+            if (current_abs_diff < this.last_abs_diff) {
+                is_warmer = true
+            } else if (current_abs_diff > this.last_abs_diff) {
+                is_colder = true
+            }
+        }
+        
+        // Update last_abs_diff with the current guess's difference for the next comparison.
+        this.last_abs_diff = current_abs_diff
+
+        // Return all relevant information about the guess.
+        [status, current_abs_diff, is_warmer, is_colder]
+    }
+}

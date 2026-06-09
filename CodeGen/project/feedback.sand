@@ -1,0 +1,66 @@
+```sand
+class Feedback {
+    def new() {
+        // Constructor, no initial state needed for this class.
+    }
+
+    // Generates a detailed feedback message based on the guess status and proximity.
+    // status_info is a list: [status, current_abs_diff, is_warmer, is_colder]
+    //   status: "correct", "low", "high"
+    //   current_abs_diff: absolute difference between guess and secret number
+    //   is_warmer: true if the current guess is closer to the secret than the previous one
+    //   is_colder: true if the current guess is further from the secret than the previous one
+    def get_feedback(status_info) {
+        status           = status_info[0]
+        current_abs_diff = status_info[1]
+        is_warmer        = status_info[2]
+        is_colder        = status_info[3]
+
+        feedback_parts = [] // Collect feedback components into a list
+
+        // 1. Primary feedback: Correct, Too low, or Too high
+        if (status == "correct") {
+            feedback_parts.append("Your guess is CORRECT!")
+            // If the guess is correct, we provide the celebratory message and stop.
+            // Further proximity or temperature feedback is not needed as the game concludes.
+            return feedback_parts[0] 
+        } else if (status == "low") {
+            feedback_parts.append("Too low!")
+        } else { // status == "high"
+            feedback_parts.append("Too high!")
+        }
+
+        // 2. Proximity feedback based on current_abs_diff (only for incorrect guesses)
+        // These thresholds are chosen for a 0-100 range.
+        if (current_abs_diff <= 5) {
+            feedback_parts.append("  -> You're very close!")
+        } else if (current_abs_diff <= 15) {
+            feedback_parts.append("  -> You're getting closer!")
+        } else if (current_abs_diff <= 30) {
+            feedback_parts.append("  -> You're a bit off.")
+        } else {
+            feedback_parts.append("  -> You're quite far off.")
+        }
+        
+        // 3. Temperature feedback based on comparison with the previous guess (only for incorrect guesses)
+        if (is_warmer == true) {
+            feedback_parts.append("  -> Getting warmer!")
+        } else if (is_colder == true) {
+            feedback_parts.append("  -> Getting colder!")
+        } else {
+            // This case means the current guess is at the same absolute distance as the previous one.
+            feedback_parts.append("  -> You're at the same distance as your previous guess.")
+        }
+
+        // Join all collected feedback parts into a single string,
+        // with each additional piece on a new line for clear presentation.
+        result = feedback_parts[0]
+        i = 1
+        while (i < feedback_parts.length()) {
+            result = result + "\n" + feedback_parts[i]
+            i = i + 1
+        }
+        result
+    }
+}
+```
