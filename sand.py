@@ -2,7 +2,6 @@ import os
 from SAND.parser import Parser
 from SAND.interpreter import Interpreter
 import argparse
-from CodeGen.modelManager import ModelManager
 class SandRunner:
     def __init__(self):
         self.getArgsFromConsole()
@@ -47,6 +46,7 @@ class SandRunner:
             if self.args.return_all:
                 print(result)
     def aifix(self,code):
+        from CodeGen.modelManager import ModelManager
         mm=ModelManager()
         code=mm.fix_code(code)
         while True:
