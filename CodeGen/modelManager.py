@@ -20,16 +20,16 @@ class ModelManager:
         return api
     def config(self,config_prompt):
         return {"system_instruction": config_prompt}
-    def user(self,message):
+    def user_add(self,message):
         message=types.UserContent(
         parts=[types.Part(text=message)]
         )
-        return message
-    def assistant(self,message):
+        self.history.append(message)
+    def assistant_add(self,message):
         message=types.Content(
         parts=[types.Part(text=message)]
         )
-        return message
+        self.history.append(message)
     def getLastSolution(self,returnText=True):
         cnt=len(self.history)-1
         while cnt>=0:
@@ -48,9 +48,7 @@ class ModelManager:
         res=input()
         self.history.append(self.user(res))
         return
-    def model_pooling(self):
-        
-            return res
+    
     def send(self,config_prompt,contexts=None):
         if contexts is None:
             contexts = self.history
@@ -64,7 +62,7 @@ class ModelManager:
                 print(f"Error occurred: {e}")
                 time.sleep(5)  # Wait for 1 second before retrying
                 self.model_pool=(self.model_pool+1)%len(self.useful_models)
-        self.history.append(self.assistant(res.text))
+        self.assistant_add(res.text)
         return res.text
 if __name__ == "__main__":
     mm=ModelManager()
