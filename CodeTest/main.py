@@ -33,7 +33,7 @@ class Tester:
         model=model()
         model.user_add(test['prompt'])
         code=model.send("complete the code")
-        code=formatParser.Parser().parse("stone",code)
+        code=formatParser.Parser().parse("sand",code)
         with open("./CodeTest/generate.txt","w+") as fp:
             fp.write(code)
         
