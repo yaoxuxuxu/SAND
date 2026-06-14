@@ -63,16 +63,19 @@ class Tester:
             
             count[status]+=1
             result.append(status)
-            test_id+=1
             print(f"Test {test_id}: {status}")
+            test_id+=1
+            
         print(count)
         print(result)
     def test_once(self,test,model,test_id=""):
         model=model()
         model.user_add(test['prompt'])
-        code=model.send("complete the code,function name should be 'function',do not write test or debug code for it")
+        code=model.send("complete the code,function name should be 'function'," \
+        "do not write test or debug code for it." \
+        "output as markdown format with name sand")
         code=formatParser.Parser().parse("sand",code)
-        with open("./CodeTest/generate"+test_id+".sand","w+") as fp:
+        with open("./CodeTest/temp/generate"+test_id+".sand","w+") as fp:
             fp.write(code)
         try:
             self.run_test(code,test["std"],test["data"])
@@ -81,7 +84,7 @@ class Tester:
             return str(e),code
     def test_once_with_std(self,test,model,test_id=""):
         code=test["std"]
-        with open("./CodeTest/generate"+test_id+".sand","w+") as fp:
+        with open("./CodeTest/temp/generate"+test_id+".sand","w+") as fp:
             fp.write(code)
         try:
             self.run_test(code,test["std"],test["data"])
@@ -107,8 +110,12 @@ class Tester:
             raise Exception("Runtime Error(when test)\n")
         if result!="Accepted":
             raise Exception("Performance not Correct"+result)
-        
+
 if __name__ == "__main__":
     test=Tester("CodeTest/one_function")
+    result=test.test_all_tests(fewshot.baseline)
+
+"""if __name__ == "__main__":
+    test=Tester("CodeTest/one_function")
     result=test.test_once_with_std(test.tests[0],fewshot.baseline)
-    print(result)
+    print(result)"""

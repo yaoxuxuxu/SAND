@@ -1,6 +1,5 @@
 __pycache__/
 .vscode/
-build/
 apikey
 test.py
-generate.sand
+temp/

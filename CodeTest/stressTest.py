@@ -11,13 +11,13 @@ class StressTester:
         module=utils.loadModuleFromPythonFile(datagen)
         return module.generate()
     def set_files(self):
-        with open("./CodeTest/testcode.sand","w+",encoding="utf-8") as fp:
+        with open("./CodeTest/temp/testcode.sand","w+",encoding="utf-8") as fp:
             fp.write(self.testcode)
-        with open("./CodeTest/stdcode.sand","w+",encoding="utf-8") as fp:
+        with open("./CodeTest/temp/stdcode.sand","w+",encoding="utf-8") as fp:
             fp.write(self.std)
     def test_once(self,param):
         code=one_function_testcode(*param)
-        itpt=Interpreter("./CodeTest/")
+        itpt=Interpreter("./CodeTest/temp/")
         for i in Parser(code).parse():
             result=itpt.eval(i)
         if result:
