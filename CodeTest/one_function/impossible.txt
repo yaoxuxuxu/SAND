@@ -1,0 +1,7 @@
+def function(){
+//Given an expression with (+-*/)and number in a string
+//calculate the value of the expression
+//when the expression is invalid return "Bad Format"
+
+}
+

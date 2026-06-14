@@ -3,7 +3,6 @@ class Parser:
     def __init__(self):
         self.modes={"json":self.parse_json}
     def parse(self,mode,text):
-        print(mode,text)
         if mode in self.modes:
             return self.modes[mode](text)
         else:

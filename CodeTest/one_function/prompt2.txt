@@ -1,0 +1,6 @@
+def function(){
+//input a number list sort them from small to big
+//return the sorted list
+
+}
+

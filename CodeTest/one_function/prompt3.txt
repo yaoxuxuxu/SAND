@@ -1,0 +1,6 @@
+def function(){
+//input a number list
+//return the average biggest and smallest
+
+}
+

@@ -1,0 +1,7 @@
+def function(){
+//rock paper scissors. Given 2 string,suppose it is a and b.a,b could be "rock" "paper" or "scissor"
+//check a win or b win or a tie.
+//a win return "win" b win return "lose" tie return "tie"
+
+}
+
