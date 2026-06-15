@@ -1,5 +1,0 @@
-</exmaple>
-
-The project examples end here. Please begin generating the code.
-You can go next stage when user want.
-When you want to go next file you have to say "!!!next stage!!!"

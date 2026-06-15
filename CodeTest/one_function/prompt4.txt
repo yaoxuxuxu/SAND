@@ -1,6 +1,0 @@
-def function(){
-//given age name score
-//return a class like thing allow a.age,a.name,a.score
-
-}
-

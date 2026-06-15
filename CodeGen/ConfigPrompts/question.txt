@@ -1,8 +1,0 @@
-## Stage Rules
-During this stage, you may ask at most three questions to understand the user's general ideas and clarify important details about the topic.
-Please Ask only one question once.
-Proceed to the next stage when any of the following conditions is met:
-
-- The user says "ok" or otherwise indicates approval.
-- The maximum number of questions has been reached.
-- There are no further questions that need clarification.

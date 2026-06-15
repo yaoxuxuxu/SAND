@@ -1,6 +1,0 @@
-def function(){
-//calculate fibonacci f(0)=0 f(1)=1
-//input: from 0 to 1e6
-
-}
-

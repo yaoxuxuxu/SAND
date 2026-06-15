@@ -1,5 +1,0 @@
-def function(){
-//get one number check the number is prime number.
-
-}
-

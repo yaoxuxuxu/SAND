@@ -1,6 +1,0 @@
-def function(){
-//get 2 params calculate Greatest Common Divisor of these 2
-
-
-}
-

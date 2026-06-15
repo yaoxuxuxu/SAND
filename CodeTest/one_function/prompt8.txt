@@ -1,6 +1,0 @@
-def function(){
-//given a year, check if this year is a lunar year.
-//return true or false
-
-}
-

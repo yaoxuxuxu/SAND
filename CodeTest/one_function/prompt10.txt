@@ -1,7 +1,0 @@
-def function(){
-//create a file with "hello world"
-//read and write it for 10000 times
-//calculate the time consuming
-
-}
-
