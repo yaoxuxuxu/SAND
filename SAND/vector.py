@@ -6,24 +6,28 @@ class Vector:
         return len(self.value)
     def __str__(self):
         return str(self.value)
+    def __eq__(self, other):
+        if not isinstance(other,Vector):
+            return False
+        if len(other)!=len(self):
+            return False
+        for i in range(len(self)):
+            if self.value[i]!=other.value[i]:
+                return False
+        return True
     def fetch_method(self,name):
         try:
             method=getattr(self,name)
         except:
             raise StoneException("No method called"+name)
         return method
-    def append(self,args):
-        self.value.append(args[0])
-    def length(self,args):
-        if len(args)!=0:
-            raise StoneException("Wrong number of arguments") 
+    def append(self,element):
+        self.value.append(element)
+    def length(self):
         return len(self.value)
-    def pop(self,args):
-        if len(args)!=1:
-            raise StoneException("Wrong number of arguments")
-        if not isinstance(args[0],int):
+    def pop(self,index):
+        if not isinstance(index,int):
             raise StoneException("pop index must be an integer")
-        index=args[0]
         if index<0 or index>=len(self.value):
             raise StoneException("pop index out of range")
         return self.value.pop(index)

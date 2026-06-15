@@ -40,7 +40,7 @@ class Lexer:
                 word=self.strEscape(word)
                 self.createToken("STRING",word,line)
             elif token_type=="BOOL":
-                if word=="ture":
+                if word=="true":
                     word=True
                 else:
                     word=False

@@ -67,7 +67,7 @@ class Interpreter:
         env=self.getLibEnvFromDir(dir)
         if env==None:
             if self.bilm.isBuiltInLibrary(name):
-                env=self.bilm.importLib(name)
+                env=self.bilm.importLib(name,self)
             else:
                 raise InterpreterException("Can't Find Library "+name)
         return name,env
@@ -209,8 +209,14 @@ class Interpreter:
                 return self.eval(left)>=self.eval(right)
             if op=="<=":
                 return self.eval(left)<=self.eval(right)
+            if op=="!=":
+                return self.eval(left)!=self.eval(right)
             if op=="==":
                 return self.eval(left)==self.eval(right)
+            if op=="&&":
+                return self.eval(left) and self.eval(right)
+            if op=="||":
+                return self.eval(left) or self.eval(right)
             if op=="/":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)
@@ -272,6 +278,8 @@ class Interpreter:
         elif token.getType()=="NUMBER":
             return token.getValue()
         elif token.getType()=="STRING":
+            return token.getValue()
+        elif token.getType()=="BOOL":
             return token.getValue()
         elif token.getType()=="IDENTIFIER":
             varname=self.getVarNameFromAsttree(astTree)
@@ -363,7 +371,7 @@ class Interpreter:
             fun.setArgs(args)
             return self.nfm.eval(fun)
         if isinstance(fun, (types.MethodType,types.FunctionType)):
-            return fun(args)
+            return fun(*args)
         env=fun.runInit(args)
         #print(fun.getName(),self.now_env.var)
         result=self.eval_with_env(fun.getASTtree(),env)
