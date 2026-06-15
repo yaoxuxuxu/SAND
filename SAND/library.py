@@ -56,12 +56,15 @@ class BuiltInLibraryManager:
         for dir in os.listdir(self.libs_dir):
             if self.isFileLibrary(dir):
                 self.libs.append(dir.replace(".py",""))    
-    def importLib(self,name):
+    def importLib(self,name,interpreter):
         if name in self.nowlibs:
             return self.nowlibs[name]
         dir= ".sandlib."+name
         module=importlib.import_module(dir,package=__package__)
-        module=getattr(module,name)()
+        if name=="File":
+            module=getattr(module,name)(interpreter.dir)
+        else:
+            module=getattr(module,name)()
         self.nowlibs[name]=BuiltInLibrary(module)
         return self.nowlibs[name]
     def isBuiltInLibrary(self,name):

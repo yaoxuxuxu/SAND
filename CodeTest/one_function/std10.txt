@@ -1,0 +1,5 @@
+import File
+def function(){
+    File.write("output.txt","hello world")    
+}
+function()

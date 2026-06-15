@@ -1,0 +1,9 @@
+def function(a,b){
+    if b==0{
+        a
+    }
+    else{
+        function(b,a%b)
+    }
+}
+

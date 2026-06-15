@@ -67,7 +67,7 @@ class Interpreter:
         env=self.getLibEnvFromDir(dir)
         if env==None:
             if self.bilm.isBuiltInLibrary(name):
-                env=self.bilm.importLib(name)
+                env=self.bilm.importLib(name,self)
             else:
                 raise InterpreterException("Can't Find Library "+name)
         return name,env
@@ -371,7 +371,7 @@ class Interpreter:
             fun.setArgs(args)
             return self.nfm.eval(fun)
         if isinstance(fun, (types.MethodType,types.FunctionType)):
-            return fun(args)
+            return fun(*args)
         env=fun.runInit(args)
         #print(fun.getName(),self.now_env.var)
         result=self.eval_with_env(fun.getASTtree(),env)
