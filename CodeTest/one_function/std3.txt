@@ -1,0 +1,7 @@
+def function(list){
+    i=0
+    while i<list.length(){
+        
+    }
+
+}

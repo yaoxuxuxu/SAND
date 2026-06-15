@@ -28,7 +28,10 @@ class Lexer:
             word=m.group(0).strip()
             if token_type=="NUMBER":
                 try:
-                    value=float(word)
+                    if "." in word:
+                        value=float(word)
+                    else:
+                        value=int(word)
                 except:
                     raise StoneException("Failed to get number token",line)
                 self.createToken("NUMBER",value,line)

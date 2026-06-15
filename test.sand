@@ -1,3 +1,4 @@
-def fun(){
-    return 0;
+def fun(a){
+    print(a)
 }
+fun([1,2,3,4])
