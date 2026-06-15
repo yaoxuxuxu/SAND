@@ -10,7 +10,6 @@ class SandRunner:
         console_parser.add_argument("file")
         console_parser.add_argument("--tokenize", action="store_true")
         console_parser.add_argument("--asttree", action="store_true")
-        console_parser.add_argument("--aifix", action="store_true")
         console_parser.add_argument("--return_all", action="store_true",help="Debug return each value of all the statement.")
         self.args=console_parser.parse_args()
     def debug_parser(self):
@@ -45,21 +44,7 @@ class SandRunner:
             result=self.itpt.eval(i)
             if self.args.return_all:
                 print(result)
-    def aifix(self,code):
-        from CodeGen.modelManager import ModelManager
-        mm=ModelManager()
-        code=mm.fix_code(code)
-        while True:
-            try:
-                Parser(code).parse()
-                break
-            except Exception as ec:
-                print("Error!!! Try to fix!!!")
-                code=mm.fix_code(str(ec))
 
-        with open("./temp.sand", "w+") as fp:
-            fp.write(code)
-        return code
     def main(self):
         #code level
         dir=self.args.file
