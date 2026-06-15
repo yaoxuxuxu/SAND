@@ -1,0 +1,10 @@
+def function(list){
+    res=[]
+    i=list.length()-1
+    while i>=0{
+        res.append(list[i])
+        i=i-1
+    }
+    res
+}
+

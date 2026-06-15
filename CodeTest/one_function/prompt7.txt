@@ -1,6 +1,5 @@
 def function(){
-//given a array, use merge sort to sort this array from low to hight
-//return a array
+//given a array,reverse this array and return it
 
 }
 

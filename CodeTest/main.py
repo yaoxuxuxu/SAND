@@ -98,7 +98,7 @@ class Tester:
         except Exception as e:
             raise Exception("Syntax Error\n"+str(e))
         try:
-            itpt=Interpreter("./CodeTest/")
+            itpt=Interpreter("./CodeTest/temp")
             for i in code:
                 result=itpt.eval(i)
         except Exception as e:
