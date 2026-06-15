@@ -51,9 +51,7 @@ class SandRunner:
         code=self.read_file(dir)
         if code==-1:
             return
-        if self.args.aifix:
-            code=self.aifix(code)
-
+        
         #parser level
         self.parser=Parser(code)
         self.debug_parser()
