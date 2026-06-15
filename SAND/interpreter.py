@@ -209,8 +209,14 @@ class Interpreter:
                 return self.eval(left)>=self.eval(right)
             if op=="<=":
                 return self.eval(left)<=self.eval(right)
+            if op=="!=":
+                return self.eval(left)!=self.eval(right)
             if op=="==":
                 return self.eval(left)==self.eval(right)
+            if op=="&&":
+                return self.eval(left) and self.eval(right)
+            if op=="||":
+                return self.eval(left) or self.eval(right)
             if op=="/":
                 right=self.eval(right)
                 self.isDivideZero(right,astTree)
@@ -272,6 +278,8 @@ class Interpreter:
         elif token.getType()=="NUMBER":
             return token.getValue()
         elif token.getType()=="STRING":
+            return token.getValue()
+        elif token.getType()=="BOOL":
             return token.getValue()
         elif token.getType()=="IDENTIFIER":
             varname=self.getVarNameFromAsttree(astTree)

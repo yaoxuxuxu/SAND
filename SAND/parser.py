@@ -326,7 +326,7 @@ class Parser:
             lambda_token=self.consume()
             return self.lambda_fun(lambda_token)
         else:
-            if self.match_type(["NUMBER","IDENTIFIER","STRING"]):
+            if self.match_type(["NUMBER","IDENTIFIER","STRING","BOOL"]):
                 token=self.consume()
                 child=[]
                 while True:

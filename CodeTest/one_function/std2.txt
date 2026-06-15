@@ -1,0 +1,31 @@
+def function(list){
+    fast_sort(list,0,list.length()-1)
+    list
+}
+def fast_sort(list,l,r){
+    if(l>=r){
+        0
+    }
+    else{
+    i=l
+    j=r
+    mid=list[l]
+    while i<j{
+        while i<j && list[j]>=mid{
+            j=j-1
+        }
+        while i<j && list[i]<=mid{
+            i=i+1
+        }
+        if(i<j){
+            tmp=list[i]
+            list[i]=list[j]
+            list[j]=tmp
+        }
+    }
+        list[l]=list[i]
+        list[i]=mid
+    fast_sort(list,l,i-1)
+    fast_sort(list,i+1,r)
+    }
+}

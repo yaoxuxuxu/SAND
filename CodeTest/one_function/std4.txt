@@ -1,0 +1,4 @@
+def function(age,name,score){
+    return_all
+}
+

@@ -2,25 +2,31 @@ from . import utils
 from .test_template import one_function_testcode
 from SAND.parser import Parser
 from SAND.interpreter import Interpreter
+import json
 class StressTester:
     def __init__(self,code,std,datagen):
         self.testcode=code
         self.std=std
-        self.data=self.data_generate(datagen)
-    def data_generate(self,datagen):
-        module=utils.loadModuleFromPythonFile(datagen)
-        return module.generate()
+        self.module=utils.loadModuleFromPythonFile(datagen)
+        self.data=self.module.generate()
+
     def set_files(self):
         with open("./CodeTest/temp/testcode.sand","w+",encoding="utf-8") as fp:
             fp.write(self.testcode)
         with open("./CodeTest/temp/stdcode.sand","w+",encoding="utf-8") as fp:
             fp.write(self.std)
     def test_once(self,param):
-        code=one_function_testcode(*param)
+        param=json.dumps(param)[1:-1]
+        if hasattr(self.module,"test"):
+            code=self.module.test(param)
+        else:
+            code=one_function_testcode(param)
+        #print(code)
         itpt=Interpreter("./CodeTest/temp/")
         result=[]
         for i in Parser(code).parse():
             result.append(itpt.eval(i))
+        #print(result)
         if result[-1]:
             pass
         else:
@@ -42,6 +48,6 @@ class StressTester:
         return "Accepted"
 
 if __name__ == "__main__":
-    with open("./CodeTest/one_function/std3.txt","r+") as fp:
+    with open("./CodeTest/one_function/std4.txt","r+") as fp:
         code=fp.read()
-    st=StressTester(code,code,"./CodeTest/one_function/data3.py").test()
+    st=StressTester(code,code,"./CodeTest/one_function/data4.py").test()
