@@ -3,3 +3,4 @@ __pycache__/
 apikey
 test.py
 temp/
+.DS_Store
