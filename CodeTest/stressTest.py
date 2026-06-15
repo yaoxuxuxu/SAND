@@ -18,23 +18,30 @@ class StressTester:
     def test_once(self,param):
         code=one_function_testcode(*param)
         itpt=Interpreter("./CodeTest/temp/")
+        result=[]
         for i in Parser(code).parse():
-            result=itpt.eval(i)
-        if result:
+            result.append(itpt.eval(i))
+        if result[-1]:
             pass
         else:
             return "Wrong Answer"
         return "Accepted"
 
     def test(self):
+        case=1
         self.set_files()
         for param in self.data:
+            print(f"Test case: {str(case)}")
             result=self.test_once(param)
             if result!="Accepted":
+                print("Wrong Answer")
                 return result
+            else:
+                print("Accecpted")
+            case+=1
         return "Accepted"
 
 if __name__ == "__main__":
-    with open("./CodeTest/one_function/std1.txt","r+") as fp:
+    with open("./CodeTest/one_function/std3.txt","r+") as fp:
         code=fp.read()
-    st=StressTester(code,code,"./CodeTest/one_function/data1.py").test()
+    st=StressTester(code,code,"./CodeTest/one_function/data3.py").test()

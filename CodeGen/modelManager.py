@@ -2,11 +2,14 @@ from google import genai
 from google.genai import types
 import time
 class ModelManager:
-    def __init__(self):
+    def __init__(self,model=None):
         self.client = genai.Client(api_key=self.readApiKey())
         #self.show_available_models()
         self.model_pool=0
-        self.useful_models=["gemini-2.5-flash","gemini-3-flash-preview","gemma-4-26b-a4b-it","gemma-4-31b-it"]
+        if model:
+            self.useful_models=[model]
+        else:
+            self.useful_models=["gemini-2.5-flash","gemini-3-flash-preview","gemma-4-26b-a4b-it","gemma-4-31b-it"]
         self.history=[]
         #self.chat=self.client.chats.create(model="gemini-2.5-flash",config=self.config())
     def show_available_models(self):

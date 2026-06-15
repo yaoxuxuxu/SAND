@@ -1,7 +1,7 @@
 from .modelManager import ModelManager
 class baseline(ModelManager):
     def __init__(self):
-        super().__init__()
+        super().__init__("gemini-2.5-flash")
         self.user_add("""you should only use the programming language sand.
                       sand is a self made script programming language and it is similar to 
                       the programming language STONE.Stone is a self made PL in a PL book.

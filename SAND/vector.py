@@ -6,6 +6,15 @@ class Vector:
         return len(self.value)
     def __str__(self):
         return str(self.value)
+    def __eq__(self, other):
+        if not isinstance(other,Vector):
+            return False
+        if len(other)!=len(self):
+            return False
+        for i in range(len(self)):
+            if self.value[i]!=other.value[i]:
+                return False
+        return True
     def fetch_method(self,name):
         try:
             method=getattr(self,name)

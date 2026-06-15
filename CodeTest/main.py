@@ -48,6 +48,7 @@ class Tester:
         codes=[]
         test_id=1
         for test in self.tests:
+            print(f"Test {test_id}: start")
             res,code=self.test_once(test,model,str(test_id))
             codes.append(code)
             if "OK" in res:

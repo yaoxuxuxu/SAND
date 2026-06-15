@@ -1,7 +1,18 @@
 def function(list){
-    i=0
+    i=1
+    minn=list[0]
+    maxx=list[0]
+    average=list[0]
     while i<list.length(){
-        
+        average=average+list[i]
+        if list[i]<minn{
+            minn=list[i]
+        }
+        if list[i]>maxx{
+            maxx=list[i]
+        }
+        i=i+1
     }
-
+    average=average/list.length();
+    [average,maxx,minn]
 }
