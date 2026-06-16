@@ -1,0 +1,27 @@
+## SAND Language — Natural Language Description
+
+SAND is a dynamically-typed scripting language with a syntax loosely resembling Python and Java. Programs are organized into classes and can span multiple files.
+
+**Comments.** Single-line comments start with `//`.
+
+**Variables and Types.** Variables are assigned with `=` and require no type declaration. Supported types include integers, floats, strings, arrays, and objects. Type conversion between strings and numbers must be done explicitly using the built-in `str()` and `int()` functions.
+
+**Operators and Expressions.** Standard arithmetic operators are supported. The `+` operator doubles as string concatenation. Comparison operators are used in conditions as usual.
+
+**Control Flow.** Conditional branching is done with if/else blocks. Loops are expressed as while loops with a condition in parentheses and a brace-delimited body. There is no for loop.
+
+**Arrays.** Arrays are written as bracket-enclosed comma-separated values. Elements are accessed and assigned by index using bracket notation, including multi-dimensional indexing for nested arrays. Arrays support three methods: getting the length, appending an element to the end, and removing an element by index.
+
+**Functions.** Functions are defined inside classes using the `def` keyword followed by a name and parameter list. The last evaluated expression in the function body is implicitly returned, so no explicit return statement is needed in most cases. A special keyword `return_all` can be used instead, which automatically bundles all local variables currently in scope into a single returned object, whose fields the caller can then access by name using dot notation.
+
+**Lambdas and Closures.** Anonymous functions are created with the `lambda` keyword, followed by a parameter list and a body. They capture their enclosing scope and can be stored in variables or returned from methods and called later.
+
+**Classes.** Classes are declared with the `class` keyword. Fields are declared directly in the class body by assigning a value. Methods are defined with `def`. Inside methods, `this` refers to the current instance and must be used explicitly to access instance fields or call other instance methods. A class is instantiated by accessing `.new` on the class name, with no parentheses or arguments.
+
+**Inheritance.** A class can extend another using the `extends` keyword. The child class inherits all fields and methods of the parent. `this` works uniformly across the inheritance hierarchy, so a child instance can call methods defined on the parent.
+
+**Multi-file and Imports.** Code can be split across multiple `.sand` files. A class from another file is imported using `from filename import ClassName`. Built-in standard library modules are loaded with `import ModuleName`.
+
+**Built-in Functions.** The language provides `print()` for output, `input()` for reading a line from stdin as a string, `str()` for converting a value to string, and `int()` for converting a string to integer.
+
+**Standard Library.** The `Time` module provides a function to retrieve the current Unix timestamp as a float. The `File` module provides functions to write a string to a file at a given path, and to read the contents of a file as a string.

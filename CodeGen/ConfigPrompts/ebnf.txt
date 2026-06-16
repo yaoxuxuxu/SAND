@@ -1,0 +1,56 @@
+(* Top Level *)
+program       = { top_item [";"] } ;
+top_item      = defclass | import_lib | fun | statement ;
+
+(* Imports *)
+import_lib    = from_state | import_state ;
+from_state    = "from" ID import_state ;
+import_state  = "import" ID { "," ID } ;
+
+(* Class *)
+defclass      = "class" ID [ extents ] class_body ;
+extents       = "extends" ID ;
+class_body    = "{" { member ( ";" | EOL ) } "}" ;
+member        = fun | simple ;
+
+(* Function *)
+fun           = "def" ID param_list block ;
+param_list    = "(" [ params ] ")" ;
+params        = ID { "," ID } ;
+block         = "{" { statement ( ";" | EOL ) } "}" ;
+
+(* Statements *)
+statement     = "if"    expression block [ "else" block ]
+              | "while" expression block
+              | simple ;
+simple        = expression [ args ] ;
+args          = expression { "," expression } ;   (* same line only *)
+
+(* Expressions — Pratt parser, operator precedence:
+   =:10  ||:20  &&:30  ==|!=:40  <|<=|>|>=:50  +|-:60  *|/|%:70  *)
+expression    = factor { BINOP factor } ;         (* precedence-climbing *)
+BINOP         = "=" | "||" | "&&"
+              | "==" | "!=" | "<" | "<=" | ">" | ">="
+              | "+" | "-" | "*" | "/" | "%" ;
+
+factor        = "-" primary | primary ;
+
+(* Primary & Postfix *)
+primary       = "(" expression ")" { postfix }
+              | "[" elements "]"
+              | "lambda" param_list block
+              | ATOM { postfix } ;
+ATOM          = NUMBER | IDENTIFIER | STRING | BOOL ;
+
+elements      = [ expression { "," expression } ] ;
+
+postfix       = "." ID
+              | "(" [ args ] ")"
+              | "[" expression "]" ;
+
+(* Terminals *)
+ID            = IDENTIFIER ;
+NUMBER        = (* integer or float literal *) ;
+STRING        = (* quoted string literal *) ;
+BOOL          = "true" | "false" ;
+EOL           = (* newline — token line number changes *) ;

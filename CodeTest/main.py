@@ -8,6 +8,12 @@ from .stressTest import StressTester
 class Tester:
     def __init__(self,test_dir):
         self.tests=self.getTests(test_dir)
+        try:
+            os.mkdir("./CodeTest/temp")
+            print("made a 'temp' file")
+        except:
+            pass
+        print("Test Start")
     def getTests(self,test_dir):
         prompts=[]
         stds=[]
@@ -114,7 +120,7 @@ class Tester:
 
 if __name__ == "__main__":
     test=Tester("CodeTest/one_function")
-    result=test.test_all_tests(fewshot.baseline)
+    result=test.test_all_tests(fewshot.perfect_document)
 
 """if __name__ == "__main__":
     test=Tester("CodeTest/one_function")

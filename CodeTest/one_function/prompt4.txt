@@ -1,6 +1,7 @@
 def function(){
 //given age name score
 //return a object a allow a.age,a.name,a.score
+//in this task you should not use class!
 
 }
 
