@@ -78,9 +78,12 @@ class Tester:
     def test_once(self,test,model,test_id=""):
         model=model()
         model.user_add(test['prompt'])
-        code=model.send("complete the code,function name should be 'function'," \
+        sys_prompt="complete the code,We will test your code by calling `function(xxxxxxx)`."\
+        "You must provide a top-level function named `function`."\
+        "do not put it inside a class"\
         "do not write test or debug code for it." \
-        "output as markdown format with name sand")
+        "output as markdown format with name sand"
+        code=model.send(sys_prompt)
         code=formatParser.Parser().parse("sand",code)
         with open("./CodeTest/temp/generate"+test_id+".sand","w+") as fp:
             fp.write(code)
