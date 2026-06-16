@@ -354,6 +354,8 @@ class Parser:
     def lambda_fun(self,lambda_token):
         return self.createNode("primary",[self.param_list(),self.block()],lambda_token)
     def postfix(self):
+        if self.check_EOL():
+            return self.BADMATCH
         if self.match("."):
             dottoken=self.consume()
             name=self.getnextID()
