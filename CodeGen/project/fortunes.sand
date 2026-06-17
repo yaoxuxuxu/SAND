@@ -1,0 +1,34 @@
+
+// FortuneData acts as a data repository for the application.
+// It stores the pool of possible fortunes categorized by theme.
+class FortuneData {
+    // The fortunes list is an array of arrays.
+    // Each inner array follows the format: [Category, Fortune Text]
+    fortunesList = [
+        ["Love", "A mysterious stranger will soon enter your life."],
+        ["Love", "Love is just around the corner, keep your heart open."],
+        ["Love", "An old flame may rediscover their spark for you."],
+        ["Love", "Your kindness will attract a deep and lasting affection."],
+        
+        ["Career", "A bold move at work will lead to an unexpected promotion."],
+        ["Career", "Your creativity will be recognized by those in power."],
+        ["Career", "A new opportunity will present itself through a former colleague."],
+        ["Career", "Patience and hard work will soon pay off in abundance."],
+        
+        ["Health", "A period of renewed energy and vitality awaits you."],
+        ["Health", "Small changes in your daily routine will bring great health."],
+        ["Health", "Listen to your body; it knows the path to healing."],
+        ["Health", "Balance in your mind will lead to strength in your body."],
+        
+        ["General", "A surprising discovery will change your perspective on life."],
+        ["General", "Good news is traveling toward you on the wind."],
+        ["General", "Your curiosity will lead you to a hidden treasure."],
+        ["General", "The obstacles in your path are actually stepping stones."],
+        ["General", "Expect the unexpected today; it will be for the better."]
+    ]
+
+    // Returns the complete collection of fortunes for the engine to process.
+    def getFortunes() {
+        this.fortunesList
+    }
+}

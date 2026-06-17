@@ -39,7 +39,7 @@ class Stage:
     def user_input(self):
         self.model.user_input()
         self.end_context_index+=1
-    def run(self,max_iter=100,return_mode="solution",file=None):
+    def run(self,max_iter=100,return_mode="solution",file=None,withoutInput=False):
         if max_iter<0:
             max_iter=100
         for i in range(max_iter):
@@ -49,12 +49,15 @@ class Stage:
             if i == max_iter-1:
                 break
             self.interact(res,file)
-            self.user_input()
+            if withoutInput:
+                break
+            else:
+                self.user_input()
         
         result=self.returnByMode(return_mode)
         if result != "!!!RemainAll!!!":
             self.clear_history()
-            self.model.history.append(self.model.assistant(str(result)))
+            self.model.assistant_add(str(result))
         return result
     def interact(self,text,file=None):
         if file:

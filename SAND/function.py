@@ -76,6 +76,7 @@ class NativeFunctionManager:
             raise FunctionException("int function only need 1 param")
         tmp=args[0]
         try:
+            tmp=float(tmp)
             tmp=int(tmp)
             return tmp
         except:

@@ -49,7 +49,7 @@ class ModelManager:
     
     def user_input(self):
         res=input()
-        self.history.append(self.user(res))
+        self.user_add(res)
         return
     
     def send(self,config_prompt,contexts=None):

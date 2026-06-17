@@ -4,6 +4,5 @@ class Time(StandardLibrary):
     def __init__(self):
         super().__init__()
         
-    def time(self,args):
-    
+    def time(self):
         return time.time()

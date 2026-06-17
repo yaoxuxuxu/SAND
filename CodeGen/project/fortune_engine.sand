@@ -1,0 +1,65 @@
+
+import Time
+
+// FortuneEngine handles the logic for selecting a fortune based on 
+// randomness and user-specified categories.
+class FortuneEngine {
+    // Seed for the pseudo-random number generator
+    seed = 0
+
+    // Initializes the random seed using the current system time.
+    def initSeed() {
+        // Time.time() returns a float; we convert to int for the LCG algorithm.
+        this.seed = int(Time.time())
+    }
+
+    // A simple Linear Congruential Generator (LCG) to produce pseudo-random numbers.
+    // Returns an integer between 0 and max - 1.
+    def nextRandom(max) {
+        // LCG Constants: a = 1103515245, c = 12345, m = 2^31
+        a = 1103515245
+        c = 12345
+        m = 2147483648
+
+        this.seed = (a * this.seed + c) % m
+        
+        // Scale the result to be within [0, max - 1]
+        this.seed % max
+    }
+
+    // Filters the list of fortunes by category and returns a random selection.
+    // allFortunes: An array of arrays where each sub-array is [category, fortuneText].
+    // category: The category requested by the user.
+    def generate(allFortunes, category) {
+        candidates = []
+        i = 0
+        
+        // Filter fortunes based on the selected category
+        while (i < allFortunes.length()) {
+            fortunePair = allFortunes[i]
+            fortuneCat = fortunePair[0]
+            fortuneText = fortunePair[1]
+            
+            // If the user requested "Random" or the category matches, add to candidates
+            if (category == "Random") {
+                candidates.append(fortuneText)
+            }
+            if (category != "Random") {
+                if (fortuneCat == category) {
+                    candidates.append(fortuneText)
+                }
+            }
+            
+            i = i + 1
+        }
+
+        // Handle cases where no fortunes match the category
+        if (candidates.length() == 0) {
+            "The stars are currently obscured; the universe provides no answer for this category."
+        } else {
+            // Pick a random index from the candidate list
+            randomIndex = this.nextRandom(candidates.length())
+            candidates[randomIndex]
+        }
+    }
+}

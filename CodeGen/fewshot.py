@@ -50,3 +50,20 @@ class example_only(ModelManager):
         config+="</example>"
 
         return config
+    
+
+
+if __name__ == "__main__":
+    model=perfect_document()
+    code=model.send("write a program,input a lucky number,generate today's fortune.")
+    with open("./CodeGen/project/testcode.sand","w+",encoding="utf-8") as fp:
+            fp.write(code)
+    while 1:
+        res=input()
+        if res == "exit":
+            break
+        model.user_add(res)
+        with open("./CodeGen/project/testcode.sand","w+",encoding="utf-8") as fp:
+            fp.write(code)
+        
+    print("done")

@@ -1,61 +1,40 @@
 
-from game_logic import GameLogic
-from feedback import Feedback
-from io_utils import IOUtils
+from fortune_engine import FortuneEngine
+from fortunes import FortuneData
 
-// Initialize game components
-game = GameLogic.new
-feedback_gen = Feedback.new
-io = IOUtils.new
+// Main entry point for the Fortune Generator application
+class FortuneApp {
+    def start() {
+        // Instantiate the data and engine
+        data = FortuneData.new
+        engine = FortuneEngine.new
+        
+        // Initialize the random seed using system time
+        engine.initSeed()
 
-// Get game settings from GameLogic
-secret_number = game.get_secret_number()
-min_range = game.get_min_range()
-max_range = game.get_max_range()
+        print("Welcome to the Mystical Fortune Generator!")
+        print("------------------------------------------")
+        
+        // Personalization
+        print("Please enter your name, seeker:")
+        name = input()
+        
+        print("Hello, " + name + ". What area of your life seek you guidance in?")
+        print("Categories: Love, Career, Health, General, or 'Random' for any.")
+        category = input()
 
-io.print_message("Welcome to the Guess the Number game!")
-io.print_message("I have chosen a secret number between " + str(min_range) + " and " + str(max_range) + ".")
-io.print_message("Try to guess it!")
-io.print_message("") // New line for better readability
+        // Coordinate the fortune generation
+        // We pass the fortunes data and the desired category to the engine
+        fortune = engine.generate(data.getFortunes(), category)
 
-guessed_correctly = false
-num_guesses = 0
-
-while (guessed_correctly == false) {
-    guess_str = io.read_input("Enter your guess: ")
-    
-    // --- Input Validation ---
-    // SAND does not provide robust string parsing or error handling for int() conversion.
-    // We assume int() will work for valid numeric strings.
-    // If a non-numeric string is entered, int() might cause a runtime error.
-    
-    // Attempt to convert input to an integer
-    parsed_guess = int(guess_str) 
-
-    // Check if the guess is within the allowed range
-    if (parsed_guess < min_range or parsed_guess > max_range) {
-        io.print_message("[ERROR] Your guess " + str(parsed_guess) + " is out of the valid range (" + str(min_range) + "-" + str(max_range) + "). Please try again.")
-        continue // Skip the rest of the loop and ask for input again
-    }
-
-    num_guesses = num_guesses + 1
-
-    // Check the guess using the game logic
-    // status_info will be a list: [status, current_abs_diff, is_warmer, is_colder]
-    // status: "correct", "low", "high"
-    status_info = game.check_guess(parsed_guess) 
-    
-    // Generate and display feedback
-    feedback_message = feedback_gen.get_feedback(status_info)
-    io.print_message(feedback_message)
-    io.print_message("") // New line for better readability
-
-    // Check if the guess was correct
-    if (status_info[0] == "correct") {
-        guessed_correctly = true
+        print("------------------------------------------")
+        print("Greetings, " + name + "!")
+        print("The stars have spoken: " + fortune)
+        print("------------------------------------------")
+        print("May your path be clear!")
     }
 }
 
-io.print_message("Congratulations! You guessed the number " + str(secret_number) + " in " + str(num_guesses) + " guesses!")
-io.print_message("Thanks for playing!")
-
+// Execution
+app = FortuneApp.new
+app.start()

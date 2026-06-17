@@ -200,7 +200,7 @@ KEY RULES SUMMARY (do not violate these)
    fields or call instance methods.
 5. Class instantiation uses ClassName.new with no parentheses.
 6. No for loop. Iteration is done only with while loops and an index variable.
-7. str() must be called explicitly before concatenating a number with a string.
+7. there is no 'else if' or 'elif' statement
 8. Arrays use .length(), .append(), .pop(i). There is no .remove() by value.
 9. Lambdas close over their enclosing scope and can be stored and called later.
 10. from ... import is for user-defined .sand files;
