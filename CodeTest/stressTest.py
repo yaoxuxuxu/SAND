@@ -48,6 +48,7 @@ class StressTester:
         return "Accepted"
 
 if __name__ == "__main__":
-    with open("./CodeTest/one_function/std3.txt","r+") as fp:
-        code=fp.read()
-    st=StressTester(code,code,"./CodeTest/one_function/data3.py").test()
+    for i in range(1,10):
+        with open(f"./CodeTest/one_function/std{i}.txt","r+") as fp:
+            code=fp.read()
+        st=StressTester(code,code,f"./CodeTest/one_function/data{i}.py").test()
