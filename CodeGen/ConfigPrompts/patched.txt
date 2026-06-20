@@ -188,3 +188,20 @@ Time module (import Time):
 File module (import File):
   File.write(path, text)   → writes string text to the file at path
   File.read(path)          → reads the file at path; returns content as string
+
+═══════════════════════════════════════════════════════
+KEY RULES SUMMARY (do not violate these)
+═══════════════════════════════════════════════════════
+1. No null/None/nil. Use -1 as a sentinel for "not found".
+2. No explicit return keyword. The last expression in a function body
+   is implicitly returned.
+3. return_all bundles all local variables into a returned object.
+4. this must be written explicitly inside methods to access instance
+   fields or call instance methods.
+5. Class instantiation uses ClassName.new with no parentheses.
+6. No for loop. Iteration is done only with while loops and an index variable.
+7. there is no 'else if' or 'elif' statement
+8. Arrays use .length(), .append(), .pop(i). There is no .remove() by value.
+9. Lambdas close over their enclosing scope and can be stored and called later.
+10. from ... import is for user-defined .sand files;
+    import is for built-in standard library modules.

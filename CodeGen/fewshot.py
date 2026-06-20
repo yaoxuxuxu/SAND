@@ -24,11 +24,16 @@ class nl_only(ModelManager):
             nl=fp.read()
         self.user_add("This is a description of programming language SAND.")
         self.user_add(nl)
-
-class perfect_document(ModelManager):
+class document(ModelManager):
     def __init__(self):
         super().__init__("gemma-4-31b-it")
         with open(os.path.join(config_dir,"document.txt")) as fp:
+            doc=fp.read()
+        self.user_add(doc)
+class patched_document(ModelManager):
+    def __init__(self):
+        super().__init__("gemma-4-31b-it")
+        with open(os.path.join(config_dir,"patched_document.txt")) as fp:
             doc=fp.read()
         self.user_add(doc)
 
@@ -54,7 +59,7 @@ class example_only(ModelManager):
 
 
 if __name__ == "__main__":
-    model=perfect_document()
+    model=patched_document()
     code=model.send("write a program,input a lucky number,generate today's fortune.")
     with open("./CodeGen/project/testcode.sand","w+",encoding="utf-8") as fp:
             fp.write(code)
