@@ -2,8 +2,8 @@ from .modelManager import ModelManager
 import os
 config_dir="./CodeGen/ConfigPrompts/"
 class baseline(ModelManager):
-    def __init__(self):
-        super().__init__("gemma-4-31b-it")
+    def __init__(self,model="gemma-4-31b-it"):
+        super().__init__(model)
         self.user_add("""you should only use the programming language sand.
                       sand is a self made script programming language and it is similar to 
                       the programming language STONE.Stone is a self made PL in a PL book.
