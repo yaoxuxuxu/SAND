@@ -1,5 +1,5 @@
-def function(){
-//given a array,reverse this array and return it
+def fun():
+given a array,reverse this array and return it
 
-}
+
 

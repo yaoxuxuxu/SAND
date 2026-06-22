@@ -1,6 +1,6 @@
-def function(){
-//input a number list
-//return the average,biggest and smallest as a list
+def fun():
+input a number list
+return the average,biggest and smallest as a list
 
-}
+
 

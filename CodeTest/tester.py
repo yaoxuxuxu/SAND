@@ -78,16 +78,16 @@ class Tester:
     def test_once(self,test,model,test_id=""):
         model=model()
         model.user_add(test['prompt'])
-        sys_prompt="You can only use Programming language sand." \
-        "complete the code,We will test your code by calling `function(xxxxxxx)`."\
-        "You must provide a top-level function named `function`."\
+        sys_prompt="You can only use Programming language python." \
+        "complete the code,We will test your code by calling `fun(xxxxxxx)`."\
+        "You must provide a top-level function named `fun`."\
         "do not put it inside a class"\
         "do not write test or debug code for it." \
-        "output as markdown format with name sand"
+        "output as markdown format with name python"
         while 1:
             try:
                 code=model.send(sys_prompt)
-                code=formatParser.Parser().parse("sand",code)
+                code=formatParser.Parser().parse("python",code)
                 break
             except Exception as e:
                 print(str(e))

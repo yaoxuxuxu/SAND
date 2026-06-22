@@ -1,5 +1,5 @@
-def function(){
-//create a file called "output.txt" with "hello world"
+def fun():
+create a file called "output.txt" with "hello world"
 
-}
+
 
