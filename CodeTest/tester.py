@@ -4,7 +4,6 @@ import os
 import CodeTest.utils as utils
 from CodeGen import fewshot,formatParser
 from .stressTest import StressTester
-
 class Tester:
     def __init__(self,test_dir):
         self.tests=self.getTests(test_dir)
@@ -56,7 +55,7 @@ class Tester:
         for test in self.tests:
             print(f"Test {test_id}: start")
             res,code=self.test_once(test,model,str(test_id))
-            codes.append(code)
+            #codes.append(code)
             if "OK" in res:
                 status="ok"
             elif "Syntax" in res:

@@ -1,6 +1,6 @@
 from .tester import Tester
 from CodeGen import fewshot
-model_list=[fewshot.patched_document,fewshot.bnf_only,fewshot.nl_only,fewshot.example_only,fewshot.document]
+model_list=[fewshot.bnf_only,fewshot.nl_only,fewshot.example_only,fewshot.document,fewshot.patched_document]
 def test_for_model(model):
     test=Tester("CodeTest/one_function")
     return test.test_all_tests(model)
