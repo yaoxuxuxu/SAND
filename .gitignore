@@ -4,3 +4,4 @@ apikey
 test.py
 temp/
 .DS_Store
+experiment_result.*
