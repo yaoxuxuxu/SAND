@@ -40,7 +40,7 @@ class patched_document(ModelManager):
 
 class example_only(ModelManager):
     def __init__(self):
-        super().__init__()
+        super().__init__("gemma-4-31b-it")
         self.user_add("These are some example of programming language SAND.")
         self.user_add(self.code_config())
     def code_config(self):
