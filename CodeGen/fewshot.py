@@ -33,7 +33,7 @@ class document(ModelManager):
 class patched_document(ModelManager):
     def __init__(self):
         super().__init__("gemma-4-31b-it")
-        with open(os.path.join(config_dir,"patched_document.txt")) as fp:
+        with open(os.path.join(config_dir,"patched.txt")) as fp:
             doc=fp.read()
         self.user_add(doc)
 
