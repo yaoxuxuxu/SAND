@@ -22,7 +22,7 @@ def main(iter):
     for i in counts:
         for j in i:
             print(j)
-            i[j]/=iter
+            counts[i][j]/=iter
     
     with open("./pre_experiment_result.txt","w+",encoding="utf-8") as fp:
         fp.write(str(counts))
