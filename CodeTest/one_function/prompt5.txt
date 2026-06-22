@@ -1,5 +1,5 @@
 def fun():
 get one number check the number is prime number.
-
+return true or false
 
 

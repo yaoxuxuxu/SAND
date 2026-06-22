@@ -1,7 +1,7 @@
-def function(a,b){
-    if b==0{
+def fun(a,b):
+    if b==0:
         a
-    }
+    
     else{
         function(b,a%b)
     }
