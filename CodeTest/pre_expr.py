@@ -19,9 +19,9 @@ def main(iter):
             else:
                 counts[model]=count
     #normalization
+    print(counts)
     for i in counts:
-        for j in i:
-            print(j)
+        for j in counts[i]:
             counts[i][j]/=iter
     
     with open("./pre_experiment_result.txt","w+",encoding="utf-8") as fp:
