@@ -11,3 +11,4 @@ def fun(n):
             return False
         i=i+2
     return True
+
