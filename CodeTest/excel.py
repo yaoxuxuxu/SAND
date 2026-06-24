@@ -45,5 +45,5 @@ def main():
     data=read()
     basic_data, concrete_data=parse(data)
     write(basic_data, concrete_data)
-
+    print("Done!")
 main()
