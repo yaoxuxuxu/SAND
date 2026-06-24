@@ -24,13 +24,17 @@ def generate():
 
 def test(param):
     code=f"""
-    import testcode
-    import stdcode
-    test=testcode.function({param})
-    std=stdcode.function({param})
-    a=test.age==std.age
-    b=test.name==std.name
-    c=test.score==std.score
-    a && b && c
+import sys,os
+sys.path.insert(0, os.getcwd())
+sys.modules.pop("testcode", None)
+sys.modules.pop("stdcode", None)
+import testcode
+import stdcode
+test=testcode.fun({param})
+std=stdcode.fun({param})
+a=test.age==std.age
+b=test.name==std.name
+c=test.score==std.score
+result = a and b and c
     """
     return code
