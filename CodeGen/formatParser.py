@@ -14,7 +14,7 @@ class Parser:
         begin=text.find(begin_str)
         end=text.find("```",begin+begin_len)
         if begin != -1 and end != -1:
-            text = text[begin+7:end]
+            text = text[begin+begin_len:end]
             return text
         else:
             print(text)

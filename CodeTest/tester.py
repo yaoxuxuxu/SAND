@@ -1,5 +1,3 @@
-from SAND.parser import Parser
-from SAND.interpreter import Interpreter
 import os
 import CodeTest.utils as utils
 from CodeGen import fewshot,formatParser
@@ -87,6 +85,7 @@ class Tester:
         while 1:
             try:
                 code=model.send(sys_prompt)
+                print(code)
                 code=formatParser.Parser().parse("python",code)
                 break
             except Exception as e:
@@ -110,13 +109,11 @@ class Tester:
             return str(e),code
     def test_format(self,code):
         try:
-            code=Parser(code).parse()
+            compile(code, "<string>", "exec")
         except Exception as e:
             raise Exception("Syntax Error\n"+str(e))
         try:
-            itpt=Interpreter("./CodeTest/temp")
-            for i in code:
-                result=itpt.eval(i)
+            exec(code)
         except Exception as e:
             raise Exception("Runtime Error(before test)\n"+str(e))
     def run_test(self,code,std,data):

@@ -4,10 +4,7 @@ config_dir="./CodeGen/ConfigPrompts/"
 class baseline(ModelManager):
     def __init__(self,model="gemma-4-31b-it"):
         super().__init__(model)
-        self.user_add("""you should only use the programming language sand.
-                      sand is a self made script programming language and it is similar to 
-                      the programming language STONE.Stone is a self made PL in a PL book.
-                      its writter is Professor Chiba from Tokyo University, Chiba Software Lab.""")
+        self.user_add("""you should only use the programming language python.""")
 
 class bnf_only(ModelManager):
     def __init__(self):
