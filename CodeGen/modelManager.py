@@ -68,6 +68,7 @@ class ModelManager:
                 res=self.client.models.generate_content(model=self.model_name,
                                                     config=self.config(config_prompt),
                                                     contents=contexts)
+                assert(res.text!=None)
                 break
             except Exception as e:
                 print(f"Error occurred: {e}")
