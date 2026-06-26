@@ -1,6 +1,6 @@
 from .tester import Tester
 from CodeGen.fewshot import baseline
-model_list=["gemma-4-26b-a4b-it"]#,"gemma-4-31b-it","gemini-2.5-flash","gemini-3-flash-preview"]
+model_list=["gemma-4-26b-a4b-it","gemma-4-31b-it","gemini-2.5-flash","gemini-3-flash-preview"]
 def test_for_model(model):
     test=Tester("CodeTest/one_function")
     return test.test_all_tests(lambda:baseline(model))
@@ -29,7 +29,7 @@ def main(iter):
     print("Done")
         
 if __name__ == "__main__":
-    main(5)
+    main(10)
 
                 
 
