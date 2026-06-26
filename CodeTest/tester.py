@@ -85,7 +85,6 @@ class Tester:
         while 1:
             try:
                 code=model.send(sys_prompt)
-                print(code)
                 code=formatParser.Parser().parse("python",code)
                 break
             except Exception as e:
