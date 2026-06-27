@@ -118,9 +118,12 @@ class Tester:
     def run_test(self,code,std,data):
         self.test_format(code)
         try:
+            pre_dir=os.getcwd()
             result=StressTester(code,std,data).test()
         except:
             raise Exception("Runtime Error(when test)\n")
+        finally:
+            os.chdir(pre_dir)
         if result!="Accepted":
             raise Exception("Performance not Correct"+result)
 
