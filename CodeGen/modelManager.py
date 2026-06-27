@@ -1,3 +1,4 @@
+import os
 from google import genai
 from google.genai import types
 import time
@@ -19,8 +20,15 @@ class ModelManager:
             print(model.name)
         return
     def readApiKey(self):
-        with open("./CodeGen/apikey","r+") as fp:
-            res=fp.read()
+        while True:
+            try:
+                with open("./CodeGen/apikey","r+") as fp:
+                    res=fp.read()
+                break
+            except Exception as e:
+                print(os.getcwd())
+                print(f"Error occurred while reading API key: {e}")
+                time.sleep(5)
         apis=[]
         for i in res.split("\n"):
             if len(i)<5:
@@ -68,6 +76,7 @@ class ModelManager:
                 res=self.client.models.generate_content(model=self.model_name,
                                                     config=self.config(config_prompt),
                                                     contents=contexts)
+                assert(res.text!=None)
                 break
             except Exception as e:
                 print(f"Error occurred: {e}")
