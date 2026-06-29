@@ -1,6 +1,6 @@
-def fun():
-given a year, check if this year is a lunar year.
-return true or false
+def function(){
+//given a year, check if this year is a leap year.
+//return true or false
 
-
+}
 
