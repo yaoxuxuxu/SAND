@@ -1,5 +1,5 @@
 def function(){
-//given a year, check if this year is a lunar year.
+//given a year, check if this year is a leap year.
 //return true or false
 
 }
