@@ -92,7 +92,7 @@ class ExcelMaker:
 
 em=ExcelMaker()
 def pre_ex():
-    input_dir="python_pre.txt"
+    input_dir="pre.txt"
     output_dir="pre_output.xlsx"
     em.set_dir(input_dir, output_dir)
     em.excel_pre_data()
