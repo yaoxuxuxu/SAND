@@ -70,8 +70,8 @@ class ExcelMaker:
         df=pd.DataFrame(basic_data)
         df.to_excel(self.excel_writter, sheet_name="Sheet1", startrow=0, index=False)
     def write_concrete_data(self,concrete_data):
+        row=0
         for model in concrete_data:
-            row=0
             df=pd.DataFrame(concrete_data[model])
             df.index.name=model
             df.to_excel(self.excel_writter,startrow=row, sheet_name="Sheet2")
@@ -105,7 +105,7 @@ def main_ex():
     em.excel_advance_data()
     em.save()
 if __name__=="__main__":
-    pre_ex()
-    #main_ex()
+    #pre_ex()
+    main_ex()
 
     print("Done!")
