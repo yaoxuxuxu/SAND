@@ -50,7 +50,7 @@ class Tester:
     def test_all_tests(self,model):
         count={"ok":0,"syntax_error":0,"runtime_error":0,"performance_error":0}
         result=[]
-        codes=[]
+        bad_codes=[]
         test_id=1
         for test in self.tests:
             print(f"Test {test_id}: start")
@@ -68,13 +68,15 @@ class Tester:
                 raise Exception(res+"bad status")
             
             count[status]+=1
+            if status!="ok":
+                bad_codes.append([status,code])
             result.append(status)
             print(f"Test {test_id}: {status}")
             test_id+=1
             
         print(count)
         print(result)
-        return count,result
+        return count,result,bad_codes
     def test_once(self,test,model,test_id=""):
         model=model()
         model.user_add(test['prompt'])
