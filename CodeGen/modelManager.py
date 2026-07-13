@@ -38,7 +38,7 @@ class ModelManager:
             apis.append(i)
         return apis
     def config(self,config_prompt):
-        return {"system_instruction": config_prompt}
+        return {"system_instruction": config_prompt,"temperature":0.2}
     def user_add(self,message):
         message=types.UserContent(
         parts=[types.Part(text=message)]
@@ -74,7 +74,6 @@ class ModelManager:
         while True:
             try:
                 res=self.client.models.generate_content(model=self.model_name,
-                                                    temperature=0.2,
                                                     config=self.config(config_prompt),
                                                     contents=contexts)
                 assert(res.text!=None)
