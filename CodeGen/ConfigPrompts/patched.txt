@@ -192,12 +192,12 @@ File module (import File):
 ═══════════════════════════════════════════════════════
 KEY RULES SUMMARY (do not violate these)
 ═══════════════════════════════════════════════════════
-1. No null/None/nil. Use -1 as a sentinel for "not found".
-2. No explicit return keyword. The last expression in a function body
+1. No explicit return keyword. The last expression in a function body
    is implicitly returned.
-3. return_all bundles all local variables into a returned object.
-4. this must be written explicitly inside methods to access instance
+2. return_all bundles all local variables into a returned object.
+3. this must be written explicitly inside methods to access instance
    fields or call instance methods.
+4.import and from xxx import xxx can only used in globally.You can not use it in function or class.
 5. Class instantiation uses ClassName.new with no parentheses.
 6. No for loop. Iteration is done only with while loops and an index variable.
 7. there is no 'else if' or 'elif' statement
