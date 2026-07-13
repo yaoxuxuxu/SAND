@@ -74,6 +74,7 @@ class ModelManager:
         while True:
             try:
                 res=self.client.models.generate_content(model=self.model_name,
+                                                    temperature=0.2,
                                                     config=self.config(config_prompt),
                                                     contents=contexts)
                 assert(res.text!=None)
