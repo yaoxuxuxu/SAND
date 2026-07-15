@@ -4,6 +4,7 @@ from groq import Groq
 class ModelManager:
     def __init__(self,model):
         self.api_pool=self.readApiKey()
+        #print(self.api_pool)
         self.api_index=-1
         self.change_api()
         #self.show_available_models()
@@ -78,6 +79,7 @@ class ModelManager:
     
 if __name__ == "__main__":
     mm=ModelManager("llama-3.1-8b-instant")
+    exit(0)
     #mm.show_available_models()
     while True:
         s=input()

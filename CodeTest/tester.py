@@ -47,14 +47,14 @@ class Tester:
                 data=None
             tests.append({"prompt":prompt,"std":std,"data":data})
         return tests
-    def test_all_tests(self,model):
+    def test_all_tests(self,model,llm):
         count={"ok":0,"syntax_error":0,"runtime_error":0,"performance_error":0}
         result=[]
         codes=[]
         test_id=1
         for test in self.tests:
             print(f"Test {test_id}: start")
-            res,code=self.test_once(test,model,str(test_id))
+            res,code=self.test_once(test,model,llm,str(test_id))
             #codes.append(code)
             if "OK" in res:
                 status="ok"
@@ -75,8 +75,8 @@ class Tester:
         print(count)
         print(result)
         return count,result
-    def test_once(self,test,model,test_id=""):
-        model=model()
+    def test_once(self,test,model,llm,test_id=""):
+        model=model(llm)
         model.user_add(test['prompt'])
         sys_prompt="You can only use Programming language sand." \
         "complete the code,We will test your code by calling `function(xxxxxxx)`."\
