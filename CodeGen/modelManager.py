@@ -72,6 +72,9 @@ class ModelManager:
                 break
             except Exception as e:
                 print(f"Error occurred: {e}")
+                if "Rate limit" in str(e):
+                    print("Rate limit reached. Switching API key...")
+                    self.change_api()
                 time.sleep(5)  # Wait for 1 second before retrying
         res=res.choices[0].message.content
         self.assistant_add(res)
@@ -79,7 +82,6 @@ class ModelManager:
     
 if __name__ == "__main__":
     mm=ModelManager("llama-3.1-8b-instant")
-    exit(0)
     #mm.show_available_models()
     while True:
         s=input()
