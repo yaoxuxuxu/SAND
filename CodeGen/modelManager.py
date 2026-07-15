@@ -16,9 +16,10 @@ class ModelManager:
         self.client = Groq(api_key=self.api_pool[self.api_index])
     def show_available_models(self):
         models = self.client.models.list()
+        result=[]
         for model in models.data:
-            print(model.id)
-        return
+            result.append(model.id)
+        return result
     def readApiKey(self):
         while True:
             try:
@@ -81,14 +82,29 @@ class ModelManager:
         return res
     
 if __name__ == "__main__":
-    mm=ModelManager("llama-3.1-8b-instant")
-    #mm.show_available_models()
-    while True:
-        s=input()
-        if s=="exit":
-            break
-        mm.user_add(s)
-        res=mm.send("")
-        print(res)
-    print(mm.history)
-    
+    mm=ModelManager(None)
+    models = mm.show_available_models()
+    results = []
+    for model in models:
+        mm = ModelManager(model)
+        print("Testing model:", model)
+        while True:
+            s=input()
+            if s=="pass":
+                results.append(model)
+                break
+            if s=="fail":
+                break
+            mm.user_add(s)
+            try:
+                res=mm.send("")
+                print(res)
+            except Exception as e:
+                print(f"Error occurred while sending message: {e}")
+                continue
+    print(results)
+    with open("model_checked","w+") as fp:
+        s=""
+        for i in results:
+            s+= i +"\n"
+        fp.write(s)
