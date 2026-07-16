@@ -73,9 +73,7 @@ class ModelManager:
                 break
             except Exception as e:
                 print(f"Error occurred: {e}")
-                if "Rate limit" in str(e):
-                    print("Rate limit reached. Switching API key...")
-                    self.change_api()
+                self.change_api()
                 time.sleep(5)  # Wait for 1 second before retrying
         res=res.choices[0].message.content
         self.assistant_add(res)
