@@ -67,7 +67,8 @@ class ModelManager:
             try:
                 res = self.client.chat.completions.create(
                     model=self.model_name,
-                    messages=contexts
+                    messages=contexts,
+                    temperature=0.2
                 )
                 assert(res!=None)
                 break

@@ -83,6 +83,7 @@ class Tester:
         "You must provide a top-level function named `function`."\
         "do not put it inside a class"\
         "do not write test or debug code for it." \
+        "only give the code." \
         "output as markdown format with name sand"
         while 1:
             try:
