@@ -1,17 +1,24 @@
 from CodeTest.tester import Tester
 import pandas as pd
+import re
+from CodeGen.fewshot import patched_document
+from CodeTest.evaluator import SandEvaluator
+import copy
 class HumanEvalTester(Tester):
-    def __init__(self, test_dir):
-        super().__init__(test_dir)
-        self.test_cases = self.load_test_cases()
-
+    def __init__(self, model):
+        self.badmatch=[]
+        self.backup_dataset=None
+        super().__init__(model)
     def test_once(self,test):
+        #task structure
+        #{'task_id': '1', 'prompt': problem }
         model=self.model()
         model.user_add(test['prompt'])
-        sys_prompt="You can only use Programming language sand." \
-        "complete the code,We will test your code by calling `function(xxxxxxx)`."\
-        "You must provide a top-level function named `function`."\
-        "do not put it inside a class"\
+        sys_prompt="Only use Programming language sand." \
+        "Given problem is written in python"\
+        "translate and rewrite the code in sand"\
+        "Do not rename the function"\
+        "Do not put it inside a class"\
         "do not write test or debug code for it." \
         "output as markdown format with name sand"
         while 1:
@@ -22,19 +29,72 @@ class HumanEvalTester(Tester):
             except Exception as e:
                 print(str(e))
                 print("code generation bug occur!! retrying")
-        with open("./CodeTest/temp/generate"+self.test_id+".sand","w+") as fp:
-            fp.write(code)
-        try:
-            self.run_test(code,test["std"],test["data"])
-            return "OK!",code
-        except Exception as e:
-            return str(e),code
-
+        return SandEvaluator(code).check_all(mode="data",tests=test["test"],funname=test["entry_point"])
     def read_dataset(self):
         df = pd.read_parquet("hf://datasets/openai/openai_humaneval/openai_humaneval/test-00000-of-00001.parquet")
         res = df.to_dict("records")
+        self.backup_dataset=copy.deepcopy(res)
+        for i in range(len(res)):
+            res[i] = self.translate(res[i])
+        index = 0
+        len_res = len(res)
+        while index < len_res:
+            if res[index] is None:
+                res.pop(index)
+                len_res -= 1
+            else:
+                index += 1 
         return res
+    def translate(self,test):
+        #modify test code
+        test_code=test["test"]
+        pattern = r"assert\s+candidate\((.*)\)\s*==\s*(.+)"
+        matches = re.findall(pattern, test_code)
+        tests=[]
+        if matches:    
+            for match in matches:
+                args_str,expected_str = match
+                tests.append({"input":args_str,"output":expected_str})
+            test["test"]=tests
+            return test
+        else:
+            self.badmatch.append(test["task_id"])
+            return None
+
+def debug_all_case():
+    tester = HumanEvalTester(patched_document)
+    failed=[]
+    test_id=0
+    for testcase in tester.datasets:
+        print(f"Test Case : {test_id}")
+        
+        patience=5
+        while patience:
+            
+            status,message=tester.test_once(testcase)
+            if status == "pass":
+                break
+            print(status)
+            print(message)
+            patience-=1
+        if patience:
+            print(str(test_id)+" : Accepted")
+        else:
+            print(str(test_id)+" : Failed")
+            failed.append(test_id) 
+        test_id+=1
+    acc=1-len(failed)/len(tester.datasets)
+    print(f"acc : {acc}")
+def debug_case(id):
+    tester = HumanEvalTester(patched_document)
+    test=tester.datasets[id]
+    status,message=tester.test_once(test)
+    print(test["test"])
+    print(tester.backup_dataset[id]['test'])
+    print(status)
+    print(message)
+
 
 if __name__ == "__main__":
-    tester = HumanEvalTester("CodeTest/one_function")
-    print(tester.datasets[0])  # Print the first test case
+    debug_case(1)
+    #debug_all_case()
