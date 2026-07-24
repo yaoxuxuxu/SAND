@@ -4,10 +4,12 @@ import re
 from CodeGen.fewshot import patched_document
 from CodeTest.evaluator import SandEvaluator
 import copy
+from HumanEval.TestTranslator import TestTranslator
 class HumanEvalTester(Tester):
     def __init__(self, model):
         self.badmatch=[]
         self.backup_dataset=None
+        self.testTranslator=TestTranslator()
         super().__init__(model)
     def test_once(self,test):
         #task structure
@@ -46,20 +48,11 @@ class HumanEvalTester(Tester):
                 index += 1 
         return res
     def translate(self,test):
-        #modify test code
-        test_code=test["test"]
-        pattern = r"assert\s+candidate\((.*)\)\s*==\s*(.+)"
-        matches = re.findall(pattern, test_code)
-        tests=[]
-        if matches:    
-            for match in matches:
-                args_str,expected_str = match
-                tests.append({"input":args_str,"output":expected_str})
-            test["test"]=tests
-            return test
-        else:
+        try:
+            return self.testTranslator.translate(test)
+        except:
             self.badmatch.append(test["task_id"])
-            return None
+
 
 def debug_all_case():
     tester = HumanEvalTester(patched_document)
@@ -87,14 +80,22 @@ def debug_all_case():
     print(f"acc : {acc}")
 def debug_case(id):
     tester = HumanEvalTester(patched_document)
+    print(tester.badmatch)
     test=tester.datasets[id]
     status,message=tester.test_once(test)
     print(test["test"])
     print(tester.backup_dataset[id]['test'])
     print(status)
     print(message)
-
+def debug_translator(id):
+    tester = HumanEvalTester(patched_document)
+    print(len(tester.datasets),len(tester.backup_dataset),len(tester.badmatch))
+    test=tester.backup_dataset[id]
+    print(test["test"])
+    test=TestTranslator().translate(test)
+    print(test)
 
 if __name__ == "__main__":
-    debug_case(1)
+    debug_translator(158)
+    #debug_case(1)
     #debug_all_case()

@@ -35,15 +35,6 @@ class SandEvaluator:
                 pass
             case "data":
                 return self.checkByData(args["tests"],args["funname"])
-    @staticmethod
-    def toSandVar(x):
-        res=x
-        match res:
-            case str():
-                res=res.replace("True","true")
-                res=res.replace("False","false")
-                res=res.replace("'",'"')
-        return res
                 
         
     def checkByData(self,test_cases,funname):
@@ -51,8 +42,8 @@ class SandEvaluator:
         try:
             for testcase in test_cases:
                 print(f"Testing Case {case_id}:")
-                input_data=self.toSandVar(testcase["input"])
-                output_data=self.toSandVar(testcase["output"])
+                input_data=testcase["input"]
+                output_data=testcase["output"]
                 testcode=self.code+f"\n\n{funname}({input_data})=={output_data}"
                 print(testcode)
                 self.itpt=Interpreter("./CodeTest/temp/")
