@@ -1,4 +1,47 @@
+import ast
+
+class NodeTranslator(ast.NodeVisitor):
+    def __init__(self,funname):
+        self.tests=[]
+        self.funname=funname
+    def auto_dispatch(self,child):
+        name=type(child).__name__
+        fun=getattr(self,"translate_"+name,self.translate_default)
+        return fun(child)
+    def visit_Assert(self, node):
+        child=node.test
+        if self.has_candidate_call(child):
+            self.tests.append(self.auto_dispatch(child))
+        self.generic_visit(node)
+    def has_candidate_call(self,node):
+        for sub in ast.walk(node):
+            if isinstance(sub, ast.Call):
+                if isinstance(sub.func, ast.Name) and sub.func.id == "candidate":
+                    return True               
+        return False
+    def translate_default(self,node):
+        raise NotImplementedError(type(node).__name__+" is not translated")
 class TestTranslator:
+    def __init__(self):
+        pass
+    def translate(self,test):
+        self.tests=[]
+        test_code=test["test"]
+        asttree=ast.parse(test_code)
+        nt=NodeTranslator(test["entry_point"])
+        nt.visit(asttree)
+        if len(nt.tests)==0:
+            pass
+        test["test"]=nt.tests
+        return test
+
+
+
+
+
+
+
+class HandTestTranslator:
     def __init__(self):
         pass
     def translate(self,test):
@@ -80,7 +123,4 @@ class TestTranslator:
 
 if __name__ == "__main__":
     tt=TestTranslator()
-    s="what is book"
-    index=tt.findStrRear(s,"is")
-    print(index,s[index])
     

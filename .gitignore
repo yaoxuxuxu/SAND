@@ -6,3 +6,4 @@ temp/
 .DS_Store
 experiment_result.*
 groq_apikey
+foundryKey
