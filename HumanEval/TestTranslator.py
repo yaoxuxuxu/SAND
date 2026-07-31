@@ -1,8 +1,9 @@
 import ast
 
 class NodeTranslator(ast.NodeVisitor):
-    def __init__(self,funname):
+    def __init__(self,funname,testid):
         self.tests=[]
+        self.testid=testid
         self.funname=funname
     def auto_dispatch(self,child):
         name=type(child).__name__
@@ -11,8 +12,78 @@ class NodeTranslator(ast.NodeVisitor):
     def visit_Assert(self, node):
         child=node.test
         if self.has_candidate_call(child):
-            self.tests.append(self.auto_dispatch(child))
-        self.generic_visit(node)
+            #here need try except after test
+            res=self.auto_dispatch(child)
+            self.tests.append(res)
+    def translate_Compare(self,node):
+        left=node.left
+        ops=node.ops
+        comparators=node.comparators
+        if len(ops)>1:
+            raise Exception("lots of compare")
+        ops=self.ops_translate(ops[0])
+        comparators=comparators[0]
+        return self.auto_dispatch(left)+ops+self.auto_dispatch(comparators)
+    
+    def translate_Call(self,node):
+        func=node.func
+        args=node.args
+        keywords=node.keywords
+        if len(keywords) > 0:
+            raise Exception("keyword argument is not allowed")
+        res=self.funname+'('
+        for i in args:
+            res+=self.auto_dispatch(i)
+            res+=","
+        if res[-1]==",":
+            res=res[:-1]
+        res+=")"
+
+        return res
+    def translate_Tuple(self,node):
+        return self.translate_List(node)
+    def translate_List(self,node):
+        items=node.elts
+        res='['
+        for i in items:
+            res+=self.auto_dispatch(i)
+            res+=","
+        if res[-1]==",":
+            res=res[:-1]
+        res+="]"
+        return res
+    def translate_Constant(self,node):
+        value=node.value
+        match value:
+            case str():
+                return '"'+value+'"'
+            case bool():
+                if value:
+                    return "true"
+                else:
+                    return "false"
+            case int():
+                return str(value)
+            case float():
+                tmp=str(value)
+                if 'e' in tmp:
+                    return str(format(value,"f"))
+                return tmp
+            case _:
+                raise Exception("Type not define")
+    def ops_translate(self,ops):
+        cmp_map = {
+                    ast.Lt: "<",
+                    ast.LtE: "<=",
+                    ast.Gt: ">",
+                    ast.GtE: ">=",
+                    ast.Eq: "==",
+                    ast.NotEq: "!=",
+                    ast.Is: "=="
+        }
+        if type(ops) not in cmp_map:
+            raise Exception("Failed to translate a operator")
+        return cmp_map[type(ops)]
     def has_candidate_call(self,node):
         for sub in ast.walk(node):
             if isinstance(sub, ast.Call):
@@ -20,6 +91,8 @@ class NodeTranslator(ast.NodeVisitor):
                     return True               
         return False
     def translate_default(self,node):
+        print(node,self.testid)
+        print(ast.dump(node))
         raise NotImplementedError(type(node).__name__+" is not translated")
 class TestTranslator:
     def __init__(self):
@@ -28,7 +101,7 @@ class TestTranslator:
         self.tests=[]
         test_code=test["test"]
         asttree=ast.parse(test_code)
-        nt=NodeTranslator(test["entry_point"])
+        nt=NodeTranslator(test["entry_point"],test["task_id"])
         nt.visit(asttree)
         if len(nt.tests)==0:
             pass
@@ -41,7 +114,7 @@ class TestTranslator:
 
 
 
-class HandTestTranslator:
+class NaiveTestTranslator:
     def __init__(self):
         pass
     def translate(self,test):

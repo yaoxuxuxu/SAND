@@ -96,6 +96,6 @@ def debug_translator(id):
     print(test)
 
 if __name__ == "__main__":
-    debug_translator(1)
+    debug_translator(44)
     #debug_case(1)
     #debug_all_case()

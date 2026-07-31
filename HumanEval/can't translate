@@ -1,0 +1,104 @@
+<ast.BinOp object at 0x1237cf7c0> HumanEval/2
+BinOp(left=Call(func=Name(id='candidate', ctx=Load()), args=[Constant(value=1.33)], keywords=[]), op=Sub(), right=Constant(value=0.33))
+<ast.UnaryOp object at 0x1237cf550> HumanEval/3
+UnaryOp(op=USub(), operand=Constant(value=3))
+<ast.BinOp object at 0x1237ceda0> HumanEval/4
+BinOp(left=Call(func=Name(id='candidate', ctx=Load()), args=[List(elts=[Constant(value=1.0), Constant(value=2.0), Constant(value=3.0)], ctx=Load())], keywords=[]), op=Sub(), right=BinOp(left=Constant(value=2.0), op=Div(), right=Constant(value=3.0)))
+<ast.BinOp object at 0x123bb0730> HumanEval/8
+BinOp(left=BinOp(left=Constant(value=3), op=Add(), right=Constant(value=5)), op=Add(), right=Constant(value=7))
+<ast.BinOp object at 0x1237cf700> HumanEval/16
+BinOp(left=BinOp(left=Constant(value='abcde'), op=Add(), right=Constant(value='cade')), op=Add(), right=Constant(value='CADE'))
+<ast.Dict object at 0x1237cfa90> HumanEval/22
+Dict(keys=[], values=[])
+<ast.BinOp object at 0x123bb20b0> HumanEval/25
+BinOp(left=Constant(value=3), op=Mult(), right=Constant(value=19))
+<ast.UnaryOp object at 0x1237cf190> HumanEval/30
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.BinOp object at 0x123bb0ac0> HumanEval/31
+BinOp(left=Constant(value=5), op=Mult(), right=Constant(value=17))
+<ast.UnaryOp object at 0x123bb3970> HumanEval/33
+UnaryOp(op=USub(), operand=Constant(value=5))
+<ast.UnaryOp object at 0x123bb3640> HumanEval/35
+UnaryOp(op=USub(), operand=Constant(value=5))
+<ast.UnaryOp object at 0x123bb1a50> HumanEval/37
+UnaryOp(op=USub(), operand=Constant(value=5))
+<ast.Name object at 0x123bb35b0> HumanEval/38
+Name(id='encoded_str', ctx=Load())
+<ast.UnaryOp object at 0x123bb1840> HumanEval/40
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb3520> HumanEval/43
+UnaryOp(op=USub(), operand=Constant(value=2))
+<ast.Name object at 0x123bb1810> HumanEval/44
+Name(id='x', ctx=Load())
+<ast.UnaryOp object at 0x123bb1e10> HumanEval/47
+UnaryOp(op=USub(), operand=Constant(value=10))
+<ast.Name object at 0x123bb2ef0> HumanEval/50
+Name(id='encoded_str', ctx=Load())
+<ast.UnaryOp object at 0x123bb0a00> HumanEval/52
+UnaryOp(op=Not(), operand=Call(func=Name(id='candidate', ctx=Load()), args=[List(elts=[Constant(value=1), Constant(value=20), Constant(value=4), Constant(value=10)], ctx=Load()), Constant(value=5)], keywords=[]))
+<ast.Name object at 0x123bb0d90> HumanEval/53
+Name(id='x', ctx=Load())
+<ast.UnaryOp object at 0x123bb3760> HumanEval/56
+UnaryOp(op=Not(), operand=Call(func=Name(id='candidate', ctx=Load()), args=[Constant(value='<<<><>>>>')], keywords=[]))
+<ast.UnaryOp object at 0x123bb3880> HumanEval/57
+UnaryOp(op=USub(), operand=Constant(value=10))
+<ast.UnaryOp object at 0x123bb2a10> HumanEval/61
+UnaryOp(op=Not(), operand=Call(func=Name(id='candidate', ctx=Load()), args=[Constant(value='((()())))')], keywords=[]))
+<ast.UnaryOp object at 0x123bff910> HumanEval/69
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb27a0> HumanEval/70
+UnaryOp(op=USub(), operand=Constant(value=5))
+<ast.UnaryOp object at 0x1237cf310> HumanEval/71
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.BinOp object at 0x1237cf3a0> HumanEval/75
+BinOp(left=BinOp(left=Constant(value=3), op=Mult(), right=Constant(value=5)), op=Mult(), right=Constant(value=7))
+<ast.UnaryOp object at 0x1237cfa90> HumanEval/77
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb32e0> HumanEval/92
+UnaryOp(op=USub(), operand=Constant(value=4))
+<ast.Dict object at 0x123bb2890> HumanEval/95
+Dict(keys=[Constant(value='p'), Constant(value='b')], values=[Constant(value='pineapple'), Constant(value='banana')])
+<ast.UnaryOp object at 0x123bb01f0> HumanEval/97
+UnaryOp(op=USub(), operand=Constant(value=15))
+<ast.UnaryOp object at 0x123bb0160> HumanEval/99
+UnaryOp(op=USub(), operand=Constant(value=16))
+<ast.UnaryOp object at 0x123bb2620> HumanEval/102
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb19f0> HumanEval/103
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb36d0> HumanEval/105
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb08b0> HumanEval/108
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.Dict object at 0x123bb1660> HumanEval/111
+Dict(keys=[Constant(value='a'), Constant(value='b')], values=[Constant(value=2), Constant(value=2)])
+<ast.UnaryOp object at 0x123bb16f0> HumanEval/114
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x1237cf3a0> HumanEval/116
+UnaryOp(op=USub(), operand=Constant(value=2))
+<ast.UnaryOp object at 0x123bb2020> HumanEval/120
+UnaryOp(op=USub(), operand=Constant(value=3))
+<ast.UnaryOp object at 0x123bb1db0> HumanEval/122
+UnaryOp(op=USub(), operand=Constant(value=2))
+<ast.UnaryOp object at 0x1237cf610> HumanEval/127
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x1237cefb0> HumanEval/128
+UnaryOp(op=USub(), operand=Constant(value=4))
+<ast.UnaryOp object at 0x123bb2920> HumanEval/133
+UnaryOp(op=USub(), operand=Constant(value=2.4))
+<ast.UnaryOp object at 0x123bb1420> HumanEval/135
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x123bb07c0> HumanEval/142
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x1237cf400> HumanEval/145
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x1237cff70> HumanEval/146
+UnaryOp(op=USub(), operand=Constant(value=2))
+<ast.UnaryOp object at 0x1237cf310> HumanEval/150
+UnaryOp(op=USub(), operand=Constant(value=1))
+<ast.UnaryOp object at 0x1237cf580> HumanEval/151
+UnaryOp(op=USub(), operand=Constant(value=10))
+<ast.UnaryOp object at 0x1237cffa0> HumanEval/152
+UnaryOp(op=USub(), operand=Constant(value=2))
+<ast.UnaryOp object at 0x1237ceda0> HumanEval/155
+UnaryOp(op=USub(), operand=Constant(value=78))
