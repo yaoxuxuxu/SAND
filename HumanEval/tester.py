@@ -57,6 +57,7 @@ class HumanEvalTester(Tester):
 def debug_all_case():
     tester = HumanEvalTester(patched_document)
     failed=[]
+    success=[]
     test_id=0
     for testcase in tester.datasets:
         print(f"Test Case : {test_id}")
@@ -72,12 +73,18 @@ def debug_all_case():
             patience-=1
         if patience:
             print(str(test_id)+" : Accepted")
+            success.append(test_id)
         else:
             print(str(test_id)+" : Failed")
             failed.append(test_id) 
         test_id+=1
-    acc=1-len(failed)/len(tester.datasets)
+    acc=len(success)/len(tester.datasets)
     print(f"acc : {acc}")
+
+    with open("HumanEval/results.txt","w+") as fp:
+        fp.write(f"acc : {acc}\n")
+        fp.write(f"failed cases : {failed}\n")
+        
 def debug_case(id):
     tester = HumanEvalTester(patched_document)
     print(tester.badmatch)
@@ -96,6 +103,6 @@ def debug_translator(id):
     print(test)
 
 if __name__ == "__main__":
-    debug_translator(44)
+    #debug_translator(44)
     #debug_case(1)
-    #debug_all_case()
+    debug_all_case()

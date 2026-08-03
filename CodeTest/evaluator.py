@@ -42,9 +42,7 @@ class SandEvaluator:
         try:
             for testcase in test_cases:
                 print(f"Testing Case {case_id}:")
-                input_data=testcase["input"]
-                output_data=testcase["output"]
-                testcode=self.code+f"\n\n{funname}({input_data})=={output_data}"
+                testcode=self.code+testcase
                 print(testcode)
                 self.itpt=Interpreter("./CodeTest/temp/")
                 for i in Parser(testcode).parse():
