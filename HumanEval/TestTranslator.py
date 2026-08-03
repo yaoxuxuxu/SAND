@@ -40,6 +40,31 @@ class NodeTranslator(ast.NodeVisitor):
         res+=")"
 
         return res
+    def translate_UnaryOp(self,node):
+        op=node.op
+        operand=node.operand
+        match op:
+            case ast.USub():
+                return "-"+self.auto_dispatch(operand)
+            case ast.UAdd():
+                return "+"+self.auto_dispatch(operand)
+            case _:
+                raise Exception("UnaryOp not define")
+    def translate_BinOp(self,node):
+        left=node.left
+        op=node.op
+        right=node.right
+        match op:
+            case ast.Add():
+                return self.auto_dispatch(left)+"+"+self.auto_dispatch(right)
+            case ast.Sub():
+                return self.auto_dispatch(left)+"-"+self.auto_dispatch(right)
+            case ast.Mult():
+                return self.auto_dispatch(left)+"*"+self.auto_dispatch(right)
+            case ast.Div():
+                return self.auto_dispatch(left)+"/"+self.auto_dispatch(right)
+            case _:
+                raise Exception("BinOp not define")   
     def translate_Tuple(self,node):
         return self.translate_List(node)
     def translate_List(self,node):
