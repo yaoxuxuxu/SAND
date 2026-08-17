@@ -1,5 +1,5 @@
 from CodeTest.tester import Tester
-import pandas as pd
+import pyarrow.parquet as pq
 import re
 from CodeGen.fewshot import patched_document
 from CodeTest.evaluator import SandEvaluator
@@ -32,20 +32,27 @@ class HumanEvalTester(Tester):
                 print(str(e))
                 print("code generation bug occur!! retrying")
         return SandEvaluator(code).check_all(mode="data",tests=test["test"],funname=test["entry_point"])
+    import pyarrow.parquet as pq
+
     def read_dataset(self):
-        df = pd.read_parquet("hf://datasets/openai/openai_humaneval/openai_humaneval/test-00000-of-00001.parquet")
-        res = df.to_dict("records")
-        self.backup_dataset=copy.deepcopy(res)
+        table = pq.read_table(
+            "hf://datasets/openai/openai_humaneval/"
+            "openai_humaneval/test-00000-of-00001.parquet"
+        )
+        res = table.to_pylist()
+
+        self.backup_dataset = copy.deepcopy(res)
+
         for i in range(len(res)):
             res[i] = self.translate(res[i])
+
         index = 0
-        len_res = len(res)
-        while index < len_res:
+        while index < len(res):
             if res[index] is None:
                 res.pop(index)
-                len_res -= 1
             else:
-                index += 1 
+                index += 1
+
         return res
     def translate(self,test):
         try:

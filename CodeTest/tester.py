@@ -1,4 +1,3 @@
-import pandas as pd
 from CodeGen import formatParser
 class Tester:
     def __init__(self,model=None):
