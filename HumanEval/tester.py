@@ -104,12 +104,13 @@ def debug_case(id):
 def debug_translator(id):
     tester = HumanEvalTester(patched_document)
     print(len(tester.datasets),len(tester.backup_dataset),len(tester.badmatch))
+    print(tester.badmatch)
     test=tester.backup_dataset[id]
     print(test["test"])
     test=TestTranslator().translate(test)
     print(test)
 
 if __name__ == "__main__":
-    #debug_translator(44)
+    #debug_translator(1)
     #debug_case(1)
     debug_all_case()

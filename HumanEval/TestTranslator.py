@@ -13,8 +13,11 @@ class NodeTranslator(ast.NodeVisitor):
         child=node.test
         if self.has_candidate_call(child):
             #here need try except after test
-            res=self.auto_dispatch(child)
-            self.tests.append(res)
+            try:
+                res=self.auto_dispatch(child)
+                self.tests.append(res)
+            except:
+                return
     def translate_Compare(self,node):
         left=node.left
         ops=node.ops
@@ -95,7 +98,7 @@ class NodeTranslator(ast.NodeVisitor):
                     return str(format(value,"f"))
                 return tmp
             case _:
-                raise Exception("Type not define")
+                raise Exception("Type not define",type(value).__name__)
     def ops_translate(self,ops):
         cmp_map = {
                     ast.Lt: "<",
@@ -129,7 +132,7 @@ class TestTranslator:
         nt=NodeTranslator(test["entry_point"],test["task_id"])
         nt.visit(asttree)
         if len(nt.tests)==0:
-            pass
+            raise Exception("None available test case")
         test["test"]=nt.tests
         return test
 
