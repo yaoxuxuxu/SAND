@@ -1,0 +1,7 @@
+from paper it proves that:
+    data quality > data quantity
+    diversity is necessary
+
+
+1.translate from existing PL dataset (unittest-like)
+2.generate new PL dataset

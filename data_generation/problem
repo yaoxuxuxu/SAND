@@ -1,0 +1,36 @@
+# Problem: The Transcendental Recursive Summation
+
+Implement a function `solve(N, K, M)` that computes the sum of a recursively defined sequence under specific modular constraints.
+
+### Sequence Definition
+Let $f(n)$ be a function defined for non-negative integers $n$ as follows:
+
+1.  **Base Cases:**
+    *   $f(0) = 0$
+    *   $f(1) = 1$
+
+2.  **Recursive Step:**
+    *   If $n$ is **even** ($n = 2k$):
+        $$f(n) = \left( f(k) + \text{popcount}(n) \right) \pmod{10^9 + 7}$$
+        *(Where $\text{popcount}(n)$ is the number of set bits in the binary representation of $n$.)*
+    *   If $n$ is **odd** ($n = 2k + 1$):
+        $$f(n) = \left( f(k) \oplus f(k+1) \right) + \text{rev}(n)$$
+        *(Where $\oplus$ denotes the bitwise XOR operation and $\text{rev}(n)$ is the integer obtained by reversing the bits of $n$ based on its minimum bit-length. For example, if $n=13$ ($1101_2$), $\text{rev}(13) = 1011_2 = 11$.)*
+
+### The Task
+Your function must calculate the following summation:
+$$S(N, K, M) = \sum_{i=1}^{N} \left( f(i)^K \right) \pmod{M}$$
+
+### Constraints
+*   $1 \le N \le 10^{16}$
+*   $1 \le K \le 10^9$
+*   $M$ is a prime number such that $10^9 < M < 2 \cdot 10^9$
+*   **Time Limit:** The solution must execute in $O(\log^2 N)$ or $O(\sqrt{N})$ time complexity. A naive linear iteration will fail.
+
+### Input Format
+*   `N`: A 64-bit integer.
+*   `K`: A 32-bit integer.
+*   `M`: A 32-bit prime integer.
+
+### Output Format
+*   Return the result of $S(N, K, M)$ as a single integer.
