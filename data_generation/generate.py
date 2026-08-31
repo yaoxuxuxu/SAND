@@ -1,6 +1,8 @@
 from CodeGen.modelManager import ModelManager
 import json
 import os
+from CodeGen.formatParser import Parser
+import importlib
 class ProblemGenerator:
     def __init__(self):
         self.code_dir="./data_generation"
@@ -22,8 +24,23 @@ class ProblemGenerator:
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(problem)
         mm.user_add(self.prompts["test_case_gen"])
-        res=mm.send("")
+        while True:
+            try:
+                res=mm.send("")
+                res=Parser().parse("python",res)
+                break
+            except:
+                mm.history=mm.history[:-1]
         return res
+    def generate_solution(self,problem):
+        mm=ModelManager("gemma-4-31b-it")
+        mm.user_add(problem)
+        mm.user_add(self.prompts["test_case_solve"])
+    def testcase_generate(self):
+        spec = importlib.util.spec_from_file_location("testcase", os.path.join(self.work_dir,"testcase.py"))
+        testcase = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(testcase)
+        return testcase.Generator().main()
     def write_file(self,dir,res):
         dir=os.path.join(self.code_dir,dir)
         with open(dir,"w+",encoding="utf-8") as fp:

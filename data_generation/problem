@@ -1,36 +1,45 @@
-# Problem: The Transcendental Recursive Summation
+# Problem: The $\Omega$-Resonant Integer Generator
 
-Implement a function `solve(N, K, M)` that computes the sum of a recursively defined sequence under specific modular constraints.
+Implement a function `find_omega_resonant(n, k)` that returns the $n$-th positive integer $x$ that satisfies the following four simultaneous constraints:
 
-### Sequence Definition
-Let $f(n)$ be a function defined for non-negative integers $n$ as follows:
+### 1. Prime Factorization Constraint
+The number of distinct prime factors of $x$, denoted by $\omega(x)$, must be exactly $k$. 
+*(Example: If $k=2$, $x=12$ is valid because its distinct prime factors are $\{2, 3\}$.)*
 
-1.  **Base Cases:**
-    *   $f(0) = 0$
-    *   $f(1) = 1$
+### 2. Totient-Divisor Relation
+The sum of the divisors of $x$, denoted by $\sigma(x)$, and the Euler totient function of $x$, denoted by $\phi(x)$, must satisfy the following congruence:
+$$\sigma(x) \equiv 0 \pmod{\phi(x)}$$
+*(Note: $\phi(x)$ is the count of numbers up to $x$ that are relatively prime to $x$.)*
 
-2.  **Recursive Step:**
-    *   If $n$ is **even** ($n = 2k$):
-        $$f(n) = \left( f(k) + \text{popcount}(n) \right) \pmod{10^9 + 7}$$
-        *(Where $\text{popcount}(n)$ is the number of set bits in the binary representation of $n$.)*
-    *   If $n$ is **odd** ($n = 2k + 1$):
-        $$f(n) = \left( f(k) \oplus f(k+1) \right) + \text{rev}(n)$$
-        *(Where $\oplus$ denotes the bitwise XOR operation and $\text{rev}(n)$ is the integer obtained by reversing the bits of $n$ based on its minimum bit-length. For example, if $n=13$ ($1101_2$), $\text{rev}(13) = 1011_2 = 11$.)*
+### 3. Digital Product Property
+Let $P(x)$ be the product of the non-zero digits of $x$ in base 10. $P(x)$ must be a **perfect power** $a^b$, where $a > 0$ and $b > 1$ are integers.
+*(Example: If $x = 124$, $P(x) = 1 \times 2 \times 4 = 8$, which is $2^3$. This is valid.)*
 
-### The Task
-Your function must calculate the following summation:
-$$S(N, K, M) = \sum_{i=1}^{N} \left( f(i)^K \right) \pmod{M}$$
+### 4. Growth Bound
+The integer $x$ must be strictly greater than $k^n$.
 
-### Constraints
-*   $1 \le N \le 10^{16}$
-*   $1 \le K \le 10^9$
-*   $M$ is a prime number such that $10^9 < M < 2 \cdot 10^9$
-*   **Time Limit:** The solution must execute in $O(\log^2 N)$ or $O(\sqrt{N})$ time complexity. A naive linear iteration will fail.
+---
 
-### Input Format
-*   `N`: A 64-bit integer.
-*   `K`: A 32-bit integer.
-*   `M`: A 32-bit prime integer.
+### Function Signature
+```python
+def find_omega_resonant(n: int, k: int) -> int:
+    """
+    n: The ordinal index of the resonant integer to find (1-indexed).
+    k: The required number of distinct prime factors.
+    Returns: The n-th integer x satisfying all constraints.
+    """
+    pass
+```
 
-### Output Format
-*   Return the result of $S(N, K, M)$ as a single integer.
+### Input Constraints
+- $1 \le n \le 500$
+- $1 \le k \le 15$
+- The function must be optimized to avoid brute-force search where possible, as $x$ may grow rapidly.
+
+### Example Case
+For $n=1, k=1$:
+- $x$ must have 1 distinct prime factor (i.e., $x = p^m$).
+- $\sigma(p^m) \equiv 0 \pmod{\phi(p^m)}$.
+- $P(x)$ must be a perfect power.
+- $x > 1^1$.
+*(The function should return the smallest $x$ meeting these criteria.)*

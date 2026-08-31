@@ -1,80 +1,105 @@
+
 import random
+import math
 
 class Generator:
     """
-    Generator class to produce test cases for the Transcendental Recursive Summation problem.
-    Since the problem requires an O(log^2 N) or O(sqrt(N)) solution for N up to 10^16,
-    the reference implementation in this generator uses a linear approach.
-    To ensure the generator returns the output in a reasonable time, N is capped at 10^6.
+    Generator class to produce test cases for the Omega-Resonant Integer problem.
+    The problem requires finding the n-th integer x such that:
+    1. omega(x) == k
+    2. sigma(x) % phi(x) == 0
+    3. P(x) (product of non-zero digits) is a perfect power a^b (b > 1)
+    4. x > k^n
     """
 
-    def is_prime(self, n):
-        """Helper function to check if a number is prime."""
-        if n < 2: return False
-        if n == 2 or n == 3: return True
-        if n % 2 == 0: return False
-        for i in range(3, int(n**0.5) + 1, 2):
-            if n % i == 0:
-                return False
-        return True
+    def _get_p_x(self, x: int) -> int:
+        """Calculates the product of non-zero digits of x."""
+        prod = 1
+        for digit in str(x):
+            d = int(digit)
+            if d != 0:
+                prod *= d
+        return prod
 
-    def get_random_prime(self, low, high):
-        """Generates a random prime number within the specified range."""
+    def _is_perfect_power(self, m: int) -> bool:
+        """Checks if m is a perfect power a^b where a > 0 and b > 1."""
+        if m < 1:
+            return False
+        if m == 1:
+            return True  # 1^2 = 1
+        
+        # Check for b from 2 up to log2(m)
+        for b in range(2, m.bit_length() + 1):
+            # Use root approximation
+            a = round(m**(1/b))
+            if a < 1: continue
+            if a**b == m:
+                return True
+        return False
+
+    def _get_metrics(self, x: int):
+        """Returns (omega, phi, sigma) for a given integer x."""
+        omega = 0
+        phi = x
+        sigma = 1
+        temp = x
+        d = 2
+        while d * d <= temp:
+            if temp % d == 0:
+                omega += 1
+                phi -= phi // d
+                p_pow = d
+                p_sum = 1 + d
+                temp //= d
+                while temp % d == 0:
+                    p_pow *= d
+                    p_sum += p_pow
+                    temp //= d
+                sigma *= p_sum
+            d += 1
+        if temp > 1:
+            omega += 1
+            phi -= phi // temp
+            sigma *= (1 + temp)
+        return omega, phi, sigma
+
+    def _solve(self, n: int, k: int) -> int:
+        """Brute force search to find the n-th resonant integer."""
+        count = 0
+        x = (k ** n) + 1
+        
         while True:
-            p = random.randint(low, high)
-            if self.is_prime(p):
-                return p
+            # Constraint 3: Digital Product (Fastest check)
+            px = self._get_p_x(x)
+            if self._is_perfect_power(px):
+                # Constraint 1 & 2: Prime Factorization and Totient-Divisor
+                omega, phi, sigma = self._get_metrics(x)
+                if omega == k and sigma % phi == 0:
+                    count += 1
+                    if count == n:
+                        return x
+            x += 1
 
-    def main(self):
+    def main(self) -> dict:
         """
-        Generates a single test case.
-        Returns:
-            dict: {'input': [N, K, M], 'output': [S]}
+        Generates a random test case.
+        Returns: {'input': [n, k], 'output': [x]}
         """
-        # Constraints: 1 <= N <= 10^16, 1 <= K <= 10^9, 10^9 < M < 2*10^9 (Prime)
-        # We limit N to 10^6 for the reference output to be computable in reasonable time.
-        N = random.randint(1, 10**6) 
-        K = random.randint(1, 10**9)
-        M = self.get_random_prime(10**9 + 1, 2 * 10**9 - 1)
+        # We limit n and k for the generator to ensure it returns in a reasonable time,
+        # as the search space for these specific constraints can be very sparse.
+        n = random.randint(1, 5)
+        k = random.randint(1, 3)
+        print(n,k)
+        result = self._solve(n, k)
         
-        # Reference implementation to calculate the output S(N, K, M)
-        # f(n) definition:
-        # f(0) = 0, f(1) = 1
-        # n = 2k: f(n) = (f(k) + popcount(n)) mod (10^9 + 7)
-        # n = 2k+1: f(n) = (f(k) XOR f(k+1)) + rev(n)
-        
-        f = [0] * (N + 1)
-        f[0] = 0
-        if N >= 1:
-            f[1] = 1
-        
-        MOD_F = 10**9 + 7
-        
-        for i in range(2, N + 1):
-            if i % 2 == 0:
-                # Even case
-                k = i // 2
-                popcount = bin(i).count('1')
-                f[i] = (f[k] + popcount) % MOD_F
-            else:
-                # Odd case
-                k = i // 2
-                # rev(n) reverses bits based on minimum bit-length
-                # bin(i)[2:] gives the binary string without '0b'
-                rev_n = int(bin(i)[2:][::-1], 2)
-                f[i] = (f[k] ^ f[k+1]) + rev_n
-        
-        # Calculate S(N, K, M) = sum(f(i)^K mod M)
-        total_sum = 0
-        for i in range(1, N + 1):
-            # Using modular exponentiation for f(i)^K mod M
-            total_sum = (total_sum + pow(f[i], K, M)) % M
-            
         return {
-            'input': [N, K, M],
-            'output': [total_sum]
+            'input': [n, k],
+            'output': [result]
         }
 
-# Example usage:
-gen = Generator()
-print(gen.main())
+# Example of how to use the generator:
+if __name__ == "__main__":
+    gen = Generator()
+    # Generate 3 random test cases
+    for i in range(3):
+        print(f"Test Case {i+1}: {gen.main()}")

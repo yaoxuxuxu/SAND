@@ -1,0 +1,5 @@
+{
+    "fun_completion":"Generate a difficult function generation problem, only generate the problem in markdown",
+    "test_case_gen":"write a testcase generator in python, it must contain a class called 'Generator', and 'main' function in that class. main function returns one testcase at once by a dict in format of {'input':[],'output':[]}. Write params in '[]'. For each time run the main function it will generate one random test case",
+    "test_case_solve":"class Solution:"
+}
