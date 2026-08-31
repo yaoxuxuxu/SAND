@@ -20,14 +20,13 @@ class Function:
     def setEnv(self,env):
         self.env=env
     def runInit(self,args):
-        self.env=TreeEnv(self.env)
+        frame=TreeEnv(self.env)
         if len(self.args) != len(args):
             raise FunctionException("The number of the arguments is not correct")
         for i in range(len(args)):
-            self.env.setValueForce(self.args[i],args[i])
-        return self.env
+            frame.setValueForce(self.args[i],args[i])
+        return frame
     def runUnwind(self):
-        self.env=self.env.getFatherEnv()
         return self.env
 class NativeFunction:
     def __init__(self,funname="",args=[]):
