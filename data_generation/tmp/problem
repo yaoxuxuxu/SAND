@@ -1,0 +1,68 @@
+# Problem: Nested Dictionary Flattener
+
+## Description
+Write a function `flatten_dict` that takes a nested dictionary and converts it into a "flat" dictionary. In the resulting dictionary, the keys should be a concatenation of the nested keys, separated by a dot (`.`).
+
+## Requirements
+1. The function must handle arbitrarily deep nesting.
+2. If a value is not a dictionary, it should be treated as a leaf node and added to the final dictionary.
+3. If an empty dictionary is encountered as a value, it should be preserved as an empty dictionary in the final output.
+4. The function should not modify the original input dictionary.
+
+## Input/Output Specification
+
+**Input:** 
+- `data`: A dictionary containing keys (strings) and values (any type, including other dictionaries).
+
+**Output:** 
+- A single-level dictionary where nested keys are joined by `.`.
+
+## Examples
+
+### Example 1
+**Input:**
+```python
+{
+    "user": {
+        "name": "Alice",
+        "address": {
+            "city": "New York",
+            "zip": "10001"
+        }
+    },
+    "status": "active"
+}
+```
+**Output:**
+```python
+{
+    "user.name": "Alice",
+    "user.address.city": "New York",
+    "user.address.zip": "10001",
+    "status": "active"
+}
+```
+
+### Example 2
+**Input:**
+```python
+{
+    "settings": {
+        "theme": "dark",
+        "notifications": {}
+    },
+    "version": 1.2
+}
+```
+**Output:**
+```python
+{
+    "settings.theme": "dark",
+    "settings.notifications": {},
+    "version": 1.2
+}
+```
+
+## Constraints
+- Time Complexity: $O(N)$ where $N$ is the total number of elements across all levels of the dictionary.
+- Space Complexity: $O(D)$ where $D$ is the maximum depth of the nesting (due to the recursion stack).

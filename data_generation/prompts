@@ -1,5 +1,33 @@
-<problem>
+<prompt fun_completion>
+Generate function generation problem
+only generate the problem in markdown
+<end>
+<prompt corner_case_gen>
+<end>
+<prompt testcase_gen>
+write a testcase generator in python
+For each time run the generate method it will generate one random test case.
+The diversity of the generated data should be ensured.
+```python
+def generate():
 
+
+    return {"input":list,"output":any}
+```
+input is a list contain all the params of the function
+for example: a+b function then
+return {"input":[3,5],"output":8}
+only write a python code in markdown!
 <end>
 
-<>
+<prompt solution_gen>
+you need to solve this problem only in python.
+there must be a solve function as an entry
+and return the answer
+```python
+def solve()
+    return result
+```
+only give a python code solution in markdown
+<end>
+
