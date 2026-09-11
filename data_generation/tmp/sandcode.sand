@@ -1,87 +1,80 @@
 
-// In SAND, since there is no native Map/Dictionary type with key iteration,
-// "dictionaries" are represented as Arrays of Pairs: [[key1, value1], [key2, value2]].
-// This allows us to iterate through keys and values using while loops.
+class Cipher {
+    // Define alphabets as arrays to ensure compatibility with .length() and [i] access
+    lower = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    upper = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
-class DictUtils {
-    // Main function to flatten a nested dictionary (Array of Pairs)
-    def flatten_dict(data) {
-        result = []
-        this._flatten_recursive(data, "", result)
-        result
-    }
-
-    // Helper method to handle recursion
-    def _flatten_recursive(data, prefix, result) {
+    // Helper method to find the index of a character in a given alphabet array
+    def findIndex(char, alpha) {
+        idx = -1
         i = 0
-        while (i < data.length()) {
-            pair = data[i]
-            key = pair[0]
-            val = pair[1]
-
-            // Construct the concatenated key
-            full_key = ""
-            if (prefix == "") {
-                full_key = key
-            } else {
-                full_key = prefix + "." + key
-            }
-
-            // Check if the value is a nested dictionary (Array)
-            // is_array() is assumed as a standard dynamic type-check utility
-            if (is_array(val)) {
-                if (val.length() == 0) {
-                    // Requirement 3: Preserve empty dictionaries
-                    result.append([full_key, []])
-                } else {
-                    // Requirement 1: Handle arbitrarily deep nesting
-                    this._flatten_recursive(val, full_key, result)
-                }
-            } else {
-                // Requirement 2: Treat non-dictionaries as leaf nodes
-                result.append([full_key, val])
+        while (i < alpha.length()) {
+            if (alpha[i] == char) {
+                idx = i
+                // Simulate a break by setting i to the length of the array
+                i = alpha.length()
             }
             i = i + 1
         }
-        // Implicitly return the result array
-        result
+        idx
+    }
+
+    // Main function to perform the alternating Caesar shift
+    def alternating_shift(text, shift) {
+        res = ""
+        alpha_count = 0
+        i = 0
+        
+        while (i < text.length()) {
+            char = text[i]
+            
+            // Determine if the character is lowercase or uppercase
+            low_idx = this.findIndex(char, this.lower)
+            up_idx = this.findIndex(char, this.upper)
+            
+            if (low_idx != -1) {
+                // Character is lowercase
+                if (alpha_count % 2 == 0) {
+                    // Even index: shift forward
+                    new_idx = (low_idx + shift) % 26
+                } else {
+                    // Odd index: shift backward
+                    // We use (idx - (shift % 26) + 26) % 26 to handle negative results in modulo
+                    new_idx = (low_idx - (shift % 26) + 26) % 26
+                }
+                res = res + this.lower[new_idx]
+                alpha_count = alpha_count + 1
+            }
+            
+            if (up_idx != -1) {
+                // Character is uppercase
+                if (alpha_count % 2 == 0) {
+                    // Even index: shift forward
+                    new_idx = (up_idx + shift) % 26
+                } else {
+                    // Odd index: shift backward
+                    new_idx = (up_idx - (shift % 26) + 26) % 26
+                }
+                res = res + this.upper[new_idx]
+                alpha_count = alpha_count + 1
+            }
+            
+            // If the character was neither lowercase nor uppercase, keep it as is
+            if (low_idx == -1) {
+                if (up_idx == -1) {
+                    res = res + char
+                }
+            }
+            
+            i = i + 1
+        }
+        
+        // Implicitly return the final result string
+        res
     }
 }
 
-// ==========================================
-// Example Usage / Test Case
-// ==========================================
-
-// Setup the utility object
-utils = DictUtils.new
-
-// Example 1: Nested structure
-// { "user": { "name": "Alice", "address": { "city": "New York", "zip": "10001" } }, "status": "active" }
-input1 = [
-    ["user", [
-        ["name", "Alice"],
-        ["address", [
-            ["city", "New York"],
-            ["zip", "10001"]
-        ]]
-    ]],
-    ["status", "active"]
-]
-
-flat1 = utils.flatten_dict(input1)
-print(flat1) 
-// Expected: [["user.name", "Alice"], ["user.address.city", "New York"], ["user.address.zip", "10001"], ["status", "active"]]
-
-// Example 2: Empty dictionary preservation
-// { "settings": { "theme": "dark", "notifications": {} }, "version": 1.2 }
-input2 = [
-    ["settings", [
-        ["theme", "dark"],
-        ["notifications", []]
-    ]],
-    ["version", 1.2]
-]
-
-flat2 = utils.flatten_dict(input2)
-print(flat2)
-// Expected: [["settings.theme", "dark"], ["settings.notifications", []], ["version", 1.2]]
+// Example Usage:
+cipher = Cipher.new
+result = cipher.alternating_shift("Hello World!", 2)
+print(result) // Output: "Jcnjq Uqpnb!"

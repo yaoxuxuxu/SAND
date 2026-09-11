@@ -56,11 +56,12 @@ class SandEvaluator:
                 result=self.itpt.eval(i)
             if result:
                 print("Accepted")
+                return True,"ok"
             else:
                 print("Wrong answer")
-                return False
+                return False,"Wrong answer"
         except Exception as e:
-            return False   
+            return False,"Bad code"
 
     def checkByData(self,test_cases,funname):
         case_id=0

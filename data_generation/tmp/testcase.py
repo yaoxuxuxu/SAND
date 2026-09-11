@@ -1,74 +1,111 @@
 
 import random
 import string
+import re
+from collections import Counter
+
+def solve(text, stop_words, k):
+    """
+    Reference implementation of generate_tags to produce the expected output.
+    """
+    # Case-insensitive: convert to lowercase
+    text = text.lower()
+    # Convert stop_words to lowercase set for O(1) lookup
+    stop_set = {word.lower() for word in stop_words}
+    
+    # Split by whitespace
+    raw_words = text.split()
+    cleaned_words = []
+    
+    for word in raw_words:
+        # Remove punctuation attached to words (keep only alphanumeric)
+        # The prompt says "Punctuation attached to words should be removed"
+        # We filter the string to keep only alphanumeric characters
+        cleaned = "".join(char for char in word if char.isalnum())
+        
+        # Criteria: 
+        # 1. Not in stop_words
+        # 2. Length >= 4
+        # 3. Alphanumeric (already ensured by the join above, but check if empty)
+        if cleaned and cleaned not in stop_set and len(cleaned) >= 4:
+            cleaned_words.append(cleaned)
+            
+    # Count frequencies
+    counts = Counter(cleaned_words)
+    
+    # Sorting: Frequency DESC, then Alphabetical ASC
+    # We use a tuple (-count, word) for sorting
+    sorted_tags = sorted(counts.keys(), key=lambda w: (-counts[w], w))
+    
+    return sorted_tags[:k]
 
 def generate():
     """
-    Generates a random test case for the flatten_dict function.
-    Returns a dictionary containing the input parameters and the expected output.
+    Generates a random test case for the generate_tags function.
     """
+    # Word pools for diversity
+    common_words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew"]
+    tech_words = ["python", "algorithm", "database", "interface", "compiler", "network", "security"]
+    short_words = ["the", "a", "an", "is", "it", "of", "to", "in", "and", "or"]
+    punctuation_marks = [".", ",", "!", "?", ";", ":", "(", ")", '"']
 
-    def get_random_string(length=5):
-        return ''.join(random.choices(string.ascii_lowercase, k=length))
-
-    def create_random_dict(depth, max_width=3):
-        """
-        Recursively creates a random nested dictionary.
-        """
-        # Base case: if depth is 0, return a leaf value
-        if depth == 0:
-            return random.choice([
-                get_random_string(), 
-                random.randint(0, 1000), 
-                round(random.uniform(0, 1000), 2)
-            ])
-
-        # Randomly decide how many keys this level has
-        num_keys = random.randint(1, max_width)
-        res = {}
-        for _ in range(num_keys):
-            key = get_random_string()
-            
-            # Decide the type of value for this key
-            # 0: Leaf value, 1: Nested dict, 2: Empty dict
-            choice = random.choices([0, 1, 2], weights=[0.5, 0.3, 0.2])[0]
-            
-            if choice == 0:
-                res[key] = random.choice([get_random_string(), random.randint(0, 1000), round(random.uniform(0, 1000), 2)])
-            elif choice == 1:
-                res[key] = create_random_dict(depth - 1, max_width)
-            else:
-                res[key] = {}
-        return res
-
-    def reference_flatten(d, parent_key=''):
-        """
-        Reference implementation to generate the expected output.
-        """
-        items = []
-        for k, v in d.items():
-            new_key = f"{parent_key}.{k}" if parent_key else k
-            if isinstance(v, dict) and v: # If it's a non-empty dictionary
-                items.extend(reference_flatten(v, new_key).items())
-            else:
-                # If it's a leaf or an empty dictionary
-                items.append((new_key, v))
-        return dict(items)
-
-    # Configuration for randomness
-    MAX_DEPTH = random.randint(1, 5)
-    MAX_WIDTH = random.randint(2, 4)
+    # 1. Randomly decide the "theme" of the text
+    pool = random.choice([common_words, tech_words, common_words + tech_words])
     
-    # Generate random input dictionary
-    test_input_dict = create_random_dict(MAX_DEPTH, MAX_WIDTH)
+    # 2. Generate a random set of words to create frequency
+    # We pick a few words to repeat multiple times
+    num_unique_significant = random.randint(3, 10)
+    significant_pool = random.sample(pool, min(num_unique_significant, len(pool)))
     
-    # Generate expected output using reference implementation
-    expected_output = reference_flatten(test_input_dict)
-
+    text_tokens = []
+    for word in significant_pool:
+        # Repeat each significant word 1 to 5 times
+        for _ in range(random.randint(1, 5)):
+            text_tokens.append(word)
+            
+    # Add some noise (short words and stop words)
+    for _ in range(random.randint(5, 15)):
+        text_tokens.append(random.choice(short_words))
+        
+    random.shuffle(text_tokens)
+    
+    # 3. Add random punctuation and casing
+    processed_text_list = []
+    for token in text_tokens:
+        # Randomly change case
+        if random.random() > 0.5:
+            token = token.upper()
+        elif random.random() > 0.5:
+            token = token.capitalize()
+            
+        # Randomly attach punctuation
+        if random.random() > 0.6:
+            token += random.choice(punctuation_marks)
+        processed_text_list.append(token)
+        
+    text = " ".join(processed_text_list)
+    
+    # 4. Generate stop_words
+    # Mix of short words and some randomly picked significant words
+    stop_words = random.sample(short_words, random.randint(2, len(short_words)))
+    if random.random() > 0.7 and significant_pool:
+        stop_words.append(random.choice(significant_pool))
+        
+    # 5. Generate k
+    # k can be smaller than, equal to, or larger than the number of valid tags
+    k = random.randint(1, 15)
+    
+    # Calculate expected output using the reference solve function
+    output = solve(text, stop_words, k)
+    
     return {
-        "input": [test_input_dict], 
-        "output": expected_output
+        "input": [text, stop_words, k],
+        "output": output
     }
 
-# Example of usage:
-# print(generate())
+# Example of running the generator
+if __name__ == "__main__":
+    for i in range(3):
+        print(f"Test Case {i+1}:")
+        print(generate())
+        print("-" * 20)

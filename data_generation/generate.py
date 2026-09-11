@@ -87,9 +87,11 @@ class ProblemEvaluator:
             
         return True            
     def main(self):
+        print("start diversity data checking")
         if not self.check_generator_diversity():
             print("data is too easy")
             return False
+        print("start solvable checking")
         if not self.check_solvable():
             print("problem can not be solved")
             return False

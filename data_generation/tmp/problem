@@ -1,68 +1,56 @@
-# Problem: Nested Dictionary Flattener
+# Problem: The "Smart-Tag" Generator
 
 ## Description
-Write a function `flatten_dict` that takes a nested dictionary and converts it into a "flat" dictionary. In the resulting dictionary, the keys should be a concatenation of the nested keys, separated by a dot (`.`).
+You are building a content management system that automatically generates tags for articles. You need to write a function `generate_tags` that analyzes a piece of text and extracts the most significant keywords to use as tags.
 
-## Requirements
-1. The function must handle arbitrarily deep nesting.
-2. If a value is not a dictionary, it should be treated as a leaf node and added to the final dictionary.
-3. If an empty dictionary is encountered as a value, it should be preserved as an empty dictionary in the final output.
-4. The function should not modify the original input dictionary.
+A word is considered a "significant keyword" if it meets the following criteria:
+1. It is **not** in the provided `stop_words` list.
+2. It has a length of **4 characters or more**.
+3. It is **alphanumeric** (contains only letters and numbers).
 
-## Input/Output Specification
+The function should return a list of the top `k` most frequent significant keywords. If two words have the same frequency, they should be sorted **alphabetically**.
 
-**Input:** 
-- `data`: A dictionary containing keys (strings) and values (any type, including other dictionaries).
-
-**Output:** 
-- A single-level dictionary where nested keys are joined by `.`.
-
-## Examples
-
-### Example 1
-**Input:**
+## Function Signature
 ```python
-{
-    "user": {
-        "name": "Alice",
-        "address": {
-            "city": "New York",
-            "zip": "10001"
-        }
-    },
-    "status": "active"
-}
-```
-**Output:**
-```python
-{
-    "user.name": "Alice",
-    "user.address.city": "New York",
-    "user.address.zip": "10001",
-    "status": "active"
-}
+def generate_tags(text, stop_words, k):
+    # Your code here
+    pass
 ```
 
-### Example 2
-**Input:**
-```python
-{
-    "settings": {
-        "theme": "dark",
-        "notifications": {}
-    },
-    "version": 1.2
-}
-```
-**Output:**
-```python
-{
-    "settings.theme": "dark",
-    "settings.notifications": {},
-    "version": 1.2
-}
-```
+## Input Parameters
+- `text` (String): The raw text of the article.
+- `stop_words` (List of Strings): A list of common words (e.g., "the", "and", "this") that should be ignored.
+- `k` (Integer): The maximum number of tags to return.
+
+## Output
+- A **List of Strings** containing the top `k` tags, sorted by frequency (descending) and then alphabetically (ascending).
 
 ## Constraints
-- Time Complexity: $O(N)$ where $N$ is the total number of elements across all levels of the dictionary.
-- Space Complexity: $O(D)$ where $D$ is the maximum depth of the nesting (due to the recursion stack).
+- The search should be **case-insensitive** (e.g., "Apple" and "apple" are the same word).
+- All returned tags must be in **lowercase**.
+- Punctuation attached to words (e.g., "Hello!") should be removed before processing.
+
+## Example
+**Input:**
+```python
+text = "The quick brown fox jumps over the lazy dog. The dog was not lazy, but the fox was very quick!"
+stop_words = ["the", "was", "not", "but", "very"]
+k = 3
+```
+
+**Processing:**
+1. Cleaned words: `quick`, `brown`, `fox`, `jumps`, `over`, `lazy`, `dog`, `dog`, `lazy`, `fox`, `quick`
+2. Frequencies:
+   - `quick`: 2
+   - `fox`: 2
+   - `lazy`: 2
+   - `dog`: 2
+   - `brown`: 1
+   - `jumps`: 1
+   - `over`: 1
+3. Sorting (Frequency DESC, Alphabetical ASC):
+   - `dog` (2), `fox` (2), `lazy` (2), `quick` (2) ...
+4. Top `k=3`: `["dog", "fox", "lazy"]`
+
+**Output:**
+`["dog", "fox", "lazy"]`
