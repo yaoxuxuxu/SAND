@@ -1,5 +1,5 @@
 <prompt fun_completion>
-Generate function generation problem
+Generate a fib function generation problem
 only generate the problem in markdown
 <end>
 <prompt corner_case_gen>
@@ -32,12 +32,12 @@ def solve()
 ```
 only give a python code solution in markdown
 <end>
+
+<prompt sand_solver>
 you need to solve this problem only in sand.
 there must be a "solve" function as an entry.
 and return the answer directly.
-
+i will use it as "solve(xxx)"
 only give a sand code solution in markdown
-<prompt sand_solver>
-
 <end>
 

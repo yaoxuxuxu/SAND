@@ -3,7 +3,7 @@ __pycache__/
 apikey
 test.py
 temp/
-tmp/
+tmp
 .DS_Store
 experiment_result.*
 groq_apikey

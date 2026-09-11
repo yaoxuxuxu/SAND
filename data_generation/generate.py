@@ -9,6 +9,8 @@ from CodeTest.evaluator import SandEvaluator
 problem_dir="tmp/problem"
 testcase_dir="tmp/testcase.py"
 solution_dir="tmp/solution.py"
+prompts=PromptReader('./data_generation/prompts')
+
 class Problem:
     def __init__(self):
         self.problem_dir=problem_dir
@@ -18,17 +20,14 @@ class Problem:
         self.problem=utils.read_file(self.problem_dir)
         self.testcase=utils.load_module("testcase",self.testcase_dir).generate
         self.solution=utils.load_module("solution",self.solution_dir).solve
-    def generate_testcase(self):
-        return self.testcase()
     
 
 class ProblemGenerator:
     def __init__(self):
         self.code_dir="./data_generation"
-        self.prompts=PromptReader('./data_generation/prompts')
     def generate_problem(self):
         mm=ModelManager("gemma-4-31b-it")
-        mm.user_add(self.prompts.get("fun_completion"))
+        mm.user_add(prompts.get("fun_completion"))
         res=mm.send("")
         return res
     def get_markdown_retry(self,mm,mode="python"):
@@ -43,12 +42,12 @@ class ProblemGenerator:
     def generate_testcase(self,problem):
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(problem)
-        mm.user_add(self.prompts.get("testcase_gen"))
+        mm.user_add(prompts.get("testcase_gen"))
         return self.get_markdown_retry(mm)
     def generate_solution(self,problem):
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(problem)
-        mm.user_add(self.prompts.get("solution_gen"))
+        mm.user_add(prompts.get("solution_gen"))
         return self.get_markdown_retry(mm)
     def main(self):
         problem=self.generate_problem()
@@ -69,7 +68,7 @@ class ProblemEvaluator:
     def check_generator_diversity(self):
         cnt={}
         for _ in range(int(self.check_iter)):
-            test=self.problem.generate_testcase()
+            test=self.problem.testcase()
             test=test["input"]
             test=json.dumps(test)
             cnt[test]=1
@@ -102,21 +101,11 @@ class SandSolver():
     def __init__(self,problem=Problem()):
         #setting
         self.tmp_code_dir="tmp/sandcode.sand"
-        self.check_iter=int(1e5)
+        self.check_iter=int(1e3)
 
         self.sandmodel=fewshot.patched_document
         self.problem=problem
-
-    def main(self):
-        model=self.sandmodel()
-        model.user_add(self.problem.problem)
-        while True:
-            try:
-                code=Parser().parse("sand",model.send(""))
-                break
-            except:
-                print("format not correct from model!")
-        utils.write_file(self.tmp_code_dir,code)
+    def test(self,code):
         se=SandEvaluator(code)
         for _ in range(self.check_iter):
             testcase=self.problem.testcase()
@@ -127,12 +116,30 @@ class SandSolver():
                 return False
         print("Accepted")
         return True
+    def generate(self):
+        model=self.sandmodel()
+        model.user_add(self.problem.problem)
+        while True:
+            try:
+                code=Parser().parse("sand",model.send(prompts.get("sand_solver")))
+                break
+            except:
+                print("format not correct from model!")
+        utils.write_file(self.tmp_code_dir,code)
+        return code
+    def main(self):
+        code=self.generate()
+        self.test(code)
+        
 
 if __name__ == "__main__":
-    pg=ProblemGenerator()
-    pe=ProblemEvaluator()
-    ss=SandSolver()
+    """pg=ProblemGenerator()
     pg.main()
+    pe=ProblemEvaluator()
     print(pe.main())
+    ss=SandSolver()
+    ss.main()"""
+    ss=SandSolver()
     ss.main()
+    #ss.test(utils.read_file("tmp/sandcode.sand"))
     

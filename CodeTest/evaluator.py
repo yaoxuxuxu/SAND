@@ -49,7 +49,6 @@ class SandEvaluator:
         return code
     def checkByInout(self,args):
         testcode=self.code+"\n"+self.generate_testcode(args)
-        print(testcode)
         try:
             self.itpt=Interpreter("./CodeTest/temp/")
             for i in Parser(testcode).parse():

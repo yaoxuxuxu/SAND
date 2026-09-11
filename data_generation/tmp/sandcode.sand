@@ -1,80 +1,30 @@
 
-class Cipher {
-    // Define alphabets as arrays to ensure compatibility with .length() and [i] access
-    lower = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-    upper = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-
-    // Helper method to find the index of a character in a given alphabet array
-    def findIndex(char, alpha) {
-        idx = -1
-        i = 0
-        while (i < alpha.length()) {
-            if (alpha[i] == char) {
-                idx = i
-                // Simulate a break by setting i to the length of the array
-                i = alpha.length()
+class FibCalculator {
+    def calculate(n) {
+        res = 0
+        if (n == 0) {
+            res = 0
+        } else {
+            if (n == 1) {
+                res = 1
+            } else {
+                a = 0
+                b = 1
+                i = 2
+                while (i <= n) {
+                    temp = a + b
+                    a = b
+                    b = temp
+                    i = i + 1
+                }
+                res = b
             }
-            i = i + 1
         }
-        idx
-    }
-
-    // Main function to perform the alternating Caesar shift
-    def alternating_shift(text, shift) {
-        res = ""
-        alpha_count = 0
-        i = 0
-        
-        while (i < text.length()) {
-            char = text[i]
-            
-            // Determine if the character is lowercase or uppercase
-            low_idx = this.findIndex(char, this.lower)
-            up_idx = this.findIndex(char, this.upper)
-            
-            if (low_idx != -1) {
-                // Character is lowercase
-                if (alpha_count % 2 == 0) {
-                    // Even index: shift forward
-                    new_idx = (low_idx + shift) % 26
-                } else {
-                    // Odd index: shift backward
-                    // We use (idx - (shift % 26) + 26) % 26 to handle negative results in modulo
-                    new_idx = (low_idx - (shift % 26) + 26) % 26
-                }
-                res = res + this.lower[new_idx]
-                alpha_count = alpha_count + 1
-            }
-            
-            if (up_idx != -1) {
-                // Character is uppercase
-                if (alpha_count % 2 == 0) {
-                    // Even index: shift forward
-                    new_idx = (up_idx + shift) % 26
-                } else {
-                    // Odd index: shift backward
-                    new_idx = (up_idx - (shift % 26) + 26) % 26
-                }
-                res = res + this.upper[new_idx]
-                alpha_count = alpha_count + 1
-            }
-            
-            // If the character was neither lowercase nor uppercase, keep it as is
-            if (low_idx == -1) {
-                if (up_idx == -1) {
-                    res = res + char
-                }
-            }
-            
-            i = i + 1
-        }
-        
-        // Implicitly return the final result string
         res
     }
 }
 
-// Example Usage:
-cipher = Cipher.new
-result = cipher.alternating_shift("Hello World!", 2)
-print(result) // Output: "Jcnjq Uqpnb!"
+calc = FibCalculator.new
+solve = lambda(n) {
+    calc.calculate(n)
+}
