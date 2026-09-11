@@ -1,6 +1,6 @@
 from SAND.parser import Parser
 from SAND.interpreter import Interpreter
-
+import json
 class SandEvaluator:
     def __init__(self, code):
         self.code=code
@@ -29,14 +29,39 @@ class SandEvaluator:
             return True,"pass"
         except Exception as e:
             return False,str(e)
-    def performance_check(self,mode:str,**args):
+    def performance_check(self,mode:str,args:dict):
         match mode:
             case "std":
                 pass
             case "data":
                 return self.checkByData(args["tests"],args["funname"])
-                
-        
+            case "inout":
+                return self.checkByInout(args)
+    def generate_testcode(self,args):
+        testin=json.dumps(args["input"])
+        testin=testin[1:-1] #remove [] from list
+        testout=args["output"]
+        funname=args["funname"]
+        code=""
+        code+=funname+"("+testin+")"
+        code+=" == "
+        code+=json.dumps(testout)
+        return code
+    def checkByInout(self,args):
+        testcode=self.code+"\n"+self.generate_testcode(args)
+        print(testcode)
+        try:
+            self.itpt=Interpreter("./CodeTest/temp/")
+            for i in Parser(testcode).parse():
+                result=self.itpt.eval(i)
+            if result:
+                print("Accepted")
+            else:
+                print("Wrong answer")
+                return False
+        except Exception as e:
+            return False   
+
     def checkByData(self,test_cases,funname):
         case_id=0
         try:

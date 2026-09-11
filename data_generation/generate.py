@@ -3,6 +3,8 @@ from CodeGen.formatParser import Parser
 from data_generation.promptReader import PromptReader
 import data_generation.utils as utils
 import json
+from CodeGen import fewshot
+from CodeTest.evaluator import SandEvaluator
 
 problem_dir="tmp/problem"
 testcase_dir="tmp/testcase.py"
@@ -60,21 +62,75 @@ class ProblemGenerator:
 
 class ProblemEvaluator:
     def __init__(self):
+        #setting
+        self.check_iter=int(1e5)
+        self.min_data_space=int(1e3)
         self.problem=Problem()
     def check_generator_diversity(self):
         cnt={}
-        for _ in range(int(1e4)):
+        for _ in range(int(self.check_iter)):
             test=self.problem.generate_testcase()
             test=test["input"]
             test=json.dumps(test)
             cnt[test]=1
-        return len(cnt)>1e2
+        return len(cnt)>self.min_data_space
+    def check_solvable(self):
+        for _ in range(self.check_iter):
+            testcase=self.problem.testcase()
+            stdin=testcase["input"]
+            stdout=testcase["output"]
+
+            testout=self.problem.solution(*stdin)
+            if stdout!=testout:
+                print("Wrong Answer on test case:",stdin,stdout,testout,sep="\n")
+                return False
+            
+        return True            
     def main(self):
         if not self.check_generator_diversity():
+            print("data is too easy")
+            return False
+        if not self.check_solvable():
+            print("problem can not be solved")
             return False
         return True
+
+class SandSolver():
+    
+    def __init__(self,problem=Problem()):
+        #setting
+        self.tmp_code_dir="tmp/sandcode.sand"
+        self.check_iter=int(1e5)
+
+        self.sandmodel=fewshot.patched_document
+        self.problem=problem
+
+    def main(self):
+        model=self.sandmodel()
+        model.user_add(self.problem.problem)
+        while True:
+            try:
+                code=Parser().parse("sand",model.send(""))
+                break
+            except:
+                print("format not correct from model!")
+        utils.write_file(self.tmp_code_dir,code)
+        se=SandEvaluator(code)
+        for _ in range(self.check_iter):
+            testcase=self.problem.testcase()
+            testcase["funname"]="solve"
+            status,message=se.check_all(mode="inout",args=testcase)
+            if status != "pass":
+                print("Wrong Answer",message,sep="\n")
+                return False
+        print("Accepted")
+        return True
+
 if __name__ == "__main__":
     pg=ProblemGenerator()
     pe=ProblemEvaluator()
+    ss=SandSolver()
+    pg.main()
     print(pe.main())
-    #pg.main()
+    ss.main()
+    

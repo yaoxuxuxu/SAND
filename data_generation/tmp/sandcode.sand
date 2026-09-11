@@ -1,0 +1,87 @@
+
+// In SAND, since there is no native Map/Dictionary type with key iteration,
+// "dictionaries" are represented as Arrays of Pairs: [[key1, value1], [key2, value2]].
+// This allows us to iterate through keys and values using while loops.
+
+class DictUtils {
+    // Main function to flatten a nested dictionary (Array of Pairs)
+    def flatten_dict(data) {
+        result = []
+        this._flatten_recursive(data, "", result)
+        result
+    }
+
+    // Helper method to handle recursion
+    def _flatten_recursive(data, prefix, result) {
+        i = 0
+        while (i < data.length()) {
+            pair = data[i]
+            key = pair[0]
+            val = pair[1]
+
+            // Construct the concatenated key
+            full_key = ""
+            if (prefix == "") {
+                full_key = key
+            } else {
+                full_key = prefix + "." + key
+            }
+
+            // Check if the value is a nested dictionary (Array)
+            // is_array() is assumed as a standard dynamic type-check utility
+            if (is_array(val)) {
+                if (val.length() == 0) {
+                    // Requirement 3: Preserve empty dictionaries
+                    result.append([full_key, []])
+                } else {
+                    // Requirement 1: Handle arbitrarily deep nesting
+                    this._flatten_recursive(val, full_key, result)
+                }
+            } else {
+                // Requirement 2: Treat non-dictionaries as leaf nodes
+                result.append([full_key, val])
+            }
+            i = i + 1
+        }
+        // Implicitly return the result array
+        result
+    }
+}
+
+// ==========================================
+// Example Usage / Test Case
+// ==========================================
+
+// Setup the utility object
+utils = DictUtils.new
+
+// Example 1: Nested structure
+// { "user": { "name": "Alice", "address": { "city": "New York", "zip": "10001" } }, "status": "active" }
+input1 = [
+    ["user", [
+        ["name", "Alice"],
+        ["address", [
+            ["city", "New York"],
+            ["zip", "10001"]
+        ]]
+    ]],
+    ["status", "active"]
+]
+
+flat1 = utils.flatten_dict(input1)
+print(flat1) 
+// Expected: [["user.name", "Alice"], ["user.address.city", "New York"], ["user.address.zip", "10001"], ["status", "active"]]
+
+// Example 2: Empty dictionary preservation
+// { "settings": { "theme": "dark", "notifications": {} }, "version": 1.2 }
+input2 = [
+    ["settings", [
+        ["theme", "dark"],
+        ["notifications", []]
+    ]],
+    ["version", 1.2]
+]
+
+flat2 = utils.flatten_dict(input2)
+print(flat2)
+// Expected: [["settings.theme", "dark"], ["settings.notifications", []], ["version", 1.2]]

@@ -30,4 +30,12 @@ def solve()
 ```
 only give a python code solution in markdown
 <end>
+you need to solve this problem only in sand.
+there must be a "solve" function as an entry.
+and return the answer directly.
+
+only give a sand code solution in markdown
+<prompt sand_solver>
+
+<end>
 
