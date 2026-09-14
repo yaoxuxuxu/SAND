@@ -1,9 +1,19 @@
 <prompt fun_completion>
-Generate a fib function generation problem
+Generate a function generation problem
 only generate the problem in markdown
 <end>
-<prompt corner_case_gen>
 
+<prompt corner_case_gen>
+accourding to this problem
+give some corner case in json
+[{"input":list,"output":any},{"input":list,"output":any},...]
+
+for example a+b problem
+```json
+[{"input":[1,0],"output":[1]},{"input":[0,0],"output":[0]}]
+```
+
+only give a json in markdown!
 <end>
 
 <prompt testcase_gen>
@@ -35,9 +45,20 @@ only give a python code solution in markdown
 
 <prompt sand_solver>
 you need to solve this problem only in sand.
-there must be a "solve" function as an entry.
+there must be a "solve" function at global environment as an entry.
 and return the answer directly.
-i will use it as "solve(xxx)"
+```sand
+def solve(){
+
+    result
+}
+    
+```
 only give a sand code solution in markdown
 <end>
 
+<prompt sand_description>
+sand is a programming language developed personall.
+it has similar syntax with python.
+it doesn't support string modify.
+<end>

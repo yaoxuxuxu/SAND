@@ -113,23 +113,44 @@ class SandSolver():
             status,message=se.check_all(mode="inout",args=testcase)
             if status != "pass":
                 print("Wrong Answer",message,sep="\n")
-                return False
+                return False,message
         print("Accepted")
-        return True
-    def generate(self):
-        model=self.sandmodel()
+        return True,"Accepted"
+    def generate(self,model=None):
+        if model == None:
+            model=self.sandmodel()
         model.user_add(self.problem.problem)
         while True:
             try:
                 code=Parser().parse("sand",model.send(prompts.get("sand_solver")))
                 break
+            except KeyboardInterrupt:
+                exit(0)
             except:
                 print("format not correct from model!")
         utils.write_file(self.tmp_code_dir,code)
         return code
     def main(self):
-        code=self.generate()
-        self.test(code)
+        return self.pass_k_enhance(5)
+    def pass_k(self,k):
+        while k:
+            code=self.generate()
+            status,message=self.test(code)
+            if status:
+                return code
+            k-=1
+        return None
+    def pass_k_enhance(self,k):
+        model=self.sandmodel()
+        while k:
+            code=self.generate(model)
+            status,message=self.test(code)
+            if status:
+                return code
+            print(message)
+            model.user_add(str(message))
+            k-=1
+        return None
         
 
 if __name__ == "__main__":
@@ -140,6 +161,6 @@ if __name__ == "__main__":
     ss=SandSolver()
     ss.main()"""
     ss=SandSolver()
-    ss.main()
-    #ss.test(utils.read_file("tmp/sandcode.sand"))
+    #ss.main()
+    ss.test(utils.read_file("tmp/sandcode.sand"))
     

@@ -54,13 +54,11 @@ class SandEvaluator:
             for i in Parser(testcode).parse():
                 result=self.itpt.eval(i)
             if result:
-                print("Accepted")
                 return True,"ok"
             else:
-                print("Wrong answer")
-                return False,"Wrong answer"
+                return False,"Wrong answer on testcase: \n" + json.dumps(args)
         except Exception as e:
-            return False,"Bad code"
+            return False,e
 
     def checkByData(self,test_cases,funname):
         case_id=0
@@ -72,10 +70,7 @@ class SandEvaluator:
                 self.itpt=Interpreter("./CodeTest/temp/")
                 for i in Parser(testcode).parse():
                     result=self.itpt.eval(i)
-                if result:
-                    print("Accepted")
-                else:
-                    print("Wrong answer")
+                if not result:
                     return False,testcase
                 case_id+=1
             return True,"pass"
