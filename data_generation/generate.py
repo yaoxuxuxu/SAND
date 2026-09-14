@@ -98,13 +98,17 @@ class ProblemEvaluator:
 
 class SandSolver():
     
-    def __init__(self,problem=Problem()):
+    def __init__(self,problem=None):
+        if problem==None:
+            self.problem=Problem()
+        else:
+            self.problem=problem
+            
         #setting
         self.tmp_code_dir="tmp/sandcode.sand"
         self.check_iter=int(1e3)
 
         self.sandmodel=fewshot.patched_document
-        self.problem=problem
     def test(self,code):
         se=SandEvaluator(code)
         for _ in range(self.check_iter):
@@ -146,11 +150,11 @@ class SandSolver():
             code=self.generate(model)
             status,message=self.test(code)
             if status:
-                return code
+                return True,code
             print(message)
             model.user_add(str(message))
             k-=1
-        return None
+        return False,message
         
 
 if __name__ == "__main__":

@@ -32,7 +32,8 @@ class DatesetGenerator:
                 if not pe.main():
                     continue
                 ss=SandSolver()
-                if ss.main()==None:
+                status,message=ss.main()
+                if not status:
                     continue
                 self.copy_testcase(problem_id)
                 print("problem generated id: "+str(problem_id))
