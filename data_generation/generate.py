@@ -5,6 +5,10 @@ import data_generation.utils as utils
 import json
 from CodeGen import fewshot
 from CodeTest.evaluator import SandEvaluator
+import os
+
+if not os.path.exists("data_generation/tmp"):
+    os.mkdir("data_generation/tmp")
 
 problem_dir="tmp/problem"
 testcase_dir="tmp/testcase.py"

@@ -37,8 +37,8 @@ class DatesetGenerator:
                     continue
                 self.copy_testcase(problem_id)
                 print("problem generated id: "+str(problem_id))
-            except:
-                print("bug occured")
+            except Exception as e:
+                print("bug occured:",e,sep="\n")
                 continue
     def debug(self):
         ss=SandSolver()
