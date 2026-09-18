@@ -35,11 +35,11 @@ class DatesetGenerator:
         while True:
             try:
                 pg=ProblemGenerator()
-                pg.main()
-                pe=ProblemEvaluator()
+                problem=pg.main()
+                pe=ProblemEvaluator(problem)
                 if not pe.main():
                     continue
-                ss=SandSolver()
+                ss=SandSolver(problem)
                 status,message=ss.main()
                 if not status:
                     continue

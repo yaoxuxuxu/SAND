@@ -13,19 +13,47 @@ if not os.path.exists("data_generation/tmp"):
 problem_dir="tmp/problem"
 testcase_dir="tmp/testcase.py"
 solution_dir="tmp/solution.py"
+cornercase_dir="tmp/cornercase.json"
 prompts=PromptReader('./data_generation/prompts')
 
 class Problem:
-    def __init__(self):
-        self.problem_dir=problem_dir
-        self.testcase_dir=testcase_dir
-        self.solution_dir=solution_dir
-
-        self.problem=utils.read_file(self.problem_dir)
-        self.testcase=utils.load_module("testcase",self.testcase_dir).generate
-        self.solution=utils.load_module("solution",self.solution_dir).solve
-    
-
+    def __init__(self,problem=None,testcase=None,solution=None,cornercase=None):
+        self._problem=problem
+        self._testcase=testcase
+        self._solution=solution
+        self._cornercase=cornercase
+    @property
+    def problem(self):
+        if self._problem==None:
+            return utils.read_file(problem_dir)
+        return self._problem
+    @problem.setter
+    def problem(self,problem):
+        self._problem=problem
+    @property
+    def testcase(self):
+        if self._testcase==None:
+            return utils.load_module("testcase",testcase_dir).generate
+        return self._testcase
+    @testcase.setter
+    def testcase(self,testcase):
+        self._testcase=testcase
+    @property
+    def solution(self):
+        if self._solution==None:
+            return utils.load_module("solution",solution_dir).solve
+        return self._solution
+    @solution.setter
+    def solution(self,solution):
+        self._solution=solution
+    @property
+    def cornercase(self):
+        if self._cornercase==None:
+            return utils.read_file(cornercase_dir)
+        return self._cornercase
+    @cornercase.setter
+    def cornercase(self,cornercase):
+        self._cornercase=cornercase
 class ProblemGenerator:
     def __init__(self):
         self.code_dir="./data_generation"
@@ -48,27 +76,39 @@ class ProblemGenerator:
         mm.user_add(problem)
         mm.user_add(prompts.get("testcase_gen"))
         return self.get_markdown_retry(mm)
+    def generate_cornercase(self,problem):
+        mm=ModelManager("gemma-4-31b-it")
+        mm.user_add(problem)
+        mm.user_add(prompts.get("corner_case_gen"))
+        cornercase=self.get_markdown_retry(mm,mode="json")
+        return cornercase
     def generate_solution(self,problem):
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(problem)
         mm.user_add(prompts.get("solution_gen"))
         return self.get_markdown_retry(mm)
     def main(self):
+        
         problem=self.generate_problem()
         testcase=self.generate_testcase(problem)
         solution=self.generate_solution(problem)
+        cornercase=self.generate_cornercase(problem)
 
         utils.write_file(problem_dir,problem)
         utils.write_file(testcase_dir,testcase)
         utils.write_file(solution_dir,solution)
-
+        utils.write_file(json.dumps(cornercase_dir),cornercase)
+        p=Problem(problem,testcase,solution,cornercase)
+        return p
 
 class ProblemEvaluator:
-    def __init__(self):
+    def __init__(self,problem=None):
         #setting
         self.check_iter=int(1e5)
         self.min_data_space=int(1e3)
-        self.problem=Problem()
+        self.problem=Problem() if problem==None else problem
+        
+
     def check_generator_diversity(self):
         cnt={}
         for _ in range(int(self.check_iter)):
