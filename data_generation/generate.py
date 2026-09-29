@@ -48,15 +48,14 @@ class Problem:
         self._solution=solution
     @property
     def cornercase(self):
-        if self._cornercase==None:
-            return utils.read_file(cornercase_dir)
         return self._cornercase
     @cornercase.setter
     def cornercase(self,cornercase):
         self._cornercase=cornercase
 class ProblemGenerator:
-    def __init__(self):
+    def __init__(self,isGenerateCornerCase=True):
         self.code_dir="./data_generation"
+        self.isGenerateCornerCase=isGenerateCornerCase
     def generate_problem(self):
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(prompts.get("fun_completion"))
@@ -92,12 +91,15 @@ class ProblemGenerator:
         problem=self.generate_problem()
         testcase=self.generate_testcase(problem)
         solution=self.generate_solution(problem)
-        cornercase=self.generate_cornercase(problem)
+        cornercase=None
 
         utils.write_file(problem_dir,problem)
         utils.write_file(testcase_dir,testcase)
         utils.write_file(solution_dir,solution)
-        utils.write_file(json.dumps(cornercase_dir),cornercase)
+
+        if self.isGenerateCornerCase:
+            cornercase=self.generate_cornercase(problem)
+            utils.write_file(cornercase_dir,json.dumps(cornercase))
         p=Problem(problem,testcase,solution,cornercase)
         return p
 
@@ -117,16 +119,28 @@ class ProblemEvaluator:
             test=json.dumps(test)
             cnt[test]=1
         return len(cnt)>self.min_data_space
+    def check_tesecase(self,testcase):
+        stdin=testcase["input"]
+        stdout=testcase["output"]
+        
+        testout=self.problem.solution(*stdin)
+        if stdout!=testout:
+            print("Wrong Answer on test case:",stdin,stdout,testout,sep="\n")
+            return False
+        return True
     def check_solvable(self):
+        if self.problem.cornercase!=None:
+            for testcase in self.problem.cornercase:
+                if not self.check_testcase(testcase):
+                    return False
+            print("corner case passed!")
+
         for _ in range(self.check_iter):
             testcase=self.problem.testcase()
-            stdin=testcase["input"]
-            stdout=testcase["output"]
-
-            testout=self.problem.solution(*stdin)
-            if stdout!=testout:
-                print("Wrong Answer on test case:",stdin,stdout,testout,sep="\n")
+            if not self.check_testcase(testcase):
                 return False
+        print("normal testcase passed!")
+
             
         return True            
     def main(self):
@@ -155,6 +169,12 @@ class SandSolver():
         self.sandmodel=fewshot.patched_document
     def test(self,code):
         se=SandEvaluator(code)
+        if self.problem.cornercase!=None:
+            for testcase in self.problem.cornercase:
+                status,message=se.check_all(mode="inout",args=testcase)
+                if status != "pass":
+                    print("Wrong Answer",message,sep="\n")
+                    return False,message
         for _ in range(self.check_iter):
             testcase=self.problem.testcase()
             testcase["funname"]="solve"
@@ -202,13 +222,7 @@ class SandSolver():
         
 
 if __name__ == "__main__":
-    """pg=ProblemGenerator()
-    pg.main()
-    pe=ProblemEvaluator()
-    print(pe.main())
-    ss=SandSolver()
-    ss.main()"""
-    ss=SandSolver()
-    #ss.main()
-    ss.test(utils.read_file("tmp/sandcode.sand"))
+    pg=ProblemGenerator()
+    problem=pg.main()
+    print(problem.cornercase)
     

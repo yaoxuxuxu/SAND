@@ -8,11 +8,16 @@ accourding to this problem
 give some corner case in json
 [{"input":list,"output":any},{"input":list,"output":any},...]
 
-for example a+b problem
-```json
-[{"input":[1,0],"output":[1]},{"input":[0,0],"output":[0]}]
-```
+input is a list contain all the params of the function
+for example: a+b function then
+return {"input":[3,5],"output":8}
 
+in this problem the corner case could be
+```json
+[{"input":[1,0],"output":1},{"input":[0,0],"output":0}]
+```
+If the problem does not specify a clear range of input data,
+keep the corner cases within a reasonable range and avoid overly extreme or unrealistic cases.
 only give a json in markdown!
 <end>
 

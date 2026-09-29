@@ -5,6 +5,8 @@ import os
 class DatesetGenerator:
     def __init__(self):
         #setting
+        self.include_cornercase=True
+
         self.problem_dir="data_generation/tmp"
         self.output_dir="data_generation/dataset/"
         self.testcase_cnt=1
@@ -34,7 +36,7 @@ class DatesetGenerator:
     def main(self):
         while True:
             try:
-                pg=ProblemGenerator()
+                pg=ProblemGenerator(self.include_cornercase)
                 problem=pg.main()
                 pe=ProblemEvaluator(problem)
                 if not pe.main():
