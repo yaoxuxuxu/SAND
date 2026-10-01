@@ -67,6 +67,8 @@ class ProblemGenerator:
                 res=mm.send("")
                 res=Parser().parse(mode,res)
                 break
+            except KeyboardInterrupt:
+                exit(0)
             except:
                 mm.history=mm.history[:-1]
         return res
@@ -87,7 +89,7 @@ class ProblemGenerator:
         mm.user_add(prompts.get("solution_gen"))
         return self.get_markdown_retry(mm)
     def main(self):
-        
+        print("Generating problem ...")
         problem=self.generate_problem()
         testcase=self.generate_testcase(problem)
         solution=self.generate_solution(problem)
@@ -96,18 +98,21 @@ class ProblemGenerator:
         utils.write_file(problem_dir,problem)
         utils.write_file(testcase_dir,testcase)
         utils.write_file(solution_dir,solution)
-
         if self.isGenerateCornerCase:
             cornercase=self.generate_cornercase(problem)
             utils.write_file(cornercase_dir,json.dumps(cornercase))
+
+        testcase=utils.load_module("testcase",testcase_dir).generate
+        solution=utils.load_module("solution",solution_dir).solve
         p=Problem(problem,testcase,solution,cornercase)
+        print("Problem generated!")
         return p
 
 class ProblemEvaluator:
     def __init__(self,problem=None):
         #setting
-        self.check_iter=int(1e5)
-        self.min_data_space=int(1e3)
+        self.check_iter=int(300)
+        self.min_data_space=int(15)
         self.problem=Problem() if problem==None else problem
         
 
@@ -119,7 +124,7 @@ class ProblemEvaluator:
             test=json.dumps(test)
             cnt[test]=1
         return len(cnt)>self.min_data_space
-    def check_tesecase(self,testcase):
+    def check_testcase(self,testcase):
         stdin=testcase["input"]
         stdout=testcase["output"]
         
@@ -171,6 +176,7 @@ class SandSolver():
         se=SandEvaluator(code)
         if self.problem.cornercase!=None:
             for testcase in self.problem.cornercase:
+                testcase["funname"]='solve'
                 status,message=se.check_all(mode="inout",args=testcase)
                 if status != "pass":
                     print("Wrong Answer",message,sep="\n")
@@ -222,7 +228,6 @@ class SandSolver():
         
 
 if __name__ == "__main__":
-    pg=ProblemGenerator()
-    problem=pg.main()
-    print(problem.cornercase)
+    pe=ProblemEvaluator()
+    pe.main()
     
