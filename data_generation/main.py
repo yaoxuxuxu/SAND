@@ -25,6 +25,7 @@ class DatesetGenerator:
         return
     def copy_testcase(self):
         patience=5
+        self.testcase_cnt+=1
         while True:
             if patience==0:
                 raise Exception("Failed to do some file operation")
@@ -35,21 +36,20 @@ class DatesetGenerator:
             patience-=1
     def main(self):
         while True:
-            try:
-                pg=ProblemGenerator(self.include_cornercase)
-                problem=pg.main()
-                pe=ProblemEvaluator(problem)
-                if not pe.main():
-                    continue
-                ss=SandSolver(problem)
-                status,message=ss.main()
-                if not status:
-                    continue
-                self.copy_testcase()
-                print("problem generated id: "+str(self.testcase_cnt))
-            except Exception as e:
-                print("bug occured:",e,sep="\n")
+            pg=ProblemGenerator(self.include_cornercase)
+            problem=pg.main()
+            pe=ProblemEvaluator(problem)
+            if not pe.main():
                 continue
+            ss=SandSolver(problem)
+            status,message=ss.main()
+            if not status:
+                continue
+            self.copy_testcase()
+            print("problem generated id: "+str(self.testcase_cnt))
+            """except Exception as e:
+                print("bug occured:",e,sep="\n")
+                continue"""
     def debug(self):
         ss=SandSolver()
         ss.main()

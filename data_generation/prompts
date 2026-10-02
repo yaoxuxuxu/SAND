@@ -1,5 +1,6 @@
 <prompt fun_completion>
 Generate a function generation problem
+with any difficulty
 only generate the problem in markdown
 <end>
 
@@ -16,8 +17,15 @@ in this problem the corner case could be
 ```json
 [{"input":[1,0],"output":1},{"input":[0,0],"output":0}]
 ```
-If the problem does not specify a clear range of input data,
-keep the corner cases within a reasonable range and avoid overly extreme or unrealistic cases.
+Strict requirements:
+
+Every generated test case MUST be valid according to the problem statement.
+A corner case MUST NOT introduce any input, value, condition, or behavior that is not defined or permitted by the problem statement.
+Do NOT infer, assume, or invent additional constraints or semantics that are not explicitly stated.
+Do NOT use out-of-range values, invalid inputs, malformed inputs, unspecified situations, or undefined behavior as corner cases.
+Corner cases should only be unusual, extreme, or boundary cases WITHIN the input domain and semantics explicitly defined by the problem.
+If a potentially interesting situation is not specified by the problem statement, DO NOT generate it as a corner case.
+The goal is to test edge behavior within the problem's specification, not to test how a solution handles invalid or unspecified input.
 only give a json in markdown!
 <end>
 
