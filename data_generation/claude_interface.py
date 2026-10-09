@@ -11,7 +11,7 @@ class ModelManager:
         self.history+=text
     def send(self,config=None):
         if config:
-            raise NotImplementedError
+            self.history=config+"\n\n"+self.history
         return self.model.send(self.history)
         
 

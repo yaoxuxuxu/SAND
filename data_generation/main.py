@@ -2,6 +2,7 @@ from data_generation.generate import ProblemGenerator,ProblemEvaluator,SandSolve
 import subprocess as sp
 import time
 import os
+from llmhacker.WebsiteHacker import ExplorerException
 class DatesetGenerator:
     def __init__(self):
         #setting
@@ -34,28 +35,37 @@ class DatesetGenerator:
                 break
             time.sleep(0.1)
             patience-=1
+    def main_debug(self):
+        pg=ProblemGenerator(self.include_cornercase)
+        problem=pg.main()
+        pe=ProblemEvaluator(problem)
+        if not pe.main():
+            return
+        ss=SandSolver(problem)
+        status,message=ss.main()
+        if not status:
+            return
+        self.copy_testcase()
+        print("problem generated id: "+str(self.testcase_cnt))
+            
     def main(self):
         while True:
             try:
-                pg=ProblemGenerator(self.include_cornercase)
-                problem=pg.main()
-                pe=ProblemEvaluator(problem)
-                if not pe.main():
-                    continue
-                ss=SandSolver(problem)
-                status,message=ss.main()
-                if not status:
-                    continue
-                self.copy_testcase()
-                print("problem generated id: "+str(self.testcase_cnt))
+                self.main_debug()
+            except ExplorerException:
+                print("chrome has bug!!! token might be used up!")
+                return
             except Exception as e:
                 print("bug occured:",e,sep="\n")
                 continue
     def debug(self):
         ss=SandSolver()
-        ss.main()
-
+        status,message=ss.main()
+        if not status:
+            return
+        self.copy_testcase()
+        print("problem generated id: "+str(self.testcase_cnt))
 
 if __name__ =="__main__":
     dg=DatesetGenerator()
-    dg.main()
+    dg.debug()

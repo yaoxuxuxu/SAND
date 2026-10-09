@@ -146,11 +146,11 @@ class ProblemEvaluator:
             testcase=self.problem.testcase()
             if not self.check_testcase(testcase):
                 return False
-        print("normal testcase passed!")
-
-            
-        return True            
+        print("normal testcase passed!")   
+        return True
     def main(self):
+        return utils.run_with_timeout(self.main_check,60)          
+    def main_check(self):
         print("start diversity data checking")
         if not self.check_generator_diversity():
             print("data is too easy")
@@ -175,6 +175,10 @@ class SandSolver():
 
         self.sandmodel=fewshot.patched_document
     def test(self,code):
+        return utils.run_with_timeout(self.test_logic,60,code)
+
+
+    def test_logic(self,code):
         se=SandEvaluator(code)
         if self.problem.cornercase!=None:
             for testcase in self.problem.cornercase:
@@ -197,13 +201,15 @@ class SandSolver():
             model=self.sandmodel()
         model.user_add(self.problem.problem)
         while True:
+            code=model.send(prompts.get("sand_solver"))
             try:
-                code=Parser().parse("sand",model.send(prompts.get("sand_solver")))
+                code=Parser().parse("sand",code)
                 break
             except KeyboardInterrupt:
                 exit(0)
-            except:
+            except Exception as e:
                 print("format not correct from model!")
+                print(e)
         utils.write_file(self.tmp_code_dir,code)
         return code
     def main(self):
