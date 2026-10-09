@@ -9,7 +9,7 @@ class DatesetGenerator:
 
         self.problem_dir="data_generation/tmp"
         self.output_dir="data_generation/dataset/"
-        self.testcase_cnt=1
+        self.testcase_cnt=0
 
         self.directory_init()
     def directory_init(self):
