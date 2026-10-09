@@ -50,7 +50,7 @@ you need to solve this problem only in python.
 there must be a solve function as an entry
 and return the answer
 ```python
-def solve()
+def solve(some args or none according to the problem)
     return result
 ```
 only give a python code solution in markdown
@@ -61,7 +61,7 @@ you need to solve this problem only in sand.
 there must be a "solve" function at global environment as an entry.
 and return the answer directly.
 ```sand
-def solve(){
+def solve(some args or no args according to the problem){
 
     result
 }

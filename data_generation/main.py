@@ -36,20 +36,21 @@ class DatesetGenerator:
             patience-=1
     def main(self):
         while True:
-            pg=ProblemGenerator(self.include_cornercase)
-            problem=pg.main()
-            pe=ProblemEvaluator(problem)
-            if not pe.main():
-                continue
-            ss=SandSolver(problem)
-            status,message=ss.main()
-            if not status:
-                continue
-            self.copy_testcase()
-            print("problem generated id: "+str(self.testcase_cnt))
-            """except Exception as e:
+            try:
+                pg=ProblemGenerator(self.include_cornercase)
+                problem=pg.main()
+                pe=ProblemEvaluator(problem)
+                if not pe.main():
+                    continue
+                ss=SandSolver(problem)
+                status,message=ss.main()
+                if not status:
+                    continue
+                self.copy_testcase()
+                print("problem generated id: "+str(self.testcase_cnt))
+            except Exception as e:
                 print("bug occured:",e,sep="\n")
-                continue"""
+                continue
     def debug(self):
         ss=SandSolver()
         ss.main()

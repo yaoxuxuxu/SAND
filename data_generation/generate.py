@@ -1,9 +1,11 @@
-from CodeGen.modelManager import ModelManager
+#from CodeGen.modelManager import ModelManager
+#from CodeGen import fewshot
+from .claude_interface import ModelManager,fewshot
+
 from CodeGen.formatParser import Parser
 from data_generation.promptReader import PromptReader
 import data_generation.utils as utils
 import json
-from CodeGen import fewshot
 from CodeTest.evaluator import SandEvaluator
 import os
 

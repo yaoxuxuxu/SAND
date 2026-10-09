@@ -1,0 +1,3 @@
+[submodule "llmhacker"]
+	path = llmhacker
+	url = https://github.com/yaoxuxuxu/LLM-Hacker.git
