@@ -4,6 +4,19 @@ with any difficulty
 only generate the problem in markdown
 <end>
 
+<prompt sand_fun_problem>
+Generate a function generation problem to test "SAND" programming language
+with any difficulty
+
+Sand is a programming language similar with python.
+Sand do not support string operations, but it has string, and can input output string.
+sand has no dict.
+Sand is implemented badly so please do not make the number too big
+
+only generate the problem in markdown
+<end>
+
+
 <prompt corner_case_gen>
 accourding to this problem
 give some corner case in json

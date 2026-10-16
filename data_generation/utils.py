@@ -26,6 +26,7 @@ def run_with_timeout(fun,timeout,*args):
         return res
     except FunctionTimedOut:
         print(str(fun.__name__)+" timeout!")
+        return "Timeout"
     except Exception as e:
         raise e   
 

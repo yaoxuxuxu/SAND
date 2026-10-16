@@ -55,12 +55,13 @@ class Problem:
     def cornercase(self,cornercase):
         self._cornercase=cornercase
 class ProblemGenerator:
-    def __init__(self,isGenerateCornerCase=True):
+    def __init__(self,isGenerateCornerCase=True,problem_prompt="sand_fun_problem"):
         self.code_dir="./data_generation"
         self.isGenerateCornerCase=isGenerateCornerCase
+        self.problem_prompt=problem_prompt
     def generate_problem(self):
         mm=ModelManager("gemma-4-31b-it")
-        mm.user_add(prompts.get("fun_completion"))
+        mm.user_add(prompts.get(self.problem_prompt))
         res=mm.send("")
         return res
     def get_markdown_retry(self,mm,mode="python"):
@@ -175,7 +176,10 @@ class SandSolver():
 
         self.sandmodel=fewshot.patched_document
     def test(self,code):
-        return utils.run_with_timeout(self.test_logic,60,code)
+        res=utils.run_with_timeout(self.test_logic,60,code)
+        if res=="Timeout":
+            return False,"Time out"
+        return res
 
 
     def test_logic(self,code):
@@ -226,7 +230,9 @@ class SandSolver():
         model=self.sandmodel()
         while k:
             code=self.generate(model)
-            status,message=self.test(code)
+            res=self.test(code)
+            print(res)
+            status,message=res
             if status:
                 return True,code
             print(message)

@@ -68,4 +68,4 @@ class DatesetGenerator:
 
 if __name__ =="__main__":
     dg=DatesetGenerator()
-    dg.debug()
+    dg.main()
