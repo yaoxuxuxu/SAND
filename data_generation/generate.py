@@ -7,6 +7,7 @@ from data_generation.promptReader import PromptReader
 import data_generation.utils as utils
 import json
 from CodeTest.evaluator import SandEvaluator
+from .diversity import diversity_maker
 import os
 
 if not os.path.exists("data_generation/tmp"):
@@ -61,6 +62,7 @@ class ProblemGenerator:
         self.problem_prompt=problem_prompt
     def generate_problem(self):
         mm=ModelManager("gemma-4-31b-it")
+        mm.user_add(diversity_maker.generate_prefix())
         mm.user_add(prompts.get(self.problem_prompt))
         res=mm.send("")
         return res

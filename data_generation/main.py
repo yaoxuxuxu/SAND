@@ -3,6 +3,8 @@ import subprocess as sp
 import time
 import os
 from llmhacker.WebsiteHacker import ExplorerException
+from .diversity import problemlister
+import logging
 class DatesetGenerator:
     def __init__(self):
         #setting
@@ -46,6 +48,7 @@ class DatesetGenerator:
         if not status:
             return
         self.copy_testcase()
+        problemlister.add(problem.problem)
         print("problem generated id: "+str(self.testcase_cnt))
             
     def main(self):
@@ -55,8 +58,8 @@ class DatesetGenerator:
             except ExplorerException:
                 print("chrome has bug!!! token might be used up!")
                 return
-            except Exception as e:
-                print("bug occured:",e,sep="\n")
+            except Exception:
+                logging.exception("bug!!!")
                 continue
     def debug(self):
         ss=SandSolver()
