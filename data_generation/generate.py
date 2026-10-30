@@ -64,6 +64,7 @@ class ProblemGenerator:
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(diversity_maker.generate_prefix())
         mm.user_add(prompts.get(self.problem_prompt))
+        mm.user_add(diversity_maker.generate_suffix())
         res=mm.send("")
         return res
     def get_markdown_retry(self,mm,mode="python"):

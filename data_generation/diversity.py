@@ -3,16 +3,24 @@ import json
 from pathlib import Path
 class DiversityMaker:
     def __init__(self):
-        pass
+        self.algorithm=problemlister
     def generate_prefix(self):
         prefix=""
-        prefix+=problemlister.prompt()
-
+        prefix+=self.algorithm.prefix()
         return prefix
     def generate_suffix(self):
+        suffix=""
+        suffix+=self.algorithm.suffix()
+        return suffix
+    def gonext(self,problem):
+        self.algorithm.gonext(problem)
+
+class ElementsMultiplier:
+    def __init__(self):
         pass
-
-
+class DocumentBase:
+    def __init__(self):
+        pass
 class ProblemLister:
     def __init__(self):
         #setting
@@ -32,9 +40,14 @@ class ProblemLister:
         problem=ModelManager().send(problem)
         self.problemlist.append(problem)
         self.write()
-    def prompt(self):
+    def prefix(self):
         return "do not generate a similar problem in this list: "+str(self.problemlist)+"\n\n\n"
-
+    def suffix(self):
+        return ""
+    def gonext(self,problem):
+        self.add(problem)
+        self.write()
+        return
 
 
 

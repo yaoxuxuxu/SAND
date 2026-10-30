@@ -3,7 +3,7 @@ import subprocess as sp
 import time
 import os
 from llmhacker.WebsiteHacker import ExplorerException
-from .diversity import problemlister
+from .diversity import diversity_maker
 import logging
 class DatesetGenerator:
     def __init__(self):
@@ -48,7 +48,7 @@ class DatesetGenerator:
         if not status:
             return
         self.copy_testcase()
-        problemlister.add(problem.problem)
+        diversity_maker.gonext(problem.problem)
         print("problem generated id: "+str(self.testcase_cnt))
             
     def main(self):
