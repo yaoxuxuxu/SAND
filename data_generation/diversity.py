@@ -28,7 +28,7 @@ class ProblemLister:
         #var
         self.problemlist=[]
         if self.savefile.exists():
-            self.read
+            self.read()
     def write(self):
         with open(self.savefile,"w+",encoding="utf-8") as fp:
             json.dump(self.problemlist,fp)
