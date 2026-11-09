@@ -1,8 +1,7 @@
 import importlib
 import os
-import multiprocessing as mp
 from func_timeout import func_timeout,FunctionTimedOut
-
+from pathlib import Path
 home_dir="data_generation"
 def load_module(name, path):
     path=os.path.join(home_dir,path)
@@ -30,3 +29,44 @@ def run_with_timeout(fun,timeout,*args):
     except Exception as e:
         raise e   
 
+class TrainCase:
+    def __init__(self,dir:str|Path):
+        if isinstance(dir,str):
+            dir=Path(dir)
+        self.dir=dir
+        self.load_data()
+    def load_data(self):
+        self.problem=(self.dir/"problem").read_text(encoding="utf-8")
+
+class DataLoader:
+    def __init__(self,dir:str|Path):
+        if isinstance(dir,str):
+            dir=Path(dir)
+        #var
+        self.dir=dir
+        self.datadir=self.reload()
+        #init
+    def isValidDataset(self,dirname):
+        #just check dirname is a number
+        try:
+            int(dirname)
+            return True
+        except:
+            return False
+    def reload(self):
+        data=[]
+        for dir in os.listdir(self.dir):
+            if self.isValidDataset(dir):
+                data.append(dir)
+        data=sorted(data,key=lambda x:int(x))
+        return data
+    def _load_data(self,dir):
+        return TrainCase(self.dir/dir)
+    def __getitem__(self, key):
+        return self._load_data(self.datadir[key])
+    def __iter__(self):
+        for i in self.datadir:
+            yield self._load_data(i)
+    def __len__(self):
+        return len(self.datadir)
+    

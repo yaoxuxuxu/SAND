@@ -9,6 +9,7 @@ import json
 from CodeTest.evaluator import SandEvaluator
 from .diversity import diversity_maker
 import os
+from pathlib import Path
 
 if not os.path.exists("data_generation/tmp"):
     os.mkdir("data_generation/tmp")
@@ -20,15 +21,17 @@ cornercase_dir="tmp/cornercase.json"
 prompts=PromptReader('./data_generation/prompts')
 
 class Problem:
-    def __init__(self,problem=None,testcase=None,solution=None,cornercase=None):
+    def __init__(self,problem=None,testcase=None,solution=None,cornercase=None,
+                 dir=Path("data_generation/tmp")):
         self._problem=problem
         self._testcase=testcase
         self._solution=solution
         self._cornercase=cornercase
+        self.dir=dir
     @property
     def problem(self):
         if self._problem==None:
-            return utils.read_file(problem_dir)
+            return (self.dir/"problem").read_text(encoding="utf-8")
         return self._problem
     @problem.setter
     def problem(self,problem):
@@ -36,7 +39,7 @@ class Problem:
     @property
     def testcase(self):
         if self._testcase==None:
-            return utils.load_module("testcase",testcase_dir).generate
+            return utils.load_module("testcase",self.dir/"testcase.py").generate
         return self._testcase
     @testcase.setter
     def testcase(self,testcase):
@@ -44,13 +47,20 @@ class Problem:
     @property
     def solution(self):
         if self._solution==None:
-            return utils.load_module("solution",solution_dir).solve
+            return utils.load_module("solution",self.dir/"solution.py").solve
         return self._solution
     @solution.setter
     def solution(self,solution):
         self._solution=solution
     @property
     def cornercase(self):
+        if self._cornercase is None:
+            try:
+                with open(self.dir/"cornercase.py","r",encoding="utf-8") as fp:
+                    res=json.load(fp)
+                self._cornercase=res
+            except:
+                pass
         return self._cornercase
     @cornercase.setter
     def cornercase(self,cornercase):

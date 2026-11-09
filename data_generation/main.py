@@ -47,8 +47,8 @@ class DatesetGenerator:
         status,message=ss.main()
         if not status:
             return
-        self.copy_testcase()
         diversity_maker.gonext(problem.problem)
+        self.copy_testcase()
         print("problem generated id: "+str(self.testcase_cnt))
             
     def main(self):
