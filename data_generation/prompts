@@ -88,3 +88,7 @@ sand is a programming language developed personall.
 it has similar syntax with python.
 it doesn't support string modify.
 <end>
+
+<prompt label_ignore>
+Since you are using Python, ignore any constraints inside the <constraint></constraint> tags. Just solve the problem.
+<end>

@@ -1,0 +1,81 @@
+SAND is a dynamically-typed, object-oriented scripting language.
+SAND code is organized into classes, and these classes may be spread across multiple .sand files.
+A SAND program starts executing at the top level of the entry file (such as main.sand) and runs its statements sequentially.
+In SAND, a single-line comment begins with // and continues to the end of the line.
+SAND has no multi-line comment syntax; only // single-line comments exist.
+In SAND, a variable is created simply by assigning to it with =, and no declaration keyword is needed.
+In SAND, the type of a variable is inferred at runtime rather than declared.
+SAND supports integer values, for example 42.
+SAND supports float values, for example 3.14.
+SAND supports string values written in double quotes, for example "hello".
+SAND supports array values written in square brackets, for example [1, "two", 3].
+SAND supports object values, which are produced either by return_all or by instantiating a class.
+SAND supports lambda values, which are anonymous functions.
+SAND has no null, None, or nil value.
+In SAND, the value -1 is conventionally used as a sentinel to represent "not found" or failure, because the language has no null/None/nil.
+SAND's arithmetic operators are + (add), - (subtract), * (multiply), and / (divide).
+SAND's comparison operators are ==, !=, <, >, <=, and >=.
+In SAND, using + on two strings concatenates them, so "hello" + " world" produces "hello world".
+SAND never implicitly converts between numbers and strings, so combining a number and a string with + requires explicit conversion using str() or int().
+In SAND, a while loop is written as: while (condition) { body }
+In SAND, an if statement is written as: if (condition) { body }
+In SAND, an if/else statement is written as: if (condition) { body } else { body }
+SAND has no for loop.
+SAND has no break statement for exiting a loop early.
+SAND has no continue statement for skipping to the next loop iteration.
+SAND has no "else if" or "elif" statement.
+In SAND, all loops and branches must be written using only while and if/else.
+In SAND, iterating over a sequence must be done with a while loop and a manually managed index variable.
+In SAND, an array literal is written with square brackets, for example arr = [1, 2, 3].
+In SAND, an array element is read with arr[i], where i is the index.
+In SAND, an array element is assigned with arr[i] = value.
+In SAND, an element of a nested array is accessed with arr[i][j].
+In SAND, an array can hold elements of mixed types in the same array.
+In SAND, arr.length() returns the number of elements in the array arr.
+In SAND, arr.append(val) adds val to the end of the array arr and returns nothing.
+In SAND, arr.pop(i) removes the element at index i from the array arr and returns nothing.
+SAND arrays have no .remove() method, so an element cannot be removed by value; it can only be removed by index with .pop(i).
+The only array methods in SAND are .length(), .append(val), and .pop(i).
+SAND has no array or record literal with named fields.
+In SAND, a structured record is built either as a fixed-index array (for example [id, name, price, stock]) or as an object returned by return_all.
+In SAND, a function must always be defined inside a class; functions cannot be defined outside a class.
+In SAND, a function is defined with the def keyword, as in: def functionName(param1, param2) { body }
+SAND has no explicit return keyword for normal function returns.
+In SAND, the value of the last expression evaluated in a function body is automatically returned as the function's result.
+In SAND, when return_all is the last statement of a function, it collects all local variables currently in scope and packs them into a single returned object.
+In SAND, the caller reads each value in an object returned by return_all with dot notation using the variable's name; for example, if a function sets count = 10 and then uses return_all, the caller can read result.count to get 10.
+In SAND, return_all is the standard way for a function to return multiple named values.
+In SAND, the return_all keyword may only appear as the very last statement of a function body.
+In SAND, an anonymous function is created with the lambda keyword, as in: lambda(param1, param2) { body }
+In SAND, a lambda is a closure: it captures the variables of the scope in which it was created.
+In SAND, a lambda can be assigned to a variable.
+In SAND, a lambda can be returned from a method.
+In SAND, a lambda stored in a variable is called with ordinary call syntax, for example myLambda("hello").
+In SAND, a lambda keeps access to its captured variables even when it is called later, after the function that created it has finished; for example, a method makePrinter(prefix) can return lambda(msg) { print(prefix + msg) }, and calling the returned lambda still uses prefix.
+In SAND, a class is declared with the class keyword, as in: class ClassName { fields and methods }
+In SAND, a class field is declared in the class body by simple assignment, for example field1 = defaultValue.
+In SAND, a class method is declared in the class body with the def keyword.
+In SAND, the value assigned to a field in the class body is its default value, and it serves as a template for each instance.
+In SAND, inside any method, the keyword this refers to the current instance of the class.
+In SAND, an instance field must be accessed inside a method by writing this explicitly, for example this.field1.
+In SAND, another method of the same instance must be called inside a method by writing this explicitly, for example this.method1(x).
+In SAND, writing a field name inside a method without this does not touch the instance field; it reads or creates a local variable instead.
+In SAND, a class is instantiated with ClassName.new, for example obj = ClassName.new.
+In SAND, .new takes no arguments and is written without parentheses, so ClassName.new() and ClassName.new(x) are both invalid.
+SAND has no constructor that takes arguments; if an object needs initialization, a separate setup method must be called after creating it with ClassName.new.
+In SAND, a class inherits from another class using extends, as in: class Child extends Parent { ... }
+In SAND, a child class inherits all fields and all methods of its parent class.
+In SAND, a child class accesses inherited parent fields and calls inherited parent methods through this, for example this.parentMethod().
+SAND has no super keyword.
+In SAND, a class from another user-written .sand file is imported with: from filename import ClassName
+In SAND, the filename in "from filename import ClassName" is the .sand file's name without the .sand extension.
+In SAND, after "from filename import ClassName", ClassName can be used in the current file.
+In SAND, a built-in standard library module is imported with: import ModuleName
+In SAND, after "import ModuleName", the module's functions are called through ModuleName as a namespace, for example ModuleName.function().
+In SAND, "from ... import ..." is used only for user-defined .sand files, and "import ..." is used only for built-in standard library modules.
+In SAND, import and from ... import statements may only appear at the global (top) level of a file and cannot be used inside a function or inside a class.
+In SAND, the built-in functions print, input, str, and int are available globally without any import.
+In SAND, print(value) prints value to standard output followed by a newline.
+In SAND, input() reads one line from standard input and returns it as a string.
+In SAND, str(x) converts a value x of any type into its string representation.
+In SAND, int(s) converts a string s into an integer.

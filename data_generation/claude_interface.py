@@ -12,7 +12,9 @@ class ModelManager:
     def send(self,config=None):
         if config:
             self.history=config+"\n\n"+self.history
-        return self.model.send(self.history)
+        res=self.model.send(self.history)
+        self.history=""
+        return res
         
 
 class fewshot(ModelManager):

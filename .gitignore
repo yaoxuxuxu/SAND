@@ -9,4 +9,5 @@ experiment_result.*
 groq_apikey
 foundryKey
 dataset
+deprecated_code/
 profile/

@@ -24,16 +24,16 @@ class DatesetGenerator:
                 count=int(dir)
             except:
                 continue
-            self.testcase_cnt=max(self.testcase_cnt,count)
+            self.testcase_cnt=max(self.testcase_cnt,count+1)
         return
     def copy_testcase(self):
         patience=5
-        self.testcase_cnt+=1
         while True:
             if patience==0:
                 raise Exception("Failed to do some file operation")
             result=sp.run(["cp","-r",self.problem_dir,self.output_dir+str(self.testcase_cnt)])
             if result.returncode==0:
+                self.testcase_cnt+=1
                 break
             time.sleep(0.1)
             patience-=1
@@ -47,14 +47,18 @@ class DatesetGenerator:
         status,message=ss.main()
         if not status:
             return
-        diversity_maker.gonext(problem.problem)
+        isEnd=diversity_maker.gonext(problem.problem)
+            
         self.copy_testcase()
         print("problem generated id: "+str(self.testcase_cnt))
+        if isEnd=="end":
+            return "end"
             
     def main(self):
         while True:
             try:
-                self.main_debug()
+                if self.main_debug()=="end":
+                    break
             except ExplorerException:
                 print("chrome has bug!!! token might be used up!")
                 return

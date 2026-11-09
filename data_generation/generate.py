@@ -70,6 +70,7 @@ class ProblemGenerator:
         self.code_dir="./data_generation"
         self.isGenerateCornerCase=isGenerateCornerCase
         self.problem_prompt=problem_prompt
+        self.constraint=""
     def generate_problem(self):
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(diversity_maker.generate_prefix())
@@ -102,6 +103,8 @@ class ProblemGenerator:
     def generate_solution(self,problem):
         mm=ModelManager("gemma-4-31b-it")
         mm.user_add(problem)
+        if "<constraint>" in problem:
+            mm.user_add(prompts.get("label_ignore"))
         mm.user_add(prompts.get("solution_gen"))
         return self.get_markdown_retry(mm)
     def main(self):

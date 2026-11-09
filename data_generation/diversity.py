@@ -4,6 +4,7 @@ from pathlib import Path
 class DiversityMaker:
     def __init__(self):
         self.algorithm=problemlister
+        self.algorithm_name=""
     def generate_prefix(self):
         prefix=""
         prefix+=self.algorithm.prefix()
@@ -13,14 +14,35 @@ class DiversityMaker:
         suffix+=self.algorithm.suffix()
         return suffix
     def gonext(self,problem):
-        self.algorithm.gonext(problem)
+        return self.algorithm.gonext(problem)
 
 class ElementsMultiplier:
     def __init__(self):
         pass
 class DocumentBase:
     def __init__(self):
-        pass
+        self.grammar=Path("CodeGen/ConfigPrompts/patched_seperated").read_text(encoding="utf-8").split("\n")
+        self.index=0
+        self.ITERPERGRAMMER=10
+        print(self.grammar)
+
+    def prefix(self):
+        res=""
+        res+="Create a question that tests the following rule as thoroughly as possible:\n"
+        res+=self.grammar[self.index]
+        return res
+    def suffix(self):
+        res=""
+        res+="""Keep the mandatory constraints separate from the question: generate the question first, then output the mandatory constraints at the end, inside <constraint></constraint> tags.
+        The constraints can be anything, for example: 
+        <constraint>In your implementation, you must use the xxx statement.</constraint>"""
+        return res
+        
+    def gonext(self):
+        self.index+=1
+        if self.index//self.ITERPERGRAMMER >= len(self.grammar):
+            return "end"
+        return "continue"
 class ProblemLister:
     def __init__(self):
         #setting
@@ -47,11 +69,12 @@ class ProblemLister:
     def gonext(self,problem):
         self.add(problem)
         self.write()
-        return
+        return "continue"
 
 
 
 problemlister=ProblemLister()
+documentbase=DocumentBase()
 diversity_maker=DiversityMaker()
     
     

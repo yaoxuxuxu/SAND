@@ -19,6 +19,7 @@ class SimilarityChecker:
         self.encoding_model=BGEM3FlagModel("BAAI/bge-m3", use_fp16=True)  
         self.build_database(texts)
         self.dehash=texts
+        self.database_size=len(texts)
     def search_texts(self,texts,k=5):
         if self.database is None:
             print("need init before use")
@@ -40,12 +41,21 @@ class SimilarityChecker:
         scores,rankings=self.database.search(self._encode_text(self.dehash),k)
         res=self._visible_result(scores,rankings)
         pairs=[]
-        l=0
-        for i in res:
-            for j in i:
-                if l!=j:
-                    pairs.append({"pair":(l,j),"score":i[j]})
-            l+=1
+        flag=np.eye(self.database_size,dtype=float)
+        for i in range(len(res)):
+            for j in res[i]:
+                if i==j:
+                    continue
+                l=i
+                r=j
+                if l>r:
+                    l,r=r,l
+                flag[l][r]+=res[i][j]
+        flag*=0.5
+
+        for i in range(self.database_size):
+            for j in range(i+1,self.database_size):
+                pairs.append({"pair":(i,j),"score":flag[i][j]})
         return sorted(pairs,key=lambda x:x["score"],reverse=True)
 
     def _encode_text(self,texts):
@@ -67,18 +77,19 @@ class SimilarityChecker:
             results.append(template)
         return results
 
-def check_problems():
+def check_problems(name):
     data=DataLoader("data_generation/dataset")
-    problems=[]
+    texts=[]
     for i in data:
-        problems.append(i.problem)
-    sc=SimilarityChecker(problems)
+        texts.append(getattr(i,name))
+    sc=SimilarityChecker(texts)
     res=sc.self_search()
-    with open("similar.txt","w+") as fp:
+    with open(name+".txt","w+") as fp:
         json.dump(res,fp)
     return
 if __name__ == "__main__":
-    check_problems()
+    check_problems("problem")
+    check_problems("sandcode")
     #texts=["dog","cat","car","book","motorbike"]
     #sc=SimilarityChecker(texts)
     #sc.search_texts(["bike","sleep"])

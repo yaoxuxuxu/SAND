@@ -37,6 +37,7 @@ class TrainCase:
         self.load_data()
     def load_data(self):
         self.problem=(self.dir/"problem").read_text(encoding="utf-8")
+        self.sandcode=(self.dir/"sandcode.sand").read_text(encoding="utf-8")
 
 class DataLoader:
     def __init__(self,dir:str|Path):
