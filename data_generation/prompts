@@ -92,3 +92,15 @@ it doesn't support string modify.
 <prompt label_ignore>
 Since you are using Python, ignore any constraints inside the <constraint></constraint> tags. Just solve the problem.
 <end>
+
+
+
+<prompt constraint_generator>
+"""Keep the mandatory constraints separate from the question: 
+generate the question first, then output the mandatory constraints at the end, inside <constraint></constraint> tags.
+
+The constraints can be anything, for example: 
+<constraint>In your implementation, you must use the xxx statement.</constraint>
+
+Only add constraints when necessary, that is, when a key point of the rule cannot be tested by the question alone and can only be tested through a constraint.
+<end>

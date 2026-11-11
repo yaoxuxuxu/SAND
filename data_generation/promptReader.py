@@ -18,6 +18,7 @@ class PromptReader:
             self.data[pair[0]]=pair[1]
         return
 
+promptreader=PromptReader("data_generation/prompts")
 
 if __name__ == "__main__":
     pr=PromptReader("./data_generation/prompts")

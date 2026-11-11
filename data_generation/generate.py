@@ -3,7 +3,7 @@
 from .llm_interface import ModelManager,fewshot
 
 from CodeGen.formatParser import Parser
-from data_generation.promptReader import PromptReader
+from .promptReader import promptreader as prompts
 import data_generation.utils as utils
 import json
 from CodeTest.evaluator import SandEvaluator
@@ -18,7 +18,6 @@ problem_dir="tmp/problem"
 testcase_dir="tmp/testcase.py"
 solution_dir="tmp/solution.py"
 cornercase_dir="tmp/cornercase.json"
-prompts=PromptReader('./data_generation/prompts')
 
 class Problem:
     def __init__(self,problem=None,testcase=None,solution=None,cornercase=None,

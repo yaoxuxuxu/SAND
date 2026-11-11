@@ -1,10 +1,10 @@
 from .llm_interface import ModelManager,fewshot
 import json
 from pathlib import Path
+from .promptReader import promptreader as prompts
 class DiversityMaker:
     def __init__(self):
         self.algorithm=problemlister
-        self.algorithm_name=""
     def generate_prefix(self):
         prefix=""
         prefix+=self.algorithm.prefix()
@@ -24,7 +24,6 @@ class DocumentBase:
         self.grammar=Path("CodeGen/ConfigPrompts/patched_seperated").read_text(encoding="utf-8").split("\n")
         self.index=0
         self.ITERPERGRAMMER=10
-        print(self.grammar)
 
     def prefix(self):
         res=""
@@ -33,12 +32,10 @@ class DocumentBase:
         return res
     def suffix(self):
         res=""
-        res+="""Keep the mandatory constraints separate from the question: generate the question first, then output the mandatory constraints at the end, inside <constraint></constraint> tags.
-        The constraints can be anything, for example: 
-        <constraint>In your implementation, you must use the xxx statement.</constraint>"""
+        res+=prompts.get("constraint_generator")
         return res
         
-    def gonext(self):
+    def gonext(self,problem):
         self.index+=1
         if self.index//self.ITERPERGRAMMER >= len(self.grammar):
             return "end"
